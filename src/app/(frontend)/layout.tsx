@@ -48,8 +48,10 @@ export default async function FrontendLayout({ children }: { children: ReactNode
   const phone = settings.phones?.[0]
 
   return (
-    <html lang="en-IN" className={jakarta.variable}>
-      <body>
+    // Browser extensions (e.g. Grammarly) add attributes to <html>/<body> before React loads.
+    // suppressHydrationWarning only ignores these two elements' own attributes, not their children.
+    <html lang="en-IN" className={jakarta.variable} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <JsonLd data={[organizationSchema(settings), websiteSchema(settings)]} />
         <a className="skip-link" href="#main">
           Skip to content
