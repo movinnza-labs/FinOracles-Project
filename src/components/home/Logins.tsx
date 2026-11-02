@@ -1,25 +1,40 @@
-import { ArrowUpRight, Briefcase, CircleCheck, Headset, Phone, ShieldCheck, UserRound } from 'lucide-react'
+import { ArrowUpRight, Briefcase, CircleCheck, ShieldCheck, UserRound, type LucideIcon } from 'lucide-react'
 import type { HomePage, SiteSetting } from '@/payload-types'
 import { CmsLink } from '@/components/ui/CmsLink'
 import { SectionHead } from '@/components/ui/SectionHead'
-import { SocialIcon } from '@/components/ui/SocialIcon'
 import { telHref } from '@/lib/text'
 import styles from './Logins.module.css'
 
 type LoginItem = NonNullable<NonNullable<HomePage['logins']>['items']>[number]
 
-const audienceLabel: Record<string, string> = { client: 'Client', partner: 'Partner', employee: 'Employee' }
-const audienceIcon = { client: UserRound, partner: Briefcase, employee: ShieldCheck } as const
+const groups: { audience: string; title: string; text: string; Icon: LucideIcon }[] = [
+  {
+    audience: 'client',
+    title: 'Clients',
+    text: 'Access your E-Wealth Account to track and manage your investments.',
+    Icon: UserRound,
+  },
+  {
+    audience: 'partner',
+    title: 'Partners',
+    text: 'Sign in to the partner platforms we work with.',
+    Icon: Briefcase,
+  },
+  {
+    audience: 'employee',
+    title: 'FinOracles Team',
+    text: 'Staff access to manage the website and enquiries.',
+    Icon: ShieldCheck,
+  },
+]
 
-/**
- * Login hub: the client login is featured (most visitors are clients), partner and
- * employee logins are listed beside it, with a help line for login trouble.
- */
+/** Three equal cards (Clients · Partners · Team), each listing its login links. */
 export function Logins({ data, settings }: { data: HomePage['logins']; settings?: SiteSetting }) {
   if (!data?.enabled || !data.items?.length) return null
 
-  const featured = data.items.find((i) => (i.audience ?? 'client') === 'client') ?? data.items[0]
-  const others = data.items.filter((i) => i !== featured)
+  const items = data.items
+  const byAudience = (a: string) => items.filter((i) => (i.audience ?? 'client') === a)
+  const visibleGroups = groups.filter((g) => byAudience(g.audience).length > 0)
   const phone = settings?.phones?.[0]
   const wa = settings?.whatsapp?.number
 
@@ -28,95 +43,72 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
       <div className="container">
         <SectionHead id="login-title" heading={data.heading} lead={data.lead} center />
 
-        <div className={styles.grid}>
-          <FeaturedLogin item={featured} />
+        <ul role="list" className={styles.grid} data-count={visibleGroups.length}>
+          {visibleGroups.map(({ audience, title, text, Icon }) => {
+            const links = byAudience(audience)
+            const primary = audience === 'client'
+            // A group's own description comes from its first login's description if set in the CMS.
+            const description = links.length === 1 && links[0].description ? links[0].description : text
+            const features = primary ? (links[0]?.features ?? []) : []
+            return (
+              <li key={audience} className={`${styles.card} reveal`}>
+                <span className={styles.icon}>
+                  <Icon aria-hidden />
+                </span>
+                <h3 className="h4">{title}</h3>
+                <p className={styles.text}>{description}</p>
 
-          <div className={`${styles.side} reveal`}>
-            {others.length > 0 && (
-              <div className={styles.listCard}>
-                <p className={styles.listTitle}>Partner &amp; employee logins</p>
-                <ul role="list" className={styles.list}>
-                  {others.map((item, i) => {
-                    const Icon = audienceIcon[(item.audience ?? 'partner') as keyof typeof audienceIcon] ?? Briefcase
-                    return (
-                      <li key={item.id ?? i}>
-                        <CmsLink link={{ ...item, label: undefined }} className={styles.row}>
-                          <span className={styles.rowIcon}>
-                            <Icon aria-hidden />
-                          </span>
-                          <span className={styles.rowText}>
-                            <span className={styles.rowLabel}>
-                              {item.label}
-                              {item.audience && <span className={styles.badge}>{audienceLabel[item.audience]}</span>}
-                            </span>
-                            {item.description && <span className={styles.rowDesc}>{item.description}</span>}
-                          </span>
-                          <ArrowUpRight aria-hidden className={styles.rowArrow} />
-                        </CmsLink>
+                {features.length > 0 && (
+                  <ul role="list" className={styles.features}>
+                    {features.map((f) => (
+                      <li key={f.id ?? f.text}>
+                        <CircleCheck aria-hidden />
+                        {f.text}
                       </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
+                    ))}
+                  </ul>
+                )}
 
-            {(phone || wa) && (
-              <div className={styles.help}>
-                <Headset aria-hidden className={styles.helpIcon} />
-                <div className={styles.helpText}>
-                  <p className={styles.helpTitle}>Trouble logging in?</p>
-                  <p>Our team can help you reset access or find the right portal.</p>
-                </div>
-                <div className={styles.helpActions}>
-                  {phone && (
-                    <a href={telHref(phone.number)} className="btn btn--outline">
-                      <Phone aria-hidden /> Call
-                    </a>
-                  )}
-                  {wa && (
-                    <a
-                      href={`https://wa.me/${wa.replace(/\D/g, '')}?text=${encodeURIComponent('Hello FinOracles, I need help logging in.')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn--outline"
+                <div className={styles.links}>
+                  {links.map((item: LoginItem, i) => (
+                    <CmsLink
+                      key={item.id ?? i}
+                      link={{ ...item, label: undefined }}
+                      className={`btn ${primary ? 'btn--primary' : 'btn--outline'} ${styles.linkBtn}`}
                     >
-                      <SocialIcon platform="whatsapp" size={18} /> WhatsApp
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                  )}
+                      <span>{item.label}</span>
+                      <ArrowUpRight aria-hidden />
+                    </CmsLink>
+                  ))}
                 </div>
-              </div>
+              </li>
+            )
+          })}
+        </ul>
+
+        {(phone || wa) && (
+          <p className={styles.help}>
+            Trouble logging in?{' '}
+            {phone && (
+              <>
+                Call <a href={telHref(phone.number)}>{phone.display}</a>
+              </>
             )}
-          </div>
-        </div>
+            {phone && wa && ' or '}
+            {wa && (
+              <a
+                href={`https://wa.me/${wa.replace(/\D/g, '')}?text=${encodeURIComponent('Hello FinOracles, I need help logging in.')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp us
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            )}
+            .
+          </p>
+        )}
       </div>
     </section>
-  )
-}
-
-function FeaturedLogin({ item }: { item: LoginItem }) {
-  return (
-    <div className={`${styles.featured} reveal`}>
-      <span className={styles.featuredIcon}>
-        <UserRound aria-hidden />
-      </span>
-      <p className={styles.featuredEyebrow}>For our clients</p>
-      <h3 className={styles.featuredTitle}>{item.label}</h3>
-      {item.description && <p className={styles.featuredDesc}>{item.description}</p>}
-      {!!item.features?.length && (
-        <ul role="list" className={styles.features}>
-          {item.features.map((f) => (
-            <li key={f.id ?? f.text}>
-              <CircleCheck aria-hidden />
-              {f.text}
-            </li>
-          ))}
-        </ul>
-      )}
-      <CmsLink link={{ ...item, label: `Go to ${item.label}` }} className={`btn btn--primary ${styles.featuredBtn}`} arrow />
-      <p className={styles.secure}>
-        <ShieldCheck aria-hidden /> You will be taken to the secure partner platform to sign in.
-      </p>
-    </div>
   )
 }
