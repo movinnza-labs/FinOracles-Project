@@ -29,9 +29,8 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
         <ul role="list" className={styles.grid}>
           {data.items.map((item, i) => {
             const audience = item.audience ?? 'client'
-            const isClient = audience === 'client'
             return (
-              <li key={item.id ?? i} className={`${styles.card} ${isClient ? styles.client : ''} reveal`}>
+              <li key={item.id ?? i} className={`${styles.card} reveal`}>
                 <div className={styles.head}>
                   <span className={styles.icon}>
                     <Icon icon={item.icon} fallback={fallbackIcon[audience] ?? 'lock'} />
@@ -42,7 +41,7 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
                 {item.description && <p className={styles.text}>{item.description}</p>}
                 <CmsLink
                   link={{ ...item, label: undefined }}
-                  className={`btn ${isClient ? 'btn--primary' : 'btn--outline'} ${styles.button}`}
+                  className={`btn btn--primary ${styles.button}`}
                 >
                   <span>Login</span>
                   <ArrowUpRight aria-hidden />
@@ -53,7 +52,7 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
           })}
 
           {(phone || wa) && (
-            <li className={`${styles.card} ${styles.help} reveal`}>
+            <li className={`${styles.card} reveal`}>
               <div className={styles.head}>
                 <span className={styles.icon}>
                   <Headset aria-hidden />
@@ -64,7 +63,7 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
               <p className={styles.text}>Our team can help you reset access or find the right portal.</p>
               <div className={styles.helpActions}>
                 {phone && (
-                  <a href={telHref(phone.number)} className={`btn btn--outline ${styles.button}`}>
+                  <a href={telHref(phone.number)} className={`btn btn--primary ${styles.button}`}>
                     <span>
                       <Phone aria-hidden /> Call
                     </span>
@@ -75,7 +74,7 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
                     href={`https://wa.me/${wa.replace(/\D/g, '')}?text=${encodeURIComponent('Hello FinOracles, I need help logging in.')}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`btn btn--outline ${styles.button}`}
+                    className={`btn btn--primary ${styles.button}`}
                   >
                     <span>
                       <SocialIcon platform="whatsapp" size={18} /> WhatsApp

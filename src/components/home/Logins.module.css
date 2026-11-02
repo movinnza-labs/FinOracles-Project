@@ -10,6 +10,7 @@
   flex-direction: column;
   padding: var(--space-6);
   border: 1px solid var(--line);
+  border-top: 3px solid var(--red);
   border-radius: var(--r-lg);
   background: var(--white);
   transition:
@@ -20,13 +21,9 @@
 
 .card:hover {
   border-color: var(--line-strong);
+  border-top-color: var(--red);
   box-shadow: var(--shadow-1);
   transform: translateY(-3px);
-}
-
-/* Client login: subtle red accent so it reads as the main login */
-.client {
-  border-top: 3px solid var(--red);
 }
 
 .head {
@@ -93,26 +90,7 @@
   gap: var(--space-2);
 }
 
-.card :global(.btn--outline):hover {
-  border-color: var(--navy-800);
-  background: var(--slate-50);
-}
-
-.card :global(.btn--outline) svg {
-  color: var(--muted);
-}
-
-/* ---- Help card ---------------------------------------------------------- */
-.help {
-  border-style: dashed;
-  background: var(--slate-50);
-}
-
-.help .icon {
-  background: var(--white);
-  color: var(--red);
-}
-
+/* ---- Help card actions ---------------------------------------------- */
 .helpActions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -124,11 +102,6 @@
   justify-content: center;
   margin-top: 0;
   padding-inline: var(--space-3);
-  background: var(--white);
-}
-
-.helpActions a:nth-child(2) svg {
-  color: var(--whatsapp);
 }
 
 @media (max-width: 1023px) {
