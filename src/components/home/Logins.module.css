@@ -4,27 +4,16 @@
   gap: var(--space-5);
 }
 
-.grid[data-count='2'] {
-  grid-template-columns: repeat(2, 1fr);
-  max-width: 860px;
-  margin-inline: auto;
-}
-
-.grid[data-count='1'] {
-  grid-template-columns: 1fr;
-  max-width: 440px;
-  margin-inline: auto;
-}
-
 /* ---- Card ---------------------------------------------------------------- */
 .card {
   display: flex;
   flex-direction: column;
-  padding: var(--space-8) var(--space-6) var(--space-6);
+  padding: var(--space-6);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--white);
   transition:
+    transform var(--duration-base) var(--ease-out),
     box-shadow var(--duration-base) var(--ease-out),
     border-color var(--duration-base);
 }
@@ -32,104 +21,130 @@
 .card:hover {
   border-color: var(--line-strong);
   box-shadow: var(--shadow-1);
+  transform: translateY(-3px);
+}
+
+/* Client login: subtle red accent so it reads as the main login */
+.client {
+  border-top: 3px solid var(--red);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .icon {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  margin-bottom: var(--space-5);
+  width: 48px;
+  height: 48px;
   border-radius: var(--r-md);
   background: var(--blue-50);
   color: var(--blue-600);
+  transition:
+    background-color var(--duration-base),
+    color var(--duration-base);
 }
 
 .icon svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 }
 
-.text {
-  margin-bottom: var(--space-5) !important;
-  font-size: 0.95rem;
+.card:hover .icon {
+  background: var(--navy-900);
+  color: var(--white);
+}
+
+.audience {
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--muted);
 }
 
-.features {
-  display: grid;
-  gap: var(--space-2);
-  margin-bottom: var(--space-6);
+.text {
+  margin-bottom: var(--space-6) !important;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--muted);
 }
 
-.features li {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--ink);
-}
-
-.features svg {
-  flex: none;
-  width: 17px;
-  height: 17px;
-  margin-top: 2px;
-  color: var(--blue-600);
-}
-
-/* Login buttons sit at the bottom so all three cards line up */
-.links {
-  display: grid;
-  gap: var(--space-2);
-  margin-top: auto;
-}
-
-.linkBtn {
+/* Buttons pinned to the bottom so every card lines up */
+.button {
   justify-content: space-between;
   width: 100%;
-  min-height: 48px;
+  min-height: 46px;
+  margin-top: auto;
   padding-inline: var(--space-5);
 }
 
-.links :global(.btn--outline):hover {
+.button span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card :global(.btn--outline):hover {
   border-color: var(--navy-800);
   background: var(--slate-50);
 }
 
-.links :global(.btn--outline) svg {
+.card :global(.btn--outline) svg {
   color: var(--muted);
 }
 
-.links :global(.btn--outline):hover svg {
-  color: var(--red);
-}
-
-/* ---- Help line ---------------------------------------------------------- */
+/* ---- Help card ---------------------------------------------------------- */
 .help {
-  margin: var(--space-8) 0 0 !important;
-  font-size: 0.95rem;
-  text-align: center;
-  color: var(--muted);
+  border-style: dashed;
+  background: var(--slate-50);
 }
 
-.help a {
-  font-weight: 700;
-  color: var(--navy-900);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.help a:hover {
+.help .icon {
+  background: var(--white);
   color: var(--red);
 }
 
-@media (max-width: 859px) {
-  .grid,
-  .grid[data-count='2'] {
+.helpActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.helpActions .button {
+  justify-content: center;
+  margin-top: 0;
+  padding-inline: var(--space-3);
+  background: var(--white);
+}
+
+.helpActions a:nth-child(2) svg {
+  color: var(--whatsapp);
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 599px) {
+  .grid {
     grid-template-columns: 1fr;
-    max-width: 520px;
-    margin-inline: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
   }
 }

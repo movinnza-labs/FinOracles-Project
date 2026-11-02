@@ -1,40 +1,23 @@
-import { ArrowUpRight, Briefcase, CircleCheck, ShieldCheck, UserRound, type LucideIcon } from 'lucide-react'
+import { ArrowUpRight, Headset, Phone } from 'lucide-react'
 import type { HomePage, SiteSetting } from '@/payload-types'
 import { CmsLink } from '@/components/ui/CmsLink'
+import { Icon } from '@/components/ui/Icon'
 import { SectionHead } from '@/components/ui/SectionHead'
+import { SocialIcon } from '@/components/ui/SocialIcon'
 import { telHref } from '@/lib/text'
 import styles from './Logins.module.css'
 
-type LoginItem = NonNullable<NonNullable<HomePage['logins']>['items']>[number]
+const audienceLabel: Record<string, string> = { client: 'Clients', partner: 'Partners', employee: 'FinOracles Team' }
+const fallbackIcon: Record<string, 'wallet' | 'briefcase' | 'lock'> = {
+  client: 'wallet',
+  partner: 'briefcase',
+  employee: 'lock',
+}
 
-const groups: { audience: string; title: string; text: string; Icon: LucideIcon }[] = [
-  {
-    audience: 'client',
-    title: 'Clients',
-    text: 'Access your E-Wealth Account to track and manage your investments.',
-    Icon: UserRound,
-  },
-  {
-    audience: 'partner',
-    title: 'Partners',
-    text: 'Sign in to the partner platforms we work with.',
-    Icon: Briefcase,
-  },
-  {
-    audience: 'employee',
-    title: 'FinOracles Team',
-    text: 'Staff access to manage the website and enquiries.',
-    Icon: ShieldCheck,
-  },
-]
-
-/** Three equal cards (Clients · Partners · Team), each listing its login links. */
+/** One equal card per login, plus a "Need help?" card, in a 3 × 2 grid. */
 export function Logins({ data, settings }: { data: HomePage['logins']; settings?: SiteSetting }) {
   if (!data?.enabled || !data.items?.length) return null
 
-  const items = data.items
-  const byAudience = (a: string) => items.filter((i) => (i.audience ?? 'client') === a)
-  const visibleGroups = groups.filter((g) => byAudience(g.audience).length > 0)
   const phone = settings?.phones?.[0]
   const wa = settings?.whatsapp?.number
 
@@ -43,71 +26,67 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
       <div className="container">
         <SectionHead id="login-title" heading={data.heading} lead={data.lead} center />
 
-        <ul role="list" className={styles.grid} data-count={visibleGroups.length}>
-          {visibleGroups.map(({ audience, title, text, Icon }) => {
-            const links = byAudience(audience)
-            const primary = audience === 'client'
-            // A group's own description comes from its first login's description if set in the CMS.
-            const description = links.length === 1 && links[0].description ? links[0].description : text
-            const features = primary ? (links[0]?.features ?? []) : []
+        <ul role="list" className={styles.grid}>
+          {data.items.map((item, i) => {
+            const audience = item.audience ?? 'client'
+            const isClient = audience === 'client'
             return (
-              <li key={audience} className={`${styles.card} reveal`}>
-                <span className={styles.icon}>
-                  <Icon aria-hidden />
-                </span>
-                <h3 className="h4">{title}</h3>
-                <p className={styles.text}>{description}</p>
-
-                {features.length > 0 && (
-                  <ul role="list" className={styles.features}>
-                    {features.map((f) => (
-                      <li key={f.id ?? f.text}>
-                        <CircleCheck aria-hidden />
-                        {f.text}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <div className={styles.links}>
-                  {links.map((item: LoginItem, i) => (
-                    <CmsLink
-                      key={item.id ?? i}
-                      link={{ ...item, label: undefined }}
-                      className={`btn ${primary ? 'btn--primary' : 'btn--outline'} ${styles.linkBtn}`}
-                    >
-                      <span>{item.label}</span>
-                      <ArrowUpRight aria-hidden />
-                    </CmsLink>
-                  ))}
+              <li key={item.id ?? i} className={`${styles.card} ${isClient ? styles.client : ''} reveal`}>
+                <div className={styles.head}>
+                  <span className={styles.icon}>
+                    <Icon icon={item.icon} fallback={fallbackIcon[audience] ?? 'lock'} />
+                  </span>
+                  <span className={styles.audience}>{audienceLabel[audience]}</span>
                 </div>
+                <h3 className="h4">{item.label}</h3>
+                {item.description && <p className={styles.text}>{item.description}</p>}
+                <CmsLink
+                  link={{ ...item, label: undefined }}
+                  className={`btn ${isClient ? 'btn--primary' : 'btn--outline'} ${styles.button}`}
+                >
+                  <span>Login</span>
+                  <ArrowUpRight aria-hidden />
+                  <span className="sr-only"> to {item.label}</span>
+                </CmsLink>
               </li>
             )
           })}
-        </ul>
 
-        {(phone || wa) && (
-          <p className={styles.help}>
-            Trouble logging in?{' '}
-            {phone && (
-              <>
-                Call <a href={telHref(phone.number)}>{phone.display}</a>
-              </>
-            )}
-            {phone && wa && ' or '}
-            {wa && (
-              <a
-                href={`https://wa.me/${wa.replace(/\D/g, '')}?text=${encodeURIComponent('Hello FinOracles, I need help logging in.')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                WhatsApp us
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            )}
-            .
-          </p>
-        )}
+          {(phone || wa) && (
+            <li className={`${styles.card} ${styles.help} reveal`}>
+              <div className={styles.head}>
+                <span className={styles.icon}>
+                  <Headset aria-hidden />
+                </span>
+                <span className={styles.audience}>Support</span>
+              </div>
+              <h3 className="h4">Need help logging in?</h3>
+              <p className={styles.text}>Our team can help you reset access or find the right portal.</p>
+              <div className={styles.helpActions}>
+                {phone && (
+                  <a href={telHref(phone.number)} className={`btn btn--outline ${styles.button}`}>
+                    <span>
+                      <Phone aria-hidden /> Call
+                    </span>
+                  </a>
+                )}
+                {wa && (
+                  <a
+                    href={`https://wa.me/${wa.replace(/\D/g, '')}?text=${encodeURIComponent('Hello FinOracles, I need help logging in.')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`btn btn--outline ${styles.button}`}
+                  >
+                    <span>
+                      <SocialIcon platform="whatsapp" size={18} /> WhatsApp
+                    </span>
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                )}
+              </div>
+            </li>
+          )}
+        </ul>
       </div>
     </section>
   )

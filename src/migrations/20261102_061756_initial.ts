@@ -43,6 +43,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_home_page_expertise_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_resources_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_logins_items_audience" AS ENUM('client', 'partner', 'employee');
+  CREATE TYPE "public"."enum_home_page_logins_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_stats_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_tools_card_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_site_settings_socials_platform" AS ENUM('facebook', 'instagram', 'linkedin', 'youtube', 'whatsapp', 'x');
@@ -776,7 +777,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"url" varchar NOT NULL,
   	"new_tab" boolean DEFAULT false,
   	"audience" "enum_home_page_logins_items_audience" DEFAULT 'client',
-  	"description" varchar
+  	"description" varchar,
+  	"icon" "enum_home_page_logins_items_icon"
   );
   
   CREATE TABLE "home_page_stats_items" (
@@ -1425,6 +1427,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_home_page_expertise_items_icon";
   DROP TYPE "public"."enum_home_page_resources_items_icon";
   DROP TYPE "public"."enum_home_page_logins_items_audience";
+  DROP TYPE "public"."enum_home_page_logins_items_icon";
   DROP TYPE "public"."enum_home_page_stats_items_icon";
   DROP TYPE "public"."enum_home_page_tools_card_icon";
   DROP TYPE "public"."enum_site_settings_socials_platform";`)

@@ -297,7 +297,7 @@ export const HomePage: GlobalConfig = {
               name: 'items',
               type: 'array',
               admin: {
-                description: 'The first "Client" login is shown as the large featured card; the rest are listed beside it.',
+                description: 'Each login is shown as its own card; a sixth "Need help?" card is added automatically.',
               },
               fields: [
                 ...linkFields,
@@ -318,6 +318,7 @@ export const HomePage: GlobalConfig = {
                     { name: 'description', type: 'text', admin: { width: '70%' } },
                   ],
                 },
+                iconField({ admin: { description: 'Icon shown on this login card.' } }),
                 {
                   name: 'features',
                   type: 'array',

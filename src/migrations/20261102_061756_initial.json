@@ -8257,6 +8257,13 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
+        },
+        "icon": {
+          "name": "icon",
+          "type": "enum_home_page_logins_items_icon",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -10948,6 +10955,54 @@
         "employee"
       ]
     },
+    "public.enum_home_page_logins_items_icon": {
+      "name": "enum_home_page_logins_items_icon",
+      "schema": "public",
+      "values": [
+        "award",
+        "badge-check",
+        "briefcase",
+        "calculator",
+        "car",
+        "chart-column",
+        "chart-line",
+        "chart-pie",
+        "circle-check",
+        "circle-play",
+        "clipboard-list",
+        "clock",
+        "compass",
+        "file-text",
+        "graduation-cap",
+        "hand-coins",
+        "heart-handshake",
+        "heart-pulse",
+        "house",
+        "images",
+        "info",
+        "landmark",
+        "layout-dashboard",
+        "life-buoy",
+        "lightbulb",
+        "lock",
+        "mail",
+        "map-pin",
+        "newspaper",
+        "phone",
+        "piggy-bank",
+        "plane",
+        "refresh-cw",
+        "shield-check",
+        "smartphone",
+        "sprout",
+        "target",
+        "trending-up",
+        "trophy",
+        "umbrella",
+        "users",
+        "wallet"
+      ]
+    },
     "public.enum_home_page_stats_items_icon": {
       "name": "enum_home_page_stats_items_icon",
       "schema": "public",
@@ -11067,6 +11122,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "ab6ada69-c0b7-4e60-a4a4-3b9f824ebb2a",
+  "id": "9f578124-82c5-4001-8723-ede419826bbe",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

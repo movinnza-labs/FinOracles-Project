@@ -1992,7 +1992,7 @@ export interface HomePage {
      */
     lead?: string | null;
     /**
-     * The first "Client" login is shown as the large featured card; the rest are listed beside it.
+     * Each login is shown as its own card; a sixth "Need help?" card is added automatically.
      */
     items?:
       | {
@@ -2004,6 +2004,55 @@ export interface HomePage {
           newTab?: boolean | null;
           audience?: ('client' | 'partner' | 'employee') | null;
           description?: string | null;
+          /**
+           * Icon shown on this login card.
+           */
+          icon?:
+            | (
+                | 'award'
+                | 'badge-check'
+                | 'briefcase'
+                | 'calculator'
+                | 'car'
+                | 'chart-column'
+                | 'chart-line'
+                | 'chart-pie'
+                | 'circle-check'
+                | 'circle-play'
+                | 'clipboard-list'
+                | 'clock'
+                | 'compass'
+                | 'file-text'
+                | 'graduation-cap'
+                | 'hand-coins'
+                | 'heart-handshake'
+                | 'heart-pulse'
+                | 'house'
+                | 'images'
+                | 'info'
+                | 'landmark'
+                | 'layout-dashboard'
+                | 'life-buoy'
+                | 'lightbulb'
+                | 'lock'
+                | 'mail'
+                | 'map-pin'
+                | 'newspaper'
+                | 'phone'
+                | 'piggy-bank'
+                | 'plane'
+                | 'refresh-cw'
+                | 'shield-check'
+                | 'smartphone'
+                | 'sprout'
+                | 'target'
+                | 'trending-up'
+                | 'trophy'
+                | 'umbrella'
+                | 'users'
+                | 'wallet'
+              )
+            | null;
           /**
            * Optional bullet points (shown on the featured client card).
            */
@@ -2493,6 +2542,7 @@ export interface HomePageSelect<T extends boolean = true> {
               newTab?: T;
               audience?: T;
               description?: T;
+              icon?: T;
               features?:
                 | T
                 | {
