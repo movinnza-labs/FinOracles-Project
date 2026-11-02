@@ -237,3 +237,10 @@ figure {
     transition: none;
   }
 }
+
+/* Keep page content clear of the fixed mobile action bar (SiteExtras) */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom));
+  }
+}

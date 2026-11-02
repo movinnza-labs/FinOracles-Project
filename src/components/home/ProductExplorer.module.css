@@ -203,6 +203,10 @@
   margin-top: var(--space-6);
 }
 
+.actions .details {
+  margin-left: var(--space-2);
+}
+
 .actions :global(.btn--outline) svg {
   color: var(--whatsapp);
 }

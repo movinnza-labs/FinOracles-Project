@@ -2,11 +2,18 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useId, useState } from 'react'
-import { Menu, Phone, X } from 'lucide-react'
+import { ChevronDown, Menu, Phone, X } from 'lucide-react'
 import { CmsLink, type LinkData } from '@/components/ui/CmsLink'
+import { Icon } from '@/components/ui/Icon'
 import type { ImageData } from '@/lib/media'
 import styles from './Header.module.css'
+
+export type ProductMenuGroup = {
+  label: string
+  items: { name: string; slug: string; icon?: string | null }[]
+}
 
 type HeaderProps = {
   logo: ImageData | null
@@ -14,12 +21,16 @@ type HeaderProps = {
   navItems: LinkData[]
   cta?: LinkData | null
   phone?: { display: string; href: string } | null
+  productMenu?: ProductMenuGroup[]
 }
 
-export function Header({ logo, siteName, navItems, cta, phone }: HeaderProps) {
+const PRODUCTS_URL = '/products'
+
+export function Header({ logo, siteName, navItems, cta, phone, productMenu = [] }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const menuId = useId()
+  const pathname = usePathname()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -27,6 +38,9 @@ export function Header({ logo, siteName, navItems, cta, phone }: HeaderProps) {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Close the mobile menu after navigating.
+  useEffect(() => setOpen(false), [pathname])
 
   useEffect(() => {
     if (!open) return
@@ -40,7 +54,10 @@ export function Header({ logo, siteName, navItems, cta, phone }: HeaderProps) {
     }
   }, [open])
 
-  const close = () => setOpen(false)
+  const isActive = (url?: string | null) =>
+    !!url && (url === '/' ? pathname === '/' : pathname === url || pathname.startsWith(`${url}/`))
+
+  const hasMenu = (item: LinkData) => item.url === PRODUCTS_URL && productMenu.length > 0
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
@@ -56,8 +73,35 @@ export function Header({ logo, siteName, navItems, cta, phone }: HeaderProps) {
         <nav className={styles.nav} aria-label="Main">
           <ul role="list">
             {navItems.map((item, i) => (
-              <li key={i}>
-                <CmsLink link={item} />
+              <li key={i} className={hasMenu(item) ? styles.hasMenu : undefined}>
+                <CmsLink link={item} className={isActive(item.url) ? styles.active : undefined}>
+                  {item.label}
+                  {hasMenu(item) && <ChevronDown aria-hidden className={styles.caret} />}
+                </CmsLink>
+                {hasMenu(item) && (
+                  <div className={styles.dropdown}>
+                    <div className={styles.dropdownInner}>
+                      {productMenu.map((group) => (
+                        <div key={group.label}>
+                          <p className={styles.dropdownLabel}>{group.label}</p>
+                          <ul role="list">
+                            {group.items.map((p) => (
+                              <li key={p.slug}>
+                                <Link href={`/products/${p.slug}`}>
+                                  <Icon icon={p.icon} fallback="chart-pie" />
+                                  {p.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    <Link href={PRODUCTS_URL} className={styles.dropdownAll}>
+                      View all products →
+                    </Link>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -88,12 +132,21 @@ export function Header({ logo, siteName, navItems, cta, phone }: HeaderProps) {
         <nav aria-label="Mobile" className="container">
           <ul role="list">
             {navItems.map((item, i) => (
-              <li key={i} onClick={close}>
+              <li key={i}>
                 <CmsLink link={item} />
+                {hasMenu(item) && (
+                  <ul role="list" className={styles.subList}>
+                    {productMenu.flatMap((g) => g.items).map((p) => (
+                      <li key={p.slug}>
+                        <Link href={`/products/${p.slug}`}>{p.name}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
-          <div className={styles.panelActions} onClick={close}>
+          <div className={styles.panelActions}>
             {cta?.url && <CmsLink link={cta} className="btn btn--primary" />}
             {phone && (
               <a href={phone.href} className="btn btn--outline">

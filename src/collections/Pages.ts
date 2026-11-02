@@ -7,7 +7,21 @@ import { revalidateCollection, revalidateCollectionDelete } from '../hooks/reval
 import { previewPath } from '../lib/url'
 
 /** Reserved by other routes; a page cannot use these slugs. */
-const reservedSlugs = ['admin', 'api', 'blog', 'services', 'preview', 'healthz', 'sitemap.xml', 'robots.txt']
+const reservedSlugs = [
+  'admin',
+  'api',
+  'about',
+  'blog',
+  'contact',
+  'login',
+  'products',
+  'services',
+  'tools',
+  'preview',
+  'healthz',
+  'sitemap.xml',
+  'robots.txt',
+]
 
 export const Pages: CollectionConfig = {
   slug: 'pages',

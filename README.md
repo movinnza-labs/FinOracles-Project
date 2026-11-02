@@ -110,17 +110,22 @@ All secrets are environment variables. None are hard-coded (see `.env.example`).
 | Logo, phones, emails, address, socials, ARN, regulators, disclaimer, default SEO | Globals → Site Settings |
 | Navigation menu and header button            | Globals → Header & Navigation     |
 | Footer text and link columns                 | Globals → Footer                  |
-| Products explorer                            | Content → Products                |
+| Products: homepage explorer + landing pages at /products/[slug] (highlights, FAQs, SEO) | Content → Products |
+| Menu, top bar (phone, email, ARN, Client Login), Free Consultation button | Globals → Header & Navigation |
+| Consultation banner above the footer, legal links | Globals → Footer |
+| Leads from the website (name, phone, product, callback time, status, notes) | Admin → Enquiries |
 | Team                                         | Content → Team (tick *Featured leader* for the large card) |
 | Services (homepage grid + `/services/[slug]`) | Content → Services               |
 | Blog                                         | Blog → Posts / Categories         |
-| Standalone pages (`/disclaimer`, etc.)       | Content → Pages (block builder)   |
+| Standalone pages (`/privacy-policy`, `/disclaimer`, etc.) | Content → Pages (block builder) |
 
 Pages, posts, services and the homepage each have an **SEO** tab for the meta title,
 description, social image, canonical URL and noindex. Pages and posts support drafts.
 Use **Preview** to view a draft on the live site while logged in.
 
-The three seeded blog posts are sample content. Review or replace them before launch.
+Site pages: `/`, `/about`, `/products`, `/products/[slug]`, `/services`, `/services/[slug]`, `/tools` (SIP, lumpsum and goal calculators), `/blog`, `/contact`, `/login`, plus CMS pages such as `/privacy-policy`.
+
+The three seeded blog posts and the Privacy Policy are drafts. Have them reviewed before launch.
 
 ## SEO and performance
 

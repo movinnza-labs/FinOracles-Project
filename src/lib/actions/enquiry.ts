@@ -3,11 +3,13 @@
 import { headers } from 'next/headers'
 import { getPayloadClient } from '@/lib/queries'
 
+type Field = 'name' | 'phone' | 'email' | 'interest' | 'callbackTime' | 'message' | 'consent'
+
 export type EnquiryState = {
   status: 'idle' | 'success' | 'error'
   message?: string
-  errors?: Partial<Record<'name' | 'email' | 'subject' | 'message', string>>
-  values?: Partial<Record<'name' | 'email' | 'subject' | 'message', string>>
+  errors?: Partial<Record<Field, string>>
+  values?: Partial<Record<Exclude<Field, 'consent'>, string>>
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -25,23 +27,32 @@ const throttled = (key: string) => {
   return hits.length > MAX_PER_WINDOW
 }
 
+/** Accepts Indian numbers with or without +91/0 prefix and spaces/dashes. */
+const validPhone = (value: string) => {
+  const digits = value.replace(/\D/g, '')
+  return digits.length >= 10 && digits.length <= 13
+}
+
 export async function submitEnquiry(_prev: EnquiryState, formData: FormData): Promise<EnquiryState> {
   const field = (name: string) => String(formData.get(name) ?? '').trim()
   const values = {
     name: field('name').slice(0, 120),
+    phone: field('phone').slice(0, 20),
     email: field('email').slice(0, 200),
-    subject: field('subject').slice(0, 200),
+    interest: field('interest').slice(0, 120),
+    callbackTime: field('callbackTime').slice(0, 60),
     message: field('message').slice(0, 5000),
   }
+  const consent = formData.get('consent') === 'on'
 
   // Honeypot: real visitors never see or fill this field.
-  if (field('website')) return { status: 'success', message: 'Thank you! We will get back to you shortly.' }
+  if (field('website')) return { status: 'success', message: 'Thank you! We will call you back shortly.' }
 
   const errors: EnquiryState['errors'] = {}
   if (values.name.length < 2) errors.name = 'Please enter your name.'
-  if (!EMAIL_RE.test(values.email)) errors.email = 'Please enter a valid email address.'
-  if (values.subject.length < 2) errors.subject = 'Please add a subject.'
-  if (values.message.length < 10) errors.message = 'Please write a short message (at least 10 characters).'
+  if (!validPhone(values.phone)) errors.phone = 'Please enter a valid mobile number.'
+  if (values.email && !EMAIL_RE.test(values.email)) errors.email = 'Please enter a valid email address.'
+  if (!consent) errors.consent = 'Please agree so we can contact you.'
   if (Object.keys(errors).length) {
     return { status: 'error', message: 'Please correct the highlighted fields.', errors, values }
   }
@@ -49,21 +60,30 @@ export async function submitEnquiry(_prev: EnquiryState, formData: FormData): Pr
   const h = await headers()
   const ip = h.get('x-forwarded-for')?.split(',')[0]?.trim() || h.get('x-real-ip') || 'unknown'
   if (throttled(ip)) {
-    return { status: 'error', message: 'Too many messages sent. Please try again in a few minutes.', values }
+    return { status: 'error', message: 'Too many requests. Please try again in a few minutes, or call us.', values }
   }
 
   try {
     const payload = await getPayloadClient()
     await payload.create({
       collection: 'enquiries',
-      data: { ...values, page: field('page').slice(0, 300), status: 'new' },
+      data: {
+        ...values,
+        email: values.email || undefined,
+        consent: true,
+        page: field('page').slice(0, 300),
+        status: 'new',
+      },
     })
-    return { status: 'success', message: 'Thank you! Your message has been sent. Our team will get back to you shortly.' }
+    return {
+      status: 'success',
+      message: 'Thank you! Your request has been received. Our team will call you back shortly.',
+    }
   } catch (err) {
     console.error('[enquiry] failed to save', err)
     return {
       status: 'error',
-      message: 'Sorry, something went wrong. Please call or email us instead.',
+      message: 'Sorry, something went wrong. Please call or WhatsApp us instead.',
       values,
     }
   }

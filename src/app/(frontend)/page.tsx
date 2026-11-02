@@ -53,6 +53,7 @@ export default async function HomePage() {
               products={products.map((p) => ({
                 id: p.id,
                 name: p.name,
+                slug: p.slug,
                 category: p.category,
                 icon: p.icon,
                 tagline: p.tagline,

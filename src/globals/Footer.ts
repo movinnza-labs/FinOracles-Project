@@ -10,6 +10,24 @@ export const Footer: GlobalConfig = {
   access: { read: anyone, update: authenticated },
   hooks: { afterChange: [revalidateGlobal] },
   fields: [
+    {
+      name: 'ctaBand',
+      type: 'group',
+      label: 'Consultation banner',
+      admin: { description: 'Shown above the footer on every page except Contact.' },
+      fields: [
+        { name: 'enabled', type: 'checkbox', defaultValue: true },
+        { name: 'heading', type: 'text', defaultValue: 'Not sure where to start?' },
+        { name: 'text', type: 'textarea' },
+        {
+          type: 'row',
+          fields: [
+            { name: 'buttonLabel', type: 'text', defaultValue: 'Book a Free Consultation' },
+            { name: 'buttonUrl', type: 'text', defaultValue: '/contact' },
+          ],
+        },
+      ],
+    },
     { name: 'aboutTitle', type: 'text', defaultValue: 'About FinOracles' },
     { name: 'aboutText', type: 'textarea' },
     {
@@ -27,6 +45,13 @@ export const Footer: GlobalConfig = {
       type: 'checkbox',
       defaultValue: true,
       label: 'Show regulatory bodies column',
+    },
+    {
+      name: 'legalLinks',
+      type: 'array',
+      label: 'Legal links (bottom row)',
+      maxRows: 5,
+      fields: linkFields,
     },
     {
       name: 'copyright',

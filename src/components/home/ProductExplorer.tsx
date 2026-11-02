@@ -1,14 +1,17 @@
 'use client'
 
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import Link from 'next/link'
 import { ArrowRight, CircleCheck, Info, Users } from 'lucide-react'
 import { Icon, IconTile } from '@/components/ui/Icon'
 import { SocialIcon } from '@/components/ui/SocialIcon'
+import { complianceNotes, productCategories } from '@/lib/compliance'
 import styles from './ProductExplorer.module.css'
 
 export type ProductItem = {
   id: number | string
   name: string
+  slug?: string | null
   category: string
   icon?: string | null
   tagline?: string | null
@@ -18,18 +21,8 @@ export type ProductItem = {
   enquiryLabel?: string | null
 }
 
-const categories = [
-  { value: 'invest', label: 'Invest' },
-  { value: 'protect', label: 'Protect' },
-  { value: 'borrow', label: 'Borrow' },
-] as const
-
-/** Statutory notes shown under each product, by category. */
-const compliance: Record<string, string> = {
-  invest: 'Mutual Fund investments are subject to market risks, read all scheme related documents carefully.',
-  protect: 'Insurance is the subject matter of solicitation. Please read the policy wording carefully before buying.',
-  borrow: 'Loans are subject to the lender’s eligibility criteria, terms and conditions.',
-}
+const categories = productCategories
+const compliance = complianceNotes
 
 type ProductExplorerProps = {
   products: ProductItem[]
@@ -81,10 +74,10 @@ export function ProductExplorer({ products, label, contactAnchor = '#contact', w
       )}`
     : null
 
-  // Pre-fill the contact form so the enquiry arrives tagged with the product.
+  // Pre-select the product in the enquiry form so the lead arrives tagged with it.
   const prefillEnquiry = () => {
-    const subject = document.getElementById('enquiry-subject') as HTMLInputElement | null
-    if (subject) subject.value = `Enquiry: ${shortName}`
+    const interest = document.getElementById('enquiry-interest') as HTMLSelectElement | null
+    if (interest && Array.from(interest.options).some((o) => o.value === shortName)) interest.value = shortName
     window.setTimeout(() => document.getElementById('enquiry-name')?.focus({ preventScroll: true }), 400)
   }
 
@@ -170,6 +163,11 @@ export function ProductExplorer({ products, label, contactAnchor = '#contact', w
                 Ask on WhatsApp
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
+            )}
+            {product.slug && (
+              <Link href={`/products/${product.slug}`} className={`text-button ${styles.details}`}>
+                FULL DETAILS <ArrowRight aria-hidden />
+              </Link>
             )}
           </div>
 

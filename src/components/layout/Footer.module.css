@@ -194,3 +194,19 @@
     transform: none;
   }
 }
+
+.legalLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+.legal .legalLinks a {
+  color: var(--on-dark-muted);
+  text-decoration: none;
+}
+
+.legal .legalLinks a:hover {
+  color: var(--white);
+  text-decoration: underline;
+}

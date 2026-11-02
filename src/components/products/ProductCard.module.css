@@ -1,0 +1,89 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+/* Four items fit one row instead of 3 + 1 */
+.grid[data-count='4'] {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid .card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card :global(.icon-tile) {
+  margin-bottom: var(--space-4);
+}
+
+.tagline {
+  margin-bottom: var(--space-3) !important;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blue-600);
+}
+
+.ideal {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.ideal strong {
+  color: var(--ink);
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: auto;
+  padding-top: var(--space-4);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--red);
+}
+
+.more svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.card:hover .more svg {
+  transform: translate(3px);
+}
+
+/* Whole card is clickable via the heading link */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.grid .card:has(.link:focus-visible) {
+  outline: 3px solid var(--blue-600);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023px) {
+  .grid,
+  .grid[data-count='4'] {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 639px) {
+  .grid,
+  .grid[data-count='4'] {
+    grid-template-columns: 1fr;
+  }
+}

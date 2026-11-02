@@ -7,9 +7,18 @@ import { richText } from './lexical'
  */
 const productDetails: Record<
   string,
-  { tagline: string; highlights: string[]; idealFor: string; enquiryLabel: string }
+  {
+    slug: string
+    tagline: string
+    highlights: string[]
+    idealFor: string
+    enquiryLabel: string
+    faqs: { question: string; answer: string }[]
+  }
 > = {
   'Mutual Fund Services': {
+    slug: 'mutual-funds',
+    faqs: [{question:"How much do I need to start investing in mutual funds?",answer:"Many schemes allow you to start a SIP with a small monthly amount, often a few hundred rupees. The exact minimum depends on the scheme, and we will suggest an amount that fits your budget and goals."},{question:"Can I stop or change my SIP later?",answer:"Yes. SIPs can usually be paused, modified or stopped at any time. An exit load may apply if you redeem units within a short period, as stated in the scheme documents."},{question:"How is FinOracles paid for mutual fund services?",answer:"As an AMFI-registered mutual fund distributor, we receive commission from fund houses on regular plans. This is included in the scheme’s expense ratio, and we are happy to explain it in detail."}],
     tagline: 'Smart diversification. Strategic growth. Managed with expertise.',
     enquiryLabel: 'Mutual Funds',
     idealFor: 'Anyone building long-term wealth for goals like retirement, education or a home',
@@ -21,6 +30,8 @@ const productDetails: Record<
     ],
   },
   'National Pension System (NPS)': {
+    slug: 'nps',
+    faqs: [{question:"Who can open an NPS account?",answer:"Indian citizens within the eligible age range, whether salaried or self-employed, can open an NPS account. NRIs can also invest, subject to the applicable rules."},{question:"Can I withdraw from NPS before retirement?",answer:"NPS is designed for retirement, so withdrawals are restricted. Partial withdrawals are allowed for specific needs after a minimum period, as per PFRDA rules."}],
     tagline: 'Plan today. Retire with confidence.',
     enquiryLabel: 'NPS',
     idealFor: 'Salaried and self-employed individuals saving for retirement',
@@ -32,6 +43,8 @@ const productDetails: Record<
     ],
   },
   'Equity & ETFs': {
+    slug: 'equity-etfs',
+    faqs: [{question:"Do I need a demat account?",answer:"Yes. Investing directly in shares and ETFs requires a demat and trading account. We can help you with the account opening process."},{question:"What is the difference between an ETF and a mutual fund?",answer:"An ETF trades on the stock exchange like a share, at market prices during the day. A mutual fund is bought from the fund house at the day’s NAV. Both can offer diversified exposure."}],
     tagline: 'Focused growth. Smart diversification. Strategic execution.',
     enquiryLabel: 'Equity & ETFs',
     idealFor: 'Investors seeking direct, market-linked growth over the long term',
@@ -43,6 +56,8 @@ const productDetails: Record<
     ],
   },
   'Portfolio Management Services (PMS)': {
+    slug: 'pms',
+    faqs: [{question:"What is the minimum investment for PMS?",answer:"SEBI currently prescribes a minimum investment of ₹50 lakh for portfolio management services."},{question:"How is PMS different from a mutual fund?",answer:"In PMS, securities are held directly in your name in a portfolio managed for you, which allows more personalisation. Mutual funds pool money from many investors into one scheme."}],
     tagline: 'Exclusive strategies. Active oversight. Structured wealth creation.',
     enquiryLabel: 'PMS',
     idealFor: 'High-net-worth investors seeking a personalised, professionally managed portfolio',
@@ -54,6 +69,8 @@ const productDetails: Record<
     ],
   },
   'Loan against Mutual Funds': {
+    slug: 'loan-against-mutual-funds',
+    faqs: [{question:"Will my mutual funds keep growing while pledged?",answer:"Yes. Your units stay invested and continue to reflect market movements. They are only marked as pledged with the lender until the loan is repaid."},{question:"How much can I borrow?",answer:"The loan amount depends on the type and value of the funds you pledge and on the lender’s policy. Equity funds usually have a lower loan-to-value ratio than debt funds."}],
     tagline: 'Liquidity when you need it. Growth that continues.',
     enquiryLabel: 'Loan against Mutual Funds',
     idealFor: 'Investors who need short-term funds without redeeming their investments',
@@ -65,6 +82,8 @@ const productDetails: Record<
     ],
   },
   'Health Insurance': {
+    slug: 'health-insurance',
+    faqs: [{question:"What is a family floater plan?",answer:"A family floater plan covers your whole family under one policy with a shared sum insured, which is often more economical than separate policies."},{question:"What is a waiting period?",answer:"Many policies have waiting periods before certain conditions or pre-existing illnesses are covered. We will explain the waiting periods of each plan before you buy."}],
     tagline: 'Protect your health. Safeguard your wealth.',
     enquiryLabel: 'Health Insurance',
     idealFor: 'Individuals and families who want protection from rising medical costs',
@@ -76,6 +95,8 @@ const productDetails: Record<
     ],
   },
   'Life Insurance': {
+    slug: 'life-insurance',
+    faqs: [{question:"How much life cover do I need?",answer:"A common starting point is a cover that can replace several years of your income and clear any loans. We will help you estimate the right amount for your family."},{question:"What is a term plan?",answer:"A term plan pays a sum to your nominee if something happens to you during the policy term. It offers high cover at a comparatively low premium."}],
     tagline: 'Secure today. Protect tomorrow.',
     enquiryLabel: 'Life Insurance',
     idealFor: 'Anyone whose family depends on their income',
@@ -87,6 +108,8 @@ const productDetails: Record<
     ],
   },
   'Personal Accidental Insurance': {
+    slug: 'personal-accident-insurance',
+    faqs: [{question:"Is personal accident cover different from health insurance?",answer:"Yes. Health insurance covers medical treatment, while personal accident cover pays a benefit for accidental death or disability. The two work well together."}],
     tagline: 'Be prepared. Stay protected. Move forward with confidence.',
     enquiryLabel: 'Personal Accident Insurance',
     idealFor: 'Working professionals, commuters and frequent travellers',
@@ -98,6 +121,8 @@ const productDetails: Record<
     ],
   },
   'Vehicle Insurance': {
+    slug: 'vehicle-insurance',
+    faqs: [{question:"Is vehicle insurance mandatory?",answer:"Third-party liability insurance is mandatory for all vehicles on Indian roads under the Motor Vehicles Act. Comprehensive cover is optional but protects your own vehicle too."},{question:"What is a zero depreciation add-on?",answer:"It lets you claim the full cost of replaced parts without deduction for depreciation, subject to the policy terms."}],
     tagline: 'Drive secure. Stay protected.',
     enquiryLabel: 'Vehicle Insurance',
     idealFor: 'Car and two-wheeler owners',
@@ -109,6 +134,8 @@ const productDetails: Record<
     ],
   },
   'Overseas Insurance': {
+    slug: 'overseas-insurance',
+    faqs: [{question:"Do I need travel insurance for my trip?",answer:"Some countries require travel insurance for a visa. Even where it is not required, it protects you from high medical costs and travel disruptions abroad."}],
     tagline: 'Travel smart. Stay protected worldwide.',
     enquiryLabel: 'Overseas Insurance',
     idealFor: 'Travellers, students studying abroad and business visitors',
@@ -179,43 +206,55 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
   }
 
   const nav = [
-    { label: 'Home', url: '/#home' },
-    { label: 'About Us', url: '/#about' },
-    { label: 'Our Products', url: '/#products' },
-    { label: 'Our Services', url: '/#services' },
-    { label: 'Resources', url: '/#resources' },
-    { label: 'Tools', url: '/#tools' },
-    { label: 'Login', url: '/#login' },
+    { label: 'Home', url: '/' },
+    { label: 'About Us', url: '/about' },
+    { label: 'Products', url: '/products' },
+    { label: 'Services', url: '/services' },
+    { label: 'Tools', url: '/tools' },
+    { label: 'Blog', url: '/blog' },
+    { label: 'Contact', url: '/contact' },
   ]
 
   const header = {
     navItems: nav.map((n) => ({ ...n, newTab: false })),
-    cta: { label: 'Contact Us', url: '/#contact', newTab: false },
-    showPhone: true,
+    cta: { label: 'Free Consultation', url: '/contact', newTab: false },
+    showPhone: false,
+    topBar: { enabled: true, showArn: true, loginLabel: 'Client Login', loginUrl: '/login' },
   }
 
   const footer = {
+    ctaBand: {
+      enabled: true,
+      heading: 'Not sure where to start?',
+      text: 'Talk to our team for a free, no-obligation consultation. We will understand your goals and suggest the right next step.',
+      buttonLabel: 'Book a Free Consultation',
+      buttonUrl: '/contact',
+    },
     aboutTitle: 'About FinOracles',
     aboutText:
       'Your trusted partner in financial planning and wealth management. We help you achieve your financial goals with expert guidance.',
     columns: [
       {
         title: 'Quick Links',
-        links: [...nav, { label: 'Blog', url: '/blog' }, { label: 'Contact Us', url: '/#contact' }].map((n) => ({
-          ...n,
-          newTab: false,
-        })),
+        links: [...nav.slice(1), { label: 'Client Login', url: '/login' }].map((n) => ({ ...n, newTab: false })),
       },
       {
         title: 'Our Products',
-        links: ['Mutual Funds', 'NPS', 'Equity & ETFs', 'PMS', 'Insurance'].map((label) => ({
-          label,
-          url: '/#products',
-          newTab: false,
-        })),
+        links: [
+          { label: 'Mutual Funds', url: '/products/mutual-funds' },
+          { label: 'NPS', url: '/products/nps' },
+          { label: 'Equity & ETFs', url: '/products/equity-etfs' },
+          { label: 'PMS', url: '/products/pms' },
+          { label: 'Health Insurance', url: '/products/health-insurance' },
+          { label: 'Life Insurance', url: '/products/life-insurance' },
+        ].map((n) => ({ ...n, newTab: false })),
       },
     ],
     showRegulators: true,
+    legalLinks: [
+      { label: 'Privacy Policy', url: '/privacy-policy', newTab: false },
+      { label: 'Disclaimer', url: '/disclaimer', newTab: false },
+    ],
     copyright: '© {year} FinOracles Services Pvt. Ltd. All Rights Reserved.',
     credit: { prefix: 'Designed & developed by', label: 'Movinnza', url: 'https://movinnza.in/' },
   }
@@ -333,12 +372,12 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       heading: 'WHAT ARE YOUR FINANCIAL NEEDS?',
       lead: 'Everyone has various financial needs which is to be achieved for leading a beautiful and stress-free life.\n\nBut before reaching these needs certain bridge of multiple realities has to be crossed.',
       items: [
-        { title: "I'M THINKING OF MY CHILD'S FUTURE", image: img('child'), icon: 'graduation-cap' },
-        { title: 'I WANT TO FULFILL MY DREAMS', image: img('savings'), icon: 'piggy-bank' },
-        { title: "I'M PREPARING TO RETIRE", image: img('retirement'), icon: 'umbrella' },
-        { title: 'I HAVE JUST STARTED EARNING', image: img('earning'), icon: 'wallet' },
-        { title: 'I WANT TO OWN A HOME', image: img('home'), icon: 'house' },
-        { title: "I'M AN EARLY INVESTOR", image: img('earlyInvestor'), icon: 'sprout' },
+        { title: "I'M THINKING OF MY CHILD'S FUTURE", image: img('child'), icon: 'graduation-cap', url: '/contact?goal=child-future' },
+        { title: 'I WANT TO FULFILL MY DREAMS', image: img('savings'), icon: 'piggy-bank', url: '/products/mutual-funds' },
+        { title: "I'M PREPARING TO RETIRE", image: img('retirement'), icon: 'umbrella', url: '/products/nps' },
+        { title: 'I HAVE JUST STARTED EARNING', image: img('earning'), icon: 'wallet', url: '/products/mutual-funds' },
+        { title: 'I WANT TO OWN A HOME', image: img('home'), icon: 'house', url: '/contact?goal=own-home' },
+        { title: "I'M AN EARLY INVESTOR", image: img('earlyInvestor'), icon: 'sprout', url: '/products/equity-etfs' },
       ],
     },
     guidance: {
@@ -584,6 +623,8 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       highlights: extra?.highlights.map((text) => ({ text })) ?? [],
       idealFor: extra?.idealFor,
       enquiryLabel: extra?.enquiryLabel,
+      slug: extra?.slug,
+      faqs: extra?.faqs ?? [],
       order,
     }
   })
@@ -736,6 +777,52 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
   ]
 
   const pages = [
+    {
+      title: 'Privacy Policy',
+      slug: 'privacy-policy',
+      hero: {
+        eyebrow: 'Legal',
+        heading: 'Privacy Policy',
+        lead: 'How FinOracles Services Pvt. Ltd. collects, uses and protects your personal information.',
+      },
+      layout: [
+        {
+          blockType: 'content',
+          width: 'narrow',
+          background: 'white',
+          body: richText([
+            'This Privacy Policy explains how FinOracles Services Pvt. Ltd. ("FinOracles", "we", "us") handles personal information collected through this website. By using this website or submitting an enquiry, you agree to the practices described here.',
+            { h2: 'Information we collect' },
+            {
+              ul: [
+                'Details you share through our enquiry form, such as your name, phone number, email address, the product you are interested in and your message.',
+                'Basic technical information sent by your browser, such as pages visited, device type and approximate location, used to keep the website secure and improve it.',
+              ],
+            },
+            { h2: 'How we use your information' },
+            {
+              ul: [
+                'To respond to your enquiry and contact you about the products or services you asked about.',
+                'To provide financial product distribution services you choose to take up with us.',
+                'To meet legal and regulatory requirements applicable to us.',
+              ],
+            },
+            'We do not sell your personal information. We share it only with our employees and partners (such as fund houses, insurers or platforms you choose to transact with) where needed to serve you, or when required by law.',
+            { h2: 'Data security and retention' },
+            'We use reasonable technical and organisational measures to protect your information, and keep it only for as long as needed for the purposes above or as required by law.',
+            { h2: 'Your rights' },
+            'You may ask us to access, correct or delete your personal information, or withdraw your consent to being contacted, by writing to connect@finoracles.com.',
+            { h2: 'Contact' },
+            'For any questions about this policy, contact FinOracles Services Pvt. Ltd., Vijay Millennium, ZP Chowk, Kalyani Nagar, Sadar Bazar, Satara, Maharashtra 415002, or email connect@finoracles.com.',
+            'We may update this policy from time to time. The latest version will always be available on this page.',
+          ]),
+        },
+      ],
+      meta: {
+        title: 'Privacy Policy | FinOracles',
+        description: 'How FinOracles Services Pvt. Ltd. collects, uses and protects your personal information.',
+      },
+    },
     {
       title: 'Disclaimer',
       slug: 'disclaimer',

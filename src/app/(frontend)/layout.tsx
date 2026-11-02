@@ -4,10 +4,11 @@ import type { ReactNode } from 'react'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { RevealObserver } from '@/components/layout/RevealObserver'
-import { Disclaimer, WhatsAppButton } from '@/components/layout/SiteExtras'
+import { CtaBand, Disclaimer, MobileActionBar, TopBar, WhatsAppButton } from '@/components/layout/SiteExtras'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { getImage } from '@/lib/media'
-import { getFooter, getHeader, getSiteSettings } from '@/lib/queries'
+import { productCategories } from '@/lib/compliance'
+import { getFooter, getHeader, getProducts, getSiteSettings } from '@/lib/queries'
 import { organizationSchema, websiteSchema } from '@/lib/schema'
 import { buildMetadata } from '@/lib/seo'
 import { telHref } from '@/lib/text'
@@ -44,8 +45,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FrontendLayout({ children }: { children: ReactNode }) {
-  const [settings, header, footer] = await Promise.all([getSiteSettings(), getHeader(), getFooter()])
+  const [settings, header, footer, products] = await Promise.all([
+    getSiteSettings(),
+    getHeader(),
+    getFooter(),
+    getProducts(),
+  ])
   const phone = settings.phones?.[0]
+  const productMenu = productCategories
+    .map((c) => ({
+      label: c.label,
+      items: products
+        .filter((p) => p.category === c.value && p.slug)
+        .map((p) => ({ name: p.name, slug: p.slug as string, icon: p.icon })),
+    }))
+    .filter((g) => g.items.length > 0)
+  const topBar = header.topBar
 
   return (
     // Browser extensions (e.g. Grammarly) add attributes to <html>/<body> before React loads.
@@ -57,16 +72,26 @@ export default async function FrontendLayout({ children }: { children: ReactNode
           Skip to content
         </a>
         <div className="scroll-progress" aria-hidden />
+        {topBar?.enabled !== false && (
+          <TopBar
+            settings={settings}
+            loginLabel={topBar?.loginLabel}
+            loginUrl={topBar?.loginUrl}
+            showArn={topBar?.showArn}
+          />
+        )}
         <Header
           logo={getImage(settings.logo)}
           siteName={settings.siteName}
           navItems={header.navItems ?? []}
           cta={header.cta}
           phone={header.showPhone && phone ? { display: phone.display, href: telHref(phone.number) } : null}
+          productMenu={productMenu}
         />
         <main id="main" tabIndex={-1}>
           {children}
         </main>
+        <CtaBand band={footer.ctaBand} />
         <Disclaimer text={settings.disclaimer} />
         <Footer footer={footer} settings={settings} />
         <WhatsAppButton
@@ -74,6 +99,7 @@ export default async function FrontendLayout({ children }: { children: ReactNode
           message={settings.whatsapp?.message}
           siteName={settings.siteName}
         />
+        <MobileActionBar settings={settings} />
         <RevealObserver />
       </body>
     </html>

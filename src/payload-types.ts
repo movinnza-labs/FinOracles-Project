@@ -726,7 +726,7 @@ export interface Service {
   createdAt: string;
 }
 /**
- * Financial products listed in the "Our Products" explorer on the homepage.
+ * Each product has its own landing page at /products/[slug] and appears in the homepage explorer.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
@@ -803,9 +803,36 @@ export interface Product {
    */
   idealFor?: string | null;
   /**
-   * Short name used on the enquiry button, e.g. "Mutual Funds". Defaults to the product name.
+   * Short name used on enquiry buttons and the form, e.g. "Mutual Funds". Defaults to the name.
    */
   enquiryLabel?: string | null;
+  /**
+   * Optional image for the product page.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Shown on the product page and marked up for Google (FAQ rich results).
+   */
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Optional. Leave empty to use this page’s own URL.
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+  };
   /**
    * Used in the page URL. Leave empty to generate from the name.
    */
@@ -832,21 +859,30 @@ export interface TeamMember {
   createdAt: string;
 }
 /**
+ * Leads from the website. Update the status as you follow up.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "enquiries".
  */
 export interface Enquiry {
   id: number;
   name: string;
-  email: string;
-  phone?: string | null;
-  subject: string;
-  message: string;
+  phone: string;
+  email?: string | null;
+  interest?: string | null;
+  callbackTime?: string | null;
+  /**
+   * Legacy field from the earlier form.
+   */
+  subject?: string | null;
+  message?: string | null;
   /**
    * Page the form was sent from.
    */
   page?: string | null;
-  status?: ('new' | 'in-progress' | 'closed') | null;
+  consent?: boolean | null;
+  status?: ('new' | 'in-progress' | 'converted' | 'closed') | null;
+  notes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1263,6 +1299,23 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   idealFor?: T;
   enquiryLabel?: T;
+  image?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+      };
   slug?: T;
   order?: T;
   updatedAt?: T;
@@ -1340,12 +1393,16 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface EnquiriesSelect<T extends boolean = true> {
   name?: T;
-  email?: T;
   phone?: T;
+  email?: T;
+  interest?: T;
+  callbackTime?: T;
   subject?: T;
   message?: T;
   page?: T;
+  consent?: T;
   status?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1596,6 +1653,10 @@ export interface HomePage {
                 | 'wallet'
               )
             | null;
+          /**
+           * Where the card links, e.g. /products/nps or /contact?goal=retirement
+           */
+          url?: string | null;
           id?: string | null;
         }[]
       | null;
@@ -2034,6 +2095,9 @@ export interface HomePage {
  */
 export interface Header {
   id: number;
+  /**
+   * The item linking to /products automatically shows a drop-down of all products.
+   */
   navItems?:
     | {
         label: string;
@@ -2055,6 +2119,15 @@ export interface Header {
     id?: string | null;
   };
   showPhone?: boolean | null;
+  /**
+   * Thin strip above the header (desktop and tablet).
+   */
+  topBar?: {
+    enabled?: boolean | null;
+    showArn?: boolean | null;
+    loginLabel?: string | null;
+    loginUrl?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2064,6 +2137,16 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  /**
+   * Shown above the footer on every page except Contact.
+   */
+  ctaBand?: {
+    enabled?: boolean | null;
+    heading?: string | null;
+    text?: string | null;
+    buttonLabel?: string | null;
+    buttonUrl?: string | null;
+  };
   aboutTitle?: string | null;
   aboutText?: string | null;
   columns?:
@@ -2084,6 +2167,17 @@ export interface Footer {
       }[]
     | null;
   showRegulators?: boolean | null;
+  legalLinks?:
+    | {
+        label: string;
+        /**
+         * e.g. /#contact, /blog, https://…
+         */
+        url: string;
+        newTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * {year} is replaced with the current year.
    */
@@ -2253,6 +2347,7 @@ export interface HomePageSelect<T extends boolean = true> {
               title?: T;
               image?: T;
               icon?: T;
+              url?: T;
               id?: T;
             };
       };
@@ -2444,6 +2539,14 @@ export interface HeaderSelect<T extends boolean = true> {
         id?: T;
       };
   showPhone?: T;
+  topBar?:
+    | T
+    | {
+        enabled?: T;
+        showArn?: T;
+        loginLabel?: T;
+        loginUrl?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2453,6 +2556,15 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  ctaBand?:
+    | T
+    | {
+        enabled?: T;
+        heading?: T;
+        text?: T;
+        buttonLabel?: T;
+        buttonUrl?: T;
+      };
   aboutTitle?: T;
   aboutText?: T;
   columns?:
@@ -2470,6 +2582,14 @@ export interface FooterSelect<T extends boolean = true> {
         id?: T;
       };
   showRegulators?: T;
+  legalLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        newTab?: T;
+        id?: T;
+      };
   copyright?: T;
   credit?:
     | T

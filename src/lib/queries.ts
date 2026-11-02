@@ -134,6 +134,25 @@ export const getServiceBySlug = cache((slug: string) =>
   ),
 )
 
+export const getProductBySlug = cache((slug: string) =>
+  withFallback(
+    unstable_cache(
+      async () => {
+        const { docs } = await (await getPayloadClient()).find({
+          collection: 'products',
+          where: { slug: { equals: slug } },
+          limit: 1,
+          depth: 1,
+        })
+        return docs[0] ?? null
+      },
+      [`product-${slug}`],
+      { tags: [tags.doc('products', slug), tags.collection('products')], revalidate: ONE_HOUR },
+    ),
+    fallback.products.find((p) => p.slug === slug) ?? null,
+  ),
+)
+
 /* ---- Draft-aware collections (pages, posts) --------------------------- */
 
 const published: Where = { _status: { equals: 'published' } }
@@ -231,11 +250,18 @@ export const getSitemapEntries = () =>
       async () => {
         const payload = await getPayloadClient()
         const opts = { where: published, limit: 1000, pagination: false, depth: 0 } as const
-        const [pages, posts, services] = await Promise.all([
+        const [pages, posts, services, products] = await Promise.all([
           payload.find({ collection: 'pages', ...opts, select: { slug: true, updatedAt: true, meta: { noIndex: true } } }),
           payload.find({ collection: 'posts', ...opts, select: { slug: true, updatedAt: true, meta: { noIndex: true } } }),
           payload.find({
             collection: 'services',
+            limit: 1000,
+            pagination: false,
+            depth: 0,
+            select: { slug: true, updatedAt: true, meta: { noIndex: true } },
+          }),
+          payload.find({
+            collection: 'products',
             limit: 1000,
             pagination: false,
             depth: 0,
@@ -247,6 +273,7 @@ export const getSitemapEntries = () =>
           pages: pages.docs.filter(keep).map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
           posts: posts.docs.filter(keep).map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
           services: services.docs.filter(keep).map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
+          products: products.docs.filter(keep).map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
         }
       },
       ['sitemap'],
@@ -256,5 +283,6 @@ export const getSitemapEntries = () =>
       pages: fallback.pages.map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
       posts: fallback.posts.map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
       services: fallback.services.map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
+      products: fallback.products.map((d) => ({ slug: d.slug, updatedAt: d.updatedAt })),
     },
   )

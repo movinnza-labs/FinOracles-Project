@@ -129,6 +129,11 @@ export const HomePage: GlobalConfig = {
                 { name: 'title', type: 'text', required: true },
                 { name: 'image', type: 'upload', relationTo: 'media' },
                 iconField({ admin: { description: 'Used when no image is set.' } }),
+                {
+                  name: 'url',
+                  type: 'text',
+                  admin: { description: 'Where the card links, e.g. /products/nps or /contact?goal=retirement' },
+                },
               ],
             },
           ],

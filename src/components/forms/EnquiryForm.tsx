@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useActionState } from 'react'
 import { CircleAlert, CircleCheck, Send } from 'lucide-react'
@@ -8,64 +9,154 @@ import styles from './EnquiryForm.module.css'
 
 const initial: EnquiryState = { status: 'idle' }
 
-const fields = [
-  { name: 'name', label: 'Your Name', type: 'text', autoComplete: 'name' },
-  { name: 'email', label: 'Your Email', type: 'email', autoComplete: 'email' },
-  { name: 'subject', label: 'Subject', type: 'text' },
-] as const
+export const GENERAL_INTEREST = 'General enquiry'
+const callbackTimes = ['Any time', 'Morning (9 AM – 12 PM)', 'Afternoon (12 PM – 4 PM)', 'Evening (4 PM – 7 PM)']
 
-export function EnquiryForm({ heading = 'Send us a Message' }: { heading?: string | null }) {
+type EnquiryFormProps = {
+  heading?: string | null
+  /** Product names offered in the "Interested in" list. */
+  interestOptions?: string[]
+  defaultInterest?: string
+  defaultMessage?: string
+  submitLabel?: string
+}
+
+type ErrorKey = keyof NonNullable<EnquiryState['errors']>
+
+export function EnquiryForm({
+  heading = 'Request a Call Back',
+  interestOptions = [],
+  defaultInterest,
+  defaultMessage,
+  submitLabel = 'Request a Call Back',
+}: EnquiryFormProps) {
   // React resets action forms after submit; failed submissions restore values via defaultValue.
   const [state, action, pending] = useActionState(submitEnquiry, initial)
   const pathname = usePathname()
+  const failed = state.status === 'error'
+  const options = [GENERAL_INTEREST, ...interestOptions.filter((o) => o !== GENERAL_INTEREST)]
 
-  const errorProps = (name: keyof NonNullable<EnquiryState['errors']>) => {
-    const error = state.errors?.[name]
-    return error ? { 'aria-invalid': true, 'aria-describedby': `enquiry-${name}-error` } : {}
-  }
+  const errorProps = (name: ErrorKey) =>
+    state.errors?.[name] ? { 'aria-invalid': true, 'aria-describedby': `enquiry-${name}-error` } : {}
+
+  const fieldError = (name: ErrorKey) =>
+    state.errors?.[name] ? (
+      <p id={`enquiry-${name}-error`} className={styles.fieldError}>
+        {state.errors[name]}
+      </p>
+    ) : null
 
   return (
     <form action={action} className={styles.form} noValidate>
       {heading && <h3 className={styles.heading}>{heading}</h3>}
 
-      {fields.map((f) => (
-        <div key={f.name} className={styles.field}>
-          <label htmlFor={`enquiry-${f.name}`}>{f.label}</label>
+      <div className={styles.row}>
+        <div className={styles.field}>
+          <label htmlFor="enquiry-name">
+            Your Name <span aria-hidden>*</span>
+          </label>
           <input
-            id={`enquiry-${f.name}`}
-            name={f.name}
-            type={f.type}
+            id="enquiry-name"
+            name="name"
+            type="text"
             required
-            autoComplete={'autoComplete' in f ? f.autoComplete : undefined}
-            defaultValue={state.status === 'error' ? state.values?.[f.name] : undefined}
+            autoComplete="name"
+            defaultValue={failed ? state.values?.name : undefined}
             className={styles.input}
-            {...errorProps(f.name)}
+            {...errorProps('name')}
           />
-          {state.errors?.[f.name] && (
-            <p id={`enquiry-${f.name}-error`} className={styles.fieldError}>
-              {state.errors[f.name]}
-            </p>
-          )}
+          {fieldError('name')}
         </div>
-      ))}
+        <div className={styles.field}>
+          <label htmlFor="enquiry-phone">
+            Mobile Number <span aria-hidden>*</span>
+          </label>
+          <input
+            id="enquiry-phone"
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            required
+            autoComplete="tel"
+            placeholder="+91"
+            defaultValue={failed ? state.values?.phone : undefined}
+            className={styles.input}
+            {...errorProps('phone')}
+          />
+          {fieldError('phone')}
+        </div>
+      </div>
 
       <div className={styles.field}>
-        <label htmlFor="enquiry-message">Your Message</label>
+        <label htmlFor="enquiry-email">
+          Email <span className={styles.optional}>(optional)</span>
+        </label>
+        <input
+          id="enquiry-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          defaultValue={failed ? state.values?.email : undefined}
+          className={styles.input}
+          {...errorProps('email')}
+        />
+        {fieldError('email')}
+      </div>
+
+      <div className={styles.row}>
+        <div className={styles.field}>
+          <label htmlFor="enquiry-interest">Interested in</label>
+          <select
+            id="enquiry-interest"
+            name="interest"
+            defaultValue={(failed ? state.values?.interest : undefined) ?? defaultInterest ?? GENERAL_INTEREST}
+            className={styles.input}
+          >
+            {options.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.field}>
+          <label htmlFor="enquiry-callbackTime">Best time to call</label>
+          <select
+            id="enquiry-callbackTime"
+            name="callbackTime"
+            defaultValue={(failed ? state.values?.callbackTime : undefined) ?? callbackTimes[0]}
+            className={styles.input}
+          >
+            {callbackTimes.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="enquiry-message">
+          Message <span className={styles.optional}>(optional)</span>
+        </label>
         <textarea
           id="enquiry-message"
           name="message"
-          rows={4}
-          required
-          defaultValue={state.status === 'error' ? state.values?.message : undefined}
+          rows={3}
+          defaultValue={(failed ? state.values?.message : undefined) ?? defaultMessage}
           className={styles.input}
-          {...errorProps('message')}
         />
-        {state.errors?.message && (
-          <p id="enquiry-message-error" className={styles.fieldError}>
-            {state.errors.message}
-          </p>
-        )}
       </div>
+
+      <div className={styles.consent}>
+        <input id="enquiry-consent" name="consent" type="checkbox" required {...errorProps('consent')} />
+        <label htmlFor="enquiry-consent">
+          I agree to be contacted by FinOracles by phone, WhatsApp or email about my enquiry, and accept the{' '}
+          <Link href="/privacy-policy">Privacy Policy</Link>.
+        </label>
+      </div>
+      {fieldError('consent')}
 
       {/* Spam honeypot — hidden from people, filled by bots */}
       <div className={styles.trap} aria-hidden>
@@ -88,7 +179,7 @@ export function EnquiryForm({ heading = 'Send us a Message' }: { heading?: strin
       </div>
 
       <button type="submit" className={styles.submit} disabled={pending}>
-        {pending ? 'Sending…' : 'Send Message'}
+        {pending ? 'Sending…' : submitLabel}
         <Send aria-hidden />
       </button>
     </form>

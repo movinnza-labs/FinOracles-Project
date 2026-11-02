@@ -40,7 +40,7 @@ export const fallback = {
   header: withMeta(content.header, 0) as unknown as Header,
   footer: withMeta(content.footer, 0) as unknown as Footer,
   homePage: withMeta(content.homePage, 0) as unknown as HomePage,
-  products: content.products.map((p, i) => withMeta({ ...p, slug: String(i) }, i + 1)) as unknown as Product[],
+  products: content.products.map((p, i) => withMeta(p, i + 1)) as unknown as Product[],
   team: content.team.map((m, i) => withMeta(m, i + 1)) as unknown as TeamMember[],
   services: content.services.map((s, i) => withMeta(s, i + 1)) as unknown as Service[],
   posts: content.posts.map((p, i) =>

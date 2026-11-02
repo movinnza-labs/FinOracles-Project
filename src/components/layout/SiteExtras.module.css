@@ -50,3 +50,150 @@
     height: 52px;
   }
 }
+
+/* ---- Top bar ------------------------------------------------------------ */
+.topBar {
+  background: var(--navy-950);
+  font-size: 0.82rem;
+  color: var(--on-dark-muted);
+}
+
+.topBarInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 38px;
+}
+
+.topBarContacts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-6);
+}
+
+.topBarContacts li,
+.topBarContacts a,
+.topBarLogin {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.topBarContacts a:hover {
+  color: var(--white);
+}
+
+.topBarContacts svg,
+.topBarLogin svg {
+  width: 14px;
+  height: 14px;
+  color: var(--sky-300);
+}
+
+.topBarArn svg {
+  color: var(--mint-300);
+}
+
+.topBarLogin {
+  font-weight: 700;
+  color: var(--white);
+}
+
+.topBarLogin:hover {
+  color: var(--sky-300);
+}
+
+@media (max-width: 1023px) {
+  .topBarArn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .topBar {
+    display: none;
+  }
+}
+
+/* ---- Consultation banner ----------------------------------------------- */
+.ctaBand {
+  padding-block: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+  background:
+    radial-gradient(700px 320px at 95% 0%, #1f5c9966, transparent 70%),
+    var(--navy-900);
+}
+
+.ctaInner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6) var(--space-10);
+}
+
+.ctaTitle {
+  margin: 0 0 var(--space-2);
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.ctaText {
+  max-width: 60ch;
+  margin: 0 !important;
+  color: var(--on-dark-muted);
+}
+
+/* ---- Mobile action bar -------------------------------------------------- */
+.mobileBar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobileBar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 45;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-top: 1px solid var(--line);
+    background: var(--white);
+    box-shadow: 0 -8px 24px -12px #0f1f3340;
+  }
+
+  .mobileBar a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 58px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--navy-900);
+  }
+
+  .mobileBar a svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobileBar a:nth-child(2) svg {
+    color: var(--whatsapp);
+  }
+
+  .mobileBar .mobileBarPrimary {
+    background: var(--red);
+    color: var(--white);
+  }
+
+  /* The bar replaces the floating WhatsApp button on phones */
+  .whatsapp {
+    display: none;
+  }
+}

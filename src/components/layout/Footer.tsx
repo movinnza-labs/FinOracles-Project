@@ -101,6 +101,15 @@ export function Footer({ footer, settings }: FooterProps) {
 
       <div className={`container ${styles.legal}`}>
         <p>{(footer.copyright || '© {year}').replace('{year}', String(year))}</p>
+        {!!footer.legalLinks?.length && (
+          <ul role="list" className={styles.legalLinks}>
+            {footer.legalLinks.map((link, i) => (
+              <li key={link.id ?? i}>
+                <CmsLink link={link} />
+              </li>
+            ))}
+          </ul>
+        )}
         {footer.credit?.label && footer.credit.url && (
           <p>
             {footer.credit.prefix}{' '}

@@ -35,7 +35,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_services_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_products_category" AS ENUM('invest', 'protect', 'borrow');
   CREATE TYPE "public"."enum_products_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
-  CREATE TYPE "public"."enum_enquiries_status" AS ENUM('new', 'in-progress', 'closed');
+  CREATE TYPE "public"."enum_enquiries_status" AS ENUM('new', 'in-progress', 'converted', 'closed');
   CREATE TYPE "public"."enum_users_role" AS ENUM('admin', 'editor');
   CREATE TYPE "public"."enum_home_page_what_we_do_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_needs_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
@@ -516,6 +516,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"text" varchar NOT NULL
   );
   
+  CREATE TABLE "products_faqs" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"question" varchar NOT NULL,
+  	"answer" varchar NOT NULL
+  );
+  
   CREATE TABLE "products" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"name" varchar NOT NULL,
@@ -525,6 +533,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"description" varchar NOT NULL,
   	"ideal_for" varchar,
   	"enquiry_label" varchar,
+  	"image_id" integer,
+  	"meta_title" varchar,
+  	"meta_description" varchar,
+  	"meta_image_id" integer,
+  	"meta_canonical_u_r_l" varchar,
+  	"meta_no_index" boolean DEFAULT false,
   	"slug" varchar,
   	"order" numeric DEFAULT 0,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
@@ -580,12 +594,16 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE "enquiries" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"name" varchar NOT NULL,
-  	"email" varchar NOT NULL,
-  	"phone" varchar,
-  	"subject" varchar NOT NULL,
-  	"message" varchar NOT NULL,
+  	"phone" varchar NOT NULL,
+  	"email" varchar,
+  	"interest" varchar,
+  	"callback_time" varchar,
+  	"subject" varchar,
+  	"message" varchar,
   	"page" varchar,
+  	"consent" boolean,
   	"status" "enum_enquiries_status" DEFAULT 'new',
+  	"notes" varchar,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -703,7 +721,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" varchar PRIMARY KEY NOT NULL,
   	"title" varchar NOT NULL,
   	"image_id" integer,
-  	"icon" "enum_home_page_needs_items_icon"
+  	"icon" "enum_home_page_needs_items_icon",
+  	"url" varchar
   );
   
   CREATE TABLE "home_page_guidance_steps" (
@@ -852,7 +871,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"cta_label" varchar NOT NULL,
   	"cta_url" varchar NOT NULL,
   	"cta_new_tab" boolean DEFAULT false,
-  	"show_phone" boolean DEFAULT true,
+  	"show_phone" boolean DEFAULT false,
+  	"top_bar_enabled" boolean DEFAULT true,
+  	"top_bar_show_arn" boolean DEFAULT true,
+  	"top_bar_login_label" varchar DEFAULT 'Client Login',
+  	"top_bar_login_url" varchar DEFAULT '/login',
   	"updated_at" timestamp(3) with time zone,
   	"created_at" timestamp(3) with time zone
   );
@@ -873,8 +896,22 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"title" varchar NOT NULL
   );
   
+  CREATE TABLE "footer_legal_links" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"label" varchar NOT NULL,
+  	"url" varchar NOT NULL,
+  	"new_tab" boolean DEFAULT false
+  );
+  
   CREATE TABLE "footer" (
   	"id" serial PRIMARY KEY NOT NULL,
+  	"cta_band_enabled" boolean DEFAULT true,
+  	"cta_band_heading" varchar DEFAULT 'Not sure where to start?',
+  	"cta_band_text" varchar,
+  	"cta_band_button_label" varchar DEFAULT 'Book a Free Consultation',
+  	"cta_band_button_url" varchar DEFAULT '/contact',
   	"about_title" varchar DEFAULT 'About FinOracles',
   	"about_text" varchar,
   	"show_regulators" boolean DEFAULT true,
@@ -993,6 +1030,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "services" ADD CONSTRAINT "services_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "services" ADD CONSTRAINT "services_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "products_highlights" ADD CONSTRAINT "products_highlights_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "products_faqs" ADD CONSTRAINT "products_faqs_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "products" ADD CONSTRAINT "products_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "products" ADD CONSTRAINT "products_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "team_members" ADD CONSTRAINT "team_members_photo_id_media_id_fk" FOREIGN KEY ("photo_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "users_sessions" ADD CONSTRAINT "users_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_locked_documents"("id") ON DELETE cascade ON UPDATE no action;
@@ -1025,6 +1065,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "header_nav_items" ADD CONSTRAINT "header_nav_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."header"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "footer_columns_links" ADD CONSTRAINT "footer_columns_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."footer_columns"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "footer_columns" ADD CONSTRAINT "footer_columns_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."footer"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "footer_legal_links" ADD CONSTRAINT "footer_legal_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."footer"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "site_settings_phones" ADD CONSTRAINT "site_settings_phones_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."site_settings"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "site_settings_emails" ADD CONSTRAINT "site_settings_emails_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."site_settings"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "site_settings_socials" ADD CONSTRAINT "site_settings_socials_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."site_settings"("id") ON DELETE cascade ON UPDATE no action;
@@ -1161,6 +1202,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "services_created_at_idx" ON "services" USING btree ("created_at");
   CREATE INDEX "products_highlights_order_idx" ON "products_highlights" USING btree ("_order");
   CREATE INDEX "products_highlights_parent_id_idx" ON "products_highlights" USING btree ("_parent_id");
+  CREATE INDEX "products_faqs_order_idx" ON "products_faqs" USING btree ("_order");
+  CREATE INDEX "products_faqs_parent_id_idx" ON "products_faqs" USING btree ("_parent_id");
+  CREATE INDEX "products_image_idx" ON "products" USING btree ("image_id");
+  CREATE INDEX "products_meta_meta_image_idx" ON "products" USING btree ("meta_image_id");
   CREATE UNIQUE INDEX "products_slug_idx" ON "products" USING btree ("slug");
   CREATE INDEX "products_updated_at_idx" ON "products" USING btree ("updated_at");
   CREATE INDEX "products_created_at_idx" ON "products" USING btree ("created_at");
@@ -1236,6 +1281,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "footer_columns_links_parent_id_idx" ON "footer_columns_links" USING btree ("_parent_id");
   CREATE INDEX "footer_columns_order_idx" ON "footer_columns" USING btree ("_order");
   CREATE INDEX "footer_columns_parent_id_idx" ON "footer_columns" USING btree ("_parent_id");
+  CREATE INDEX "footer_legal_links_order_idx" ON "footer_legal_links" USING btree ("_order");
+  CREATE INDEX "footer_legal_links_parent_id_idx" ON "footer_legal_links" USING btree ("_parent_id");
   CREATE INDEX "site_settings_phones_order_idx" ON "site_settings_phones" USING btree ("_order");
   CREATE INDEX "site_settings_phones_parent_id_idx" ON "site_settings_phones" USING btree ("_parent_id");
   CREATE INDEX "site_settings_emails_order_idx" ON "site_settings_emails" USING btree ("_order");
@@ -1288,6 +1335,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "services_features" CASCADE;
   DROP TABLE "services" CASCADE;
   DROP TABLE "products_highlights" CASCADE;
+  DROP TABLE "products_faqs" CASCADE;
   DROP TABLE "products" CASCADE;
   DROP TABLE "team_members" CASCADE;
   DROP TABLE "media" CASCADE;
@@ -1315,6 +1363,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "header" CASCADE;
   DROP TABLE "footer_columns_links" CASCADE;
   DROP TABLE "footer_columns" CASCADE;
+  DROP TABLE "footer_legal_links" CASCADE;
   DROP TABLE "footer" CASCADE;
   DROP TABLE "site_settings_phones" CASCADE;
   DROP TABLE "site_settings_emails" CASCADE;

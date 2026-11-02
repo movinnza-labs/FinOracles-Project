@@ -3,6 +3,7 @@ import type { SiteSetting } from '@/payload-types'
 import { EnquiryForm } from '@/components/forms/EnquiryForm'
 import { SectionHead } from '@/components/ui/SectionHead'
 import { SocialIcon, socialLabels } from '@/components/ui/SocialIcon'
+import { getProducts } from '@/lib/queries'
 import { telHref } from '@/lib/text'
 import styles from './ContactSection.module.css'
 
@@ -12,24 +13,38 @@ type ContactSectionProps = {
   lead?: string | null
   formHeading?: string | null
   showDetails?: boolean
+  /** Embed a Google Map of the office below the contact details. */
+  showMap?: boolean
+  defaultInterest?: string
+  defaultMessage?: string
   id?: string
+  /** Use h1 when this section is the main content of the page (e.g. /contact). */
+  headingLevel?: 'h1' | 'h2'
 }
 
-export function ContactSection({
+export async function ContactSection({
   settings,
   heading,
   lead,
   formHeading,
   showDetails = true,
+  showMap = false,
+  defaultInterest,
+  defaultMessage,
   id = 'contact',
+  headingLevel = 'h2',
 }: ContactSectionProps) {
   const address = settings.address
+  const products = await getProducts()
+  const interestOptions = products.map((p) => p.enquiryLabel || p.name)
+  const mapQuery = address?.full || [address?.street, address?.locality, address?.postalCode].filter(Boolean).join(', ')
+
   return (
     <section id={id} className="section" aria-labelledby={`${id}-title`}>
       <div className={`container ${showDetails ? 'two-col' : 'container--narrow'}`}>
         {showDetails ? (
           <div>
-            <SectionHead id={`${id}-title`} heading={heading} lead={lead} />
+            <SectionHead id={`${id}-title`} heading={heading} lead={lead} as={headingLevel} />
             <dl className={styles.list}>
               {address?.full && (
                 <div>
@@ -101,12 +116,28 @@ export function ContactSection({
                 </ul>
               </>
             )}
+
+            {showMap && mapQuery && (
+              <div className={styles.map}>
+                <iframe
+                  title={`Map showing ${settings.legalName}`}
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            )}
           </div>
         ) : (
-          <SectionHead id={`${id}-title`} heading={heading} lead={lead} center />
+          <SectionHead id={`${id}-title`} heading={heading} lead={lead} center as={headingLevel} />
         )}
         <div className="reveal">
-          <EnquiryForm heading={formHeading} />
+          <EnquiryForm
+            heading={formHeading}
+            interestOptions={interestOptions}
+            defaultInterest={defaultInterest}
+            defaultMessage={defaultMessage}
+          />
         </div>
       </div>
     </section>

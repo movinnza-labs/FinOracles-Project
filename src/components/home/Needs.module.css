@@ -60,3 +60,37 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Whole card is clickable via the heading link */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.needs .need:has(.link:focus-visible) {
+  outline: 3px solid var(--blue-600);
+  outline-offset: 3px;
+}
+
+.arrow {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+  color: var(--muted);
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    color var(--duration-fast);
+}
+
+.need:hover .arrow {
+  color: var(--red);
+  transform: translate(3px);
+}

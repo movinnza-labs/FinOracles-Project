@@ -1,0 +1,8 @@
+/* Tighter rhythm between the stacked category sections */
+.group {
+  padding-block: clamp(3rem, 2rem + 3vw, 4.5rem);
+}
+
+.group :global(.h2) {
+  font-size: clamp(1.4rem, 1.2rem + 0.9vw, 1.9rem);
+}

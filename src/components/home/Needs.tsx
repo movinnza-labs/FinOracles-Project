@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import type { HomePage } from '@/payload-types'
 import { Icon } from '@/components/ui/Icon'
 import { getImage } from '@/lib/media'
@@ -32,7 +34,16 @@ export function Needs({ data }: { data: HomePage['needs'] }) {
                     <Icon icon={item.icon} fallback="sprout" />
                   )}
                 </span>
-                <h3>{item.title}</h3>
+                <h3>
+                  {item.url ? (
+                    <Link href={item.url} className={styles.link}>
+                      {item.title}
+                    </Link>
+                  ) : (
+                    item.title
+                  )}
+                </h3>
+                {item.url && <ArrowRight aria-hidden className={styles.arrow} />}
               </li>
             )
           })}
