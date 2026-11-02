@@ -1,0 +1,43 @@
+import Image from 'next/image'
+import type { HomePage } from '@/payload-types'
+import { Icon } from '@/components/ui/Icon'
+import { getImage } from '@/lib/media'
+import { Paragraphs } from '@/lib/text'
+import styles from './Needs.module.css'
+
+export function Needs({ data }: { data: HomePage['needs'] }) {
+  if (!data?.enabled || !data.items?.length) return null
+  return (
+    <section className="section section--tinted" aria-labelledby="needs">
+      <div className="container">
+        <div className="split reveal">
+          <h2 id="needs" className="h2">
+            {data.heading}
+          </h2>
+          {data.lead && (
+            <div className="lead">
+              <Paragraphs text={data.lead} />
+            </div>
+          )}
+        </div>
+        <ul role="list" className={styles.needs}>
+          {data.items.map((item) => {
+            const image = getImage(item.image, 'thumbnail')
+            return (
+              <li key={item.id ?? item.title} className={`${styles.need} card lift lift-rule reveal`}>
+                <span className={styles.media}>
+                  {image ? (
+                    <Image src={image.src} alt="" width={72} height={72} sizes="72px" />
+                  ) : (
+                    <Icon icon={item.icon} fallback="sprout" />
+                  )}
+                </span>
+                <h3>{item.title}</h3>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    </section>
+  )
+}

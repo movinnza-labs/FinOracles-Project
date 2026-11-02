@@ -1,0 +1,57 @@
+.process {
+  position: relative;
+  display: grid;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Vertical timeline rail */
+.process::before {
+  content: '';
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 23px;
+  width: 2px;
+  background: var(--line);
+}
+
+.process li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: var(--space-5);
+}
+
+.process p {
+  margin: 0;
+}
+
+.num {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--blue-600);
+  border-radius: 50%;
+  background: var(--white);
+  font-weight: 800;
+  color: var(--blue-600);
+  transition:
+    background-color var(--duration-base),
+    color var(--duration-base),
+    transform 0.4s var(--ease-out);
+}
+
+.num svg {
+  width: 22px;
+  height: 22px;
+}
+
+.process li:hover .num {
+  background: var(--blue-600);
+  color: var(--white);
+  transform: scale(1.06);
+}

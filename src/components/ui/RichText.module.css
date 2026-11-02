@@ -1,0 +1,78 @@
+.prose {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.prose > * + * {
+  margin-top: var(--space-5);
+}
+
+.prose p {
+  margin: 0;
+}
+
+.prose h2 {
+  margin: var(--space-10) 0 0;
+  font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.prose h3 {
+  margin: var(--space-8) 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.prose h2 + *,
+.prose h3 + * {
+  margin-top: var(--space-3);
+}
+
+.prose ul,
+.prose ol {
+  display: grid;
+  gap: var(--space-2);
+  padding-left: 1.25rem;
+}
+
+.prose li::marker {
+  color: var(--blue-600);
+}
+
+.prose a {
+  color: var(--blue-600);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose a:hover {
+  color: var(--red);
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid var(--red);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: var(--slate-50);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.prose img {
+  border-radius: var(--r-lg);
+}
+
+.prose strong {
+  color: var(--ink);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+}

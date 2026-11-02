@@ -1,0 +1,39 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.grid :global(.icon-tile) {
+  margin-bottom: var(--space-4);
+}
+
+/* Stretch the heading link over the whole card */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.grid li:has(.link:focus-visible) {
+  outline: 3px solid var(--blue-600);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

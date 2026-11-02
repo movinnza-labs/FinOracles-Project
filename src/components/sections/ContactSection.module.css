@@ -1,0 +1,81 @@
+.list {
+  display: grid;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.list > div {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--line);
+  transition: background-color var(--duration-base);
+}
+
+.list > div:hover {
+  background: var(--slate-50);
+}
+
+.list dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.list dt svg {
+  width: 18px;
+  height: 18px;
+  color: var(--blue-600);
+}
+
+.list dd {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.list a:hover {
+  color: var(--red);
+}
+
+.followHeading {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.socials {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.socials a {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  color: var(--navy-800);
+  transition:
+    border-color var(--duration-fast),
+    color var(--duration-fast),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.socials a:hover {
+  border-color: var(--navy-800);
+  color: var(--red);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 767px) {
+  .list > div {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}

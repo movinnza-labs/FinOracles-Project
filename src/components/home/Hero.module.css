@@ -1,0 +1,379 @@
+.hero {
+  padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
+  background:
+    radial-gradient(900px 500px at 85% 0%, #1f5c9959, transparent 65%),
+    var(--navy-900);
+  color: var(--on-dark);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: clamp(2rem, 1rem + 4vw, 5rem);
+}
+
+.badge {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6) !important;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid #ffffff2e;
+  border-radius: var(--r-sm);
+  background: #ffffff0d;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--on-dark);
+  animation: rise 0.6s var(--ease-out) both;
+}
+
+.badge svg {
+  width: 18px;
+  height: 18px;
+  color: var(--mint-300);
+}
+
+.badge span {
+  padding-left: var(--space-2);
+  border-left: 1px solid #ffffff40;
+  font-weight: 800;
+  color: var(--white);
+}
+
+.title {
+  margin: 0 0 var(--space-5);
+  font-size: clamp(2.4rem, 1.6rem + 3.2vw, 4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  animation: rise 0.7s 80ms var(--ease-out) both;
+}
+
+.lead {
+  max-width: 52ch;
+  font-size: clamp(1.05rem, 1rem + 0.35vw, 1.2rem);
+  line-height: 1.65;
+  color: var(--on-dark-muted);
+  animation: rise 0.7s 0.16s var(--ease-out) both;
+}
+
+/* Rotating headline / intro: every slide's text shares one grid cell so the
+   block keeps the height of the longest one and nothing below it moves. */
+.stack {
+  display: grid;
+}
+
+.stackItem {
+  grid-area: 1 / 1;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  visibility: hidden;
+  transition:
+    opacity 0.55s var(--ease-out),
+    transform 0.55s var(--ease-out),
+    visibility 0s linear 0.55s;
+}
+
+.stackItemOn {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity 0.55s var(--ease-out) 0.1s,
+    transform 0.55s var(--ease-out) 0.1s,
+    visibility 0s;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+  animation: rise 0.7s 0.24s var(--ease-out) both;
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: var(--space-8);
+  margin: var(--space-10) 0 0;
+  padding-top: var(--space-6);
+  border-top: 1px solid #ffffff24;
+  animation: rise 0.7s 0.32s var(--ease-out) both;
+}
+
+.figures div {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.figures dt {
+  font-size: 0.85rem;
+  color: var(--on-dark-muted);
+}
+
+.figures dd {
+  margin: 0;
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+/* ---- Goal card carousel ------------------------------------------------ */
+.goalCard {
+  position: relative;
+  isolation: isolate;
+  justify-self: end;
+  width: 100%;
+  max-width: 470px;
+  padding: 0 0 0 var(--space-6);
+  color: var(--on-dark);
+  animation: rise 0.8s 0.2s var(--ease-out) both;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.goalCard::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--space-6) * -1);
+  right: calc(var(--space-6) * -1);
+  z-index: -1;
+  width: 78%;
+  height: 72%;
+  border: 1px solid #8fc1ec59;
+  border-radius: var(--r-xl);
+}
+
+.goalCard:hover {
+  transform: translateY(-4px);
+}
+
+.goalCard:hover .goalBody {
+  transform: translateY(-3px);
+}
+
+.goalMedia {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 0.92;
+  border-radius: var(--r-xl);
+  background: linear-gradient(#e9f1f9 0%, #f6f8fb 100%);
+  box-shadow: 0 40px 70px -35px #000000a6;
+}
+
+.goalMedia::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px #ffffff40;
+  pointer-events: none;
+}
+
+.goalPhoto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center 15%;
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 6s linear;
+}
+
+.goalPhotoOn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.goalBody {
+  position: relative;
+  width: 88%;
+  margin: calc(var(--space-16) * -1) 0 0 calc(var(--space-6) * -1);
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid #ffffff29;
+  border-left: 3px solid var(--red);
+  border-radius: var(--r-md);
+  background: #0f2a47db;
+  backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 24px 50px -24px #0009;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.goalTitle {
+  margin: 0 0 var(--space-1) !important;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.goalTitle span {
+  color: var(--sky-300);
+}
+
+.goalText {
+  margin-bottom: var(--space-1) !important;
+  color: var(--on-dark-muted);
+}
+
+.goalBody :global(.text-button) {
+  color: var(--white);
+}
+
+.goalBody :global(.text-button):hover {
+  color: var(--sky-300);
+}
+
+.flip {
+  transform: rotate(180deg);
+}
+
+.goalMore {
+  max-height: 240px;
+  margin-top: var(--space-2);
+  padding-right: var(--space-2);
+  overflow-y: auto;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--on-dark-muted);
+}
+
+.goalMore p:last-child {
+  margin-bottom: 0;
+  font-weight: 600;
+  color: var(--white);
+}
+
+
+/* Expanded "Learn more" state */
+.goalOpen .goalMedia,
+.goalOpen .goalText {
+  display: none;
+}
+
+.goalOpen .goalBody {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  margin: 0;
+  padding: var(--space-6) var(--space-6) var(--space-5);
+  border-radius: var(--r-xl);
+  background: #0f2a47f5;
+  animation: fade-in 0.3s var(--ease-out) both;
+}
+
+.goalOpen .goalMore {
+  max-height: none;
+  margin-top: var(--space-3);
+  padding-right: 0;
+  overflow: visible;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.goalOpen .goalMore p {
+  margin-bottom: var(--space-2);
+}
+
+.goalOpen :global(.text-button) {
+  order: 3;
+  align-self: flex-start;
+  margin-top: var(--space-2);
+}
+
+.goalOpen:hover,
+.goalOpen:hover .goalBody {
+  transform: none;
+}
+
+@keyframes rise {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .goalCard {
+    justify-self: center;
+    margin-top: var(--space-6);
+    padding-left: var(--space-4);
+  }
+
+  .goalBody {
+    width: 92%;
+    margin-left: calc(var(--space-4) * -1);
+  }
+}
+
+@media (max-width: 767px) {
+  .figures {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .actions :global(.btn) {
+    flex: auto;
+  }
+
+  .goalCard::before {
+    display: none;
+  }
+}
+
+@media (max-width: 429px) {
+  .actions :global(.btn) {
+    flex: 100%;
+  }
+
+  .figures dd {
+    font-size: 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge,
+  .title,
+  .lead,
+  .actions,
+  .figures,
+  .goalCard {
+    animation: none;
+  }
+
+  .goalPhoto,
+  .goalPhotoOn,
+  .goalCard:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stackItem,
+  .stackItemOn {
+    transform: none;
+    transition: none;
+  }
+}

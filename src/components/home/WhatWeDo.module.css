@@ -1,0 +1,42 @@
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.pillars li {
+  position: relative;
+  padding: var(--space-8);
+  transition: background-color var(--duration-base);
+}
+
+.pillars li + li {
+  border-left: 1px solid var(--line);
+}
+
+.pillars li:hover {
+  background: var(--slate-50);
+}
+
+.pillars :global(.icon-tile) {
+  margin-bottom: var(--space-5);
+}
+
+.pillars p {
+  margin: 0;
+}
+
+@media (max-width: 1023px) {
+  .pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .pillars li + li {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}

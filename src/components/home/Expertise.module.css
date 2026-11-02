@@ -1,0 +1,113 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: start;
+  gap: clamp(2rem, 1rem + 4vw, 5rem);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 var(--space-8);
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid #ffffff1f;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  color: var(--white);
+  transition:
+    background-color var(--duration-base),
+    border-color var(--duration-base),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.list li:hover {
+  border-color: #ffffff4d;
+  background: #ffffff0f;
+  transform: translate(4px);
+}
+
+.list svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--sky-300);
+}
+
+.side {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.image {
+  overflow: hidden;
+  border-radius: var(--r-lg);
+}
+
+.image img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease-out);
+}
+
+.image:hover img {
+  transform: scale(1.05);
+}
+
+.vision {
+  position: relative;
+  padding: var(--space-6) var(--space-6) var(--space-6) var(--space-8);
+  border-left: 3px solid var(--red);
+  border-radius: var(--r-md);
+  background: var(--navy-800);
+  color: var(--on-dark);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.vision:hover {
+  transform: translateY(-3px);
+}
+
+.quoteIcon {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  width: 32px;
+  height: 32px;
+  color: #fff3;
+}
+
+.tagline {
+  margin: 0 !important;
+  padding-top: var(--space-4);
+  border-top: 1px solid #ffffff26;
+  font-weight: 700;
+  color: var(--white);
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 429px) {
+  .list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .list li:hover,
+  .vision:hover,
+  .image:hover img {
+    transform: none;
+  }
+}

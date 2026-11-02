@@ -1,0 +1,239 @@
+/* ==========================================================================
+   Base — reset, document defaults, layout helpers, scroll reveal
+   ========================================================================== */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-height) + var(--space-6));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5em;
+  font-family: var(--sans);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+h1 {
+  line-height: 1.1;
+}
+
+h2 {
+  line-height: 1.12;
+}
+
+h3 {
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+h4 {
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+
+h5 {
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+h6 {
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+p {
+  margin: 0 0 var(--space-4);
+  text-wrap: pretty;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:where(ul[role='list'], ol[role='list']) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+address {
+  font-style: normal;
+}
+
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue-600);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---- Layout helpers ---------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: calc(var(--container-max) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: calc(var(--container-narrow) + var(--gutter) * 2);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-2);
+  z-index: 200;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-sm);
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.justify {
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: start;
+  hyphens: auto;
+}
+
+@media (max-width: 479px) {
+  .justify {
+    text-align: left;
+  }
+}
+
+/* ---- Scroll reveal (enabled by RevealObserver) ------------------------- */
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.4s var(--ease-out),
+    transform 0.5s var(--ease-out);
+}
+
+.js-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Reading progress bar --------------------------------------------- */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  height: 3px;
+  background: linear-gradient(90deg, var(--red-400), var(--red));
+  transform-origin: 0;
+  transform: scaleX(0);
+  pointer-events: none;
+  animation: scroll-progress linear both;
+  animation-timeline: scroll(root);
+}
+
+@keyframes scroll-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@supports not (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

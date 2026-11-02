@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Design tokens — FinOracles "Design 2" (navy / slate / signal red)
+   ========================================================================== */
+:root {
+  /* Brand palette */
+  --navy-950: #0a1e33;
+  --navy-900: #0f2a47;
+  --navy-800: #163a5f;
+  --blue-600: #1f5c99;
+  --blue-50: #ebf2f9;
+  --sky-300: #8fc1ec;
+  --mint-300: #7fd3a6;
+  --slate-50: #f5f7fa;
+  --slate-100: #edf1f5;
+  --line: #dde3ea;
+  --line-strong: #c8d2de;
+  --ink: #0f1f33;
+  --text: #3f4d63;
+  --muted: #627089;
+  --red: #c82c24;
+  --red-strong: #a3231c;
+  --red-400: #e5584f;
+  --on-dark: #e8eef5;
+  --on-dark-muted: #a9b8ca;
+  --white: #fff;
+  --whatsapp: #1a8f4a;
+  --success-bg: #e8f4ec;
+  --success-text: #1d6b42;
+  --error-bg: #fdecea;
+  --error-text: #a1201a;
+  --error-line: #b42318;
+
+  /* Typography */
+  --sans: var(--font-jakarta), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-small: 0.875rem;
+  --fs-micro: 0.78rem;
+  --fs-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Layout */
+  --container-max: 1240px;
+  --container-narrow: 760px;
+  --gutter: clamp(1rem, 0.5rem + 2.2vw, 2rem);
+  --header-height: 76px;
+  --section-space: clamp(3.5rem, 2.4rem + 4vw, 6rem);
+
+  /* Shape & depth */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --shadow-1: 0 1px 2px #0f1f330f, 0 6px 18px -10px #0f1f332e;
+  --shadow-2: 0 2px 4px #0f1f330f, 0 18px 40px -20px #0f1f334d;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --duration-fast: 0.15s;
+  --duration-base: 0.25s;
+}
