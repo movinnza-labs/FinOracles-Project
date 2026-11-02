@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LoginPage() {
-  const home = await getHomePage()
+  const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()])
   return (
     <>
       <PageHero
@@ -28,7 +28,7 @@ export default async function LoginPage() {
         lead={home.logins?.lead}
         breadcrumbs={[{ name: 'Login', path: '/login' }]}
       />
-      <Logins data={home.logins ? { ...home.logins, heading: null, lead: null, enabled: true } : home.logins} />
+      <Logins data={home.logins ? { ...home.logins, heading: null, lead: null, enabled: true } : home.logins} settings={settings} />
     </>
   )
 }

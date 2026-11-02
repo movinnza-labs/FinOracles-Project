@@ -1495,7 +1495,6 @@ export interface HomePage {
        */
       url: string;
       newTab?: boolean | null;
-      id?: string | null;
     };
     showPhoneButton?: boolean | null;
     figures?:
@@ -1992,6 +1991,9 @@ export interface HomePage {
      * Separate paragraphs with a blank line.
      */
     lead?: string | null;
+    /**
+     * The first "Client" login is shown as the large featured card; the rest are listed beside it.
+     */
     items?:
       | {
           label: string;
@@ -2000,6 +2002,17 @@ export interface HomePage {
            */
           url: string;
           newTab?: boolean | null;
+          audience?: ('client' | 'partner' | 'employee') | null;
+          description?: string | null;
+          /**
+           * Optional bullet points (shown on the featured client card).
+           */
+          features?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
           id?: string | null;
         }[]
       | null;
@@ -2298,7 +2311,6 @@ export interface HomePageSelect<T extends boolean = true> {
               label?: T;
               url?: T;
               newTab?: T;
-              id?: T;
             };
         showPhoneButton?: T;
         figures?:
@@ -2479,6 +2491,14 @@ export interface HomePageSelect<T extends boolean = true> {
               label?: T;
               url?: T;
               newTab?: T;
+              audience?: T;
+              description?: T;
+              features?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
               id?: T;
             };
       };

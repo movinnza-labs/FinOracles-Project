@@ -512,11 +512,11 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       heading: 'Access Your Account',
       lead: 'Secure login for clients, partners, and employees.',
       items: [
-        { label: 'Client Login', url: 'https://ewa.njindiaonline.com/ewa/login', newTab: true },
-        { label: 'NJ Partner Login', url: 'https://www.njindiaonline.com/pdesk/login.fin?cmdAction=login', newTab: true },
-        { label: 'Star Atom Login', url: 'https://atompro.starhealth.in/sso/login', newTab: true },
-        { label: 'ABSLI Login', url: 'https://lifeinsurancepartners.adityabirlacapital.com', newTab: true },
-        { label: 'Employee Login', url: '/admin', newTab: false },
+        {"label":"Client Login","url":"https://ewa.njindiaonline.com/ewa/login","newTab":true,"audience":"client","description":"Your E-Wealth Account: all your investments in one secure place.","features":[{"text":"View your complete portfolio and holdings"},{"text":"Invest, redeem and start SIPs online"},{"text":"Download statements and capital gains reports"}]},
+        {"label":"NJ Partner Login","url":"https://www.njindiaonline.com/pdesk/login.fin?cmdAction=login","newTab":true,"audience":"partner","description":"Partner desk for NJ Wealth partners."},
+        {"label":"Star Atom Login","url":"https://atompro.starhealth.in/sso/login","newTab":true,"audience":"partner","description":"Star Health portal for insurance advisors."},
+        {"label":"ABSLI Login","url":"https://lifeinsurancepartners.adityabirlacapital.com","newTab":true,"audience":"partner","description":"Aditya Birla Sun Life Insurance partner portal."},
+        {"label":"Employee Login","url":"/admin","newTab":false,"audience":"employee","description":"FinOracles team access to the website CMS."},
       ],
     },
     contact: {

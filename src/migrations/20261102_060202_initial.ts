@@ -42,6 +42,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_home_page_guidance_steps_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_expertise_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_resources_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
+  CREATE TYPE "public"."enum_home_page_logins_items_audience" AS ENUM('client', 'partner', 'employee');
   CREATE TYPE "public"."enum_home_page_stats_items_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_home_page_tools_card_icon" AS ENUM('award', 'badge-check', 'briefcase', 'calculator', 'car', 'chart-column', 'chart-line', 'chart-pie', 'circle-check', 'circle-play', 'clipboard-list', 'clock', 'compass', 'file-text', 'graduation-cap', 'hand-coins', 'heart-handshake', 'heart-pulse', 'house', 'images', 'info', 'landmark', 'layout-dashboard', 'life-buoy', 'lightbulb', 'lock', 'mail', 'map-pin', 'newspaper', 'phone', 'piggy-bank', 'plane', 'refresh-cw', 'shield-check', 'smartphone', 'sprout', 'target', 'trending-up', 'trophy', 'umbrella', 'users', 'wallet');
   CREATE TYPE "public"."enum_site_settings_socials_platform" AS ENUM('facebook', 'instagram', 'linkedin', 'youtube', 'whatsapp', 'x');
@@ -760,13 +761,22 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"url" varchar
   );
   
+  CREATE TABLE "home_page_logins_items_features" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"text" varchar NOT NULL
+  );
+  
   CREATE TABLE "home_page_logins_items" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
   	"label" varchar NOT NULL,
   	"url" varchar NOT NULL,
-  	"new_tab" boolean DEFAULT false
+  	"new_tab" boolean DEFAULT false,
+  	"audience" "enum_home_page_logins_items_audience" DEFAULT 'client',
+  	"description" varchar
   );
   
   CREATE TABLE "home_page_stats_items" (
@@ -1057,6 +1067,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "home_page_about_values" ADD CONSTRAINT "home_page_about_values_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."home_page"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "home_page_expertise_items" ADD CONSTRAINT "home_page_expertise_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."home_page"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "home_page_resources_items" ADD CONSTRAINT "home_page_resources_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."home_page"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "home_page_logins_items_features" ADD CONSTRAINT "home_page_logins_items_features_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."home_page_logins_items"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "home_page_logins_items" ADD CONSTRAINT "home_page_logins_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."home_page"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "home_page_stats_items" ADD CONSTRAINT "home_page_stats_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."home_page"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "home_page" ADD CONSTRAINT "home_page_about_image_id_media_id_fk" FOREIGN KEY ("about_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -1268,6 +1279,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "home_page_expertise_items_parent_id_idx" ON "home_page_expertise_items" USING btree ("_parent_id");
   CREATE INDEX "home_page_resources_items_order_idx" ON "home_page_resources_items" USING btree ("_order");
   CREATE INDEX "home_page_resources_items_parent_id_idx" ON "home_page_resources_items" USING btree ("_parent_id");
+  CREATE INDEX "home_page_logins_items_features_order_idx" ON "home_page_logins_items_features" USING btree ("_order");
+  CREATE INDEX "home_page_logins_items_features_parent_id_idx" ON "home_page_logins_items_features" USING btree ("_parent_id");
   CREATE INDEX "home_page_logins_items_order_idx" ON "home_page_logins_items" USING btree ("_order");
   CREATE INDEX "home_page_logins_items_parent_id_idx" ON "home_page_logins_items" USING btree ("_parent_id");
   CREATE INDEX "home_page_stats_items_order_idx" ON "home_page_stats_items" USING btree ("_order");
@@ -1356,6 +1369,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "home_page_about_values" CASCADE;
   DROP TABLE "home_page_expertise_items" CASCADE;
   DROP TABLE "home_page_resources_items" CASCADE;
+  DROP TABLE "home_page_logins_items_features" CASCADE;
   DROP TABLE "home_page_logins_items" CASCADE;
   DROP TABLE "home_page_stats_items" CASCADE;
   DROP TABLE "home_page" CASCADE;
@@ -1410,6 +1424,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_home_page_guidance_steps_icon";
   DROP TYPE "public"."enum_home_page_expertise_items_icon";
   DROP TYPE "public"."enum_home_page_resources_items_icon";
+  DROP TYPE "public"."enum_home_page_logins_items_audience";
   DROP TYPE "public"."enum_home_page_stats_items_icon";
   DROP TYPE "public"."enum_home_page_tools_card_icon";
   DROP TYPE "public"."enum_site_settings_socials_platform";`)

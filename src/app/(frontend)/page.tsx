@@ -90,7 +90,7 @@ export default async function HomePage() {
 
       <Resources data={home.resources} />
       <Tools data={home.tools} />
-      <Logins data={home.logins} />
+      <Logins data={home.logins} settings={settings} />
 
       {home.contact?.enabled && (
         <ContactSection

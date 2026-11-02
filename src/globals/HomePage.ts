@@ -293,7 +293,39 @@ export const HomePage: GlobalConfig = {
             enabled,
             heading('Access Your Account'),
             lead,
-            { name: 'items', type: 'array', fields: linkFields },
+            {
+              name: 'items',
+              type: 'array',
+              admin: {
+                description: 'The first "Client" login is shown as the large featured card; the rest are listed beside it.',
+              },
+              fields: [
+                ...linkFields,
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'audience',
+                      type: 'select',
+                      defaultValue: 'client',
+                      options: [
+                        { label: 'Client', value: 'client' },
+                        { label: 'Partner', value: 'partner' },
+                        { label: 'Employee', value: 'employee' },
+                      ],
+                      admin: { width: '30%' },
+                    },
+                    { name: 'description', type: 'text', admin: { width: '70%' } },
+                  ],
+                },
+                {
+                  name: 'features',
+                  type: 'array',
+                  admin: { description: 'Optional bullet points (shown on the featured client card).' },
+                  fields: [{ name: 'text', type: 'text', required: true }],
+                },
+              ],
+            },
           ],
         },
         {
