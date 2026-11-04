@@ -22,6 +22,7 @@ import { Header } from './globals/Header'
 import { HomePage } from './globals/HomePage'
 import { SiteSettings } from './globals/SiteSettings'
 import { getServerURL } from './lib/url'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -112,11 +113,14 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
-      max: Number(process.env.DATABASE_POOL_MAX || 10),
+      // 5 is plenty for a small site; each connection costs memory on both app and database.
+      max: Number(process.env.DATABASE_POOL_MAX || 5),
     },
-    // Production schema changes are applied by `npm run migrate` (run on every Railway deploy);
-    // in development Payload pushes the schema automatically.
+    // Production applies pending migrations when Payload first connects (the /healthz check on
+    // deploy), before the new version takes traffic. The standalone image has no Payload CLI, so
+    // `npm run migrate` is for local use. In development Payload pushes the schema automatically.
     push: process.env.NODE_ENV !== 'production',
+    prodMigrations: migrations,
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
   email: process.env.SMTP_HOST
