@@ -2,6 +2,7 @@ import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { cache } from 'react'
 import { getPayload, type Where } from 'payload'
+import { Client } from 'pg'
 import config from '@payload-config'
 import { tags } from './cacheTags'
 import { fallback } from './fallback'
@@ -15,12 +16,26 @@ import { fallback } from './fallback'
 const PLACEHOLDER_PASSWORD = 'YOUR_POSTGRES_PASSWORD'
 const RETRY_AFTER_MS = 30_000
 let lastConnectFailure = 0
+let databaseVerified = false
+
+/**
+ * Opens and closes a plain connection to check the database is reachable and the
+ * credentials work. Payload's Postgres adapter turns a failed connection into an
+ * unhandled rejection with no error attached, so it must only start once this passes.
+ */
+const probeDatabase = async (connectionString: string) => {
+  const client = new Client({ connectionString, connectionTimeoutMillis: 5_000 })
+  try {
+    await client.connect()
+  } finally {
+    await client.end().catch(() => {})
+  }
+}
 
 /**
  * Payload Local API client. Refuses to connect when DATABASE_URL is missing or still
- * the .env.example placeholder, and backs off after a failed connection: each failed
- * attempt makes the Postgres adapter emit an unhandled rejection, so retrying on every
- * request would flood the logs.
+ * the .env.example placeholder, probes the database before Payload's first connection,
+ * and backs off after a failure so retrying on every request doesn't flood the logs.
  */
 export const getPayloadClient = async () => {
   const url = process.env.DATABASE_URL
@@ -31,6 +46,10 @@ export const getPayloadClient = async () => {
     throw new Error('Database unavailable, retrying shortly')
   }
   try {
+    if (!databaseVerified) {
+      await probeDatabase(url)
+      databaseVerified = true
+    }
     return await getPayload({ config })
   } catch (err) {
     lastConnectFailure = Date.now()

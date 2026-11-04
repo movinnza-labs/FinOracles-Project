@@ -79,7 +79,25 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
-    meta: { titleSuffix: ' — FinOracles CMS' },
+    meta: {
+      titleSuffix: ' — FinOracles CMS',
+      icons: [{ rel: 'icon', type: 'image/svg+xml', url: '/icon.svg' }],
+    },
+    // Browser extensions (e.g. QuillBot, Grammarly) add attributes to <html>; without this React
+    // reports a hydration mismatch. It only covers <html>'s own attributes.
+    suppressHydrationWarning: true,
+    // Paths are relative to importMap.baseDir (src); run `npm run generate:importmap` after changes.
+    components: {
+      graphics: {
+        Logo: '/components/admin/Logo',
+        Icon: '/components/admin/Icon',
+      },
+      beforeLogin: ['/components/admin/LoginIntro'],
+      afterLogin: ['/components/admin/LoginFooter'],
+      beforeNavLinks: ['/components/admin/NavBrand'],
+      actions: ['/components/admin/HeaderActions'],
+      beforeDashboard: ['/components/admin/DashboardWelcome'],
+    },
     livePreview: {
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 390, height: 844 },

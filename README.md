@@ -60,6 +60,20 @@ npm run seed                  # loads the FinOracles content and images into the
 In development Payload syncs the schema automatically. Before the site is seeded it
 renders the bundled default content (`src/seed/content.ts`), so it never appears empty.
 
+### Project-local database (optional)
+
+Instead of a system-wide PostgreSQL login, you can keep a database cluster inside the
+project (`./.pgdata`, ignored by git) on port 5433, using the installed PostgreSQL binaries:
+
+```bash
+initdb -D .pgdata -U postgres -W -A scram-sha-256 -E UTF8   # once; choose a password
+npm run db:start                                            # after every reboot
+createdb -h localhost -p 5433 -U postgres finoracles        # once
+# .env: DATABASE_URL=postgresql://postgres:<password>@localhost:5433/finoracles
+```
+
+`npm run db:stop` and `npm run db:status` stop it and report whether it is running.
+
 ### Changing the schema
 
 After editing a collection, global or block:

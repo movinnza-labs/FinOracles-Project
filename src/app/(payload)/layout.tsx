@@ -3,11 +3,20 @@ import config from '@payload-config'
 import '@payloadcms/next/css'
 import type { ServerFunctionClient } from 'payload'
 import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import type React from 'react'
 import { importMap } from './admin/importMap.js'
 import './custom.css'
 
 type Args = { children: React.ReactNode }
+
+// Same typeface as the public site, exposed to custom.css as --font-jakarta.
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-jakarta',
+  display: 'swap',
+})
 
 const serverFunction: ServerFunctionClient = async function (args) {
   'use server'
@@ -15,7 +24,7 @@ const serverFunction: ServerFunctionClient = async function (args) {
 }
 
 const Layout = ({ children }: Args) => (
-  <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
+  <RootLayout config={config} htmlProps={{ className: jakarta.variable }} importMap={importMap} serverFunction={serverFunction}>
     {children}
   </RootLayout>
 )
