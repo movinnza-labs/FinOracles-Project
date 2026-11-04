@@ -11,12 +11,20 @@ const remotePatterns: NonNullable<NextConfig['images']>['remotePatterns'] = [
 if (process.env.S3_PUBLIC_URL) remotePatterns.push(new URL(`${process.env.S3_PUBLIC_URL.replace(/\/$/, '')}/**`))
 
 const nextConfig: NextConfig = {
+  // Self-contained server in .next/standalone; the Dockerfile copies only that into the final image.
+  output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
+  // Caps build workers (and the database connections they would open).
+  experimental: { cpus: 4 },
   images: {
-    formats: ['image/avif', 'image/webp'],
+    // AVIF costs much more CPU and memory to generate than WebP.
+    formats: ['image/webp'],
     qualities: [75, 85],
-    minimumCacheTTL: 60 * 60 * 24 * 30,
+    // Generate each image size once; uploads get unique filenames, so stale copies are not a risk.
+    minimumCacheTTL: 60 * 60 * 24 * 365,
+    // Defaults minus 2048 and 3840, which no layout here needs.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     localPatterns: [{ pathname: '/images/**' }, { pathname: '/api/media/file/**' }],
     remotePatterns,
   },

@@ -90,14 +90,15 @@ If you add custom admin components, also run `npm run generate:importmap`.
 
 1. Push this project to a GitHub repository.
 2. In Railway, create a project and add a **PostgreSQL** database.
-3. Add a service from the GitHub repo. `railway.json` sets the build command (`npm run build`),
-   the start command (`npm run start:railway`, which runs migrations and then starts Next.js) and a
-   health check on `/healthz`.
+3. Add a service from the GitHub repo. `railway.json` builds the `Dockerfile` (Debian slim,
+   multi-stage, only the Next.js standalone server in the final image), turns sleep mode off and
+   sets a health check on `/healthz`. Pending migrations run when the app first connects to the
+   database, which the health check triggers, so a failed migration never replaces the running version.
 4. Set the service **Variables**:
 
    | Variable                 | Value                                                       |
    | ------------------------ | ----------------------------------------------------------- |
-   | `DATABASE_URL`           | `${{Postgres.DATABASE_URL}}`                                |
+   | `DATABASE_URL`           | `${{Postgres.DATABASE_URL}}` (private network URL; not `DATABASE_PUBLIC_URL`, which is billed as egress) |
    | `PAYLOAD_SECRET`         | a long random string                                        |
    | `NEXT_PUBLIC_SERVER_URL` | `https://${{RAILWAY_PUBLIC_DOMAIN}}` or your custom domain  |
    | `MEDIA_DIR`              | `/data/media` (see step 5)                                  |
@@ -105,7 +106,9 @@ If you add custom admin components, also run `npm run generate:importmap`.
    | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | optional first admin login                |
 
 5. **Media storage:** Railway's filesystem is wiped on every deploy. Choose one:
-   - attach a **Volume** to the service mounted at `/data` and set `MEDIA_DIR=/data/media`, or
+   - attach a **Volume** to the service mounted at `/data` and set `MEDIA_DIR=/data/media`.
+     Railway mounts volumes as root and the image runs as a non-root user, so also set
+     `RAILWAY_RUN_UID=0`; otherwise uploads fail with a permission error. Or:
    - use a **Railway Bucket** (or any S3-compatible storage) and set `S3_BUCKET`, `S3_ENDPOINT`,
      `S3_REGION`, `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY`. `MEDIA_DIR` is then ignored.
 6. Generate a domain (Settings → Networking) and deploy. Open `/admin` and log in, or create the
@@ -115,6 +118,29 @@ Optional: set `SMTP_*` and `ENQUIRY_NOTIFY_TO` to get an email for each contact-
 Enquiries are always saved under **Admin → Enquiries**.
 
 All secrets are environment variables. None are hard-coded (see `.env.example`).
+
+The production image contains only the standalone server, so `npm run seed` and `npm run migrate`
+cannot run inside it. Seed with `SEED_ON_INIT=true`, or run `npm run seed` from your machine with
+`DATABASE_URL` set to the database's public URL.
+
+### Keeping the Railway bill low
+
+Railway bills memory and CPU per minute, so the image and config keep memory low and flat:
+Debian slim (sharp leaks memory on Alpine), `MALLOC_ARENA_MAX=2` (set in the Dockerfile),
+WebP-only image optimisation cached for a year, a database pool of 5 (`DATABASE_POOL_MAX`),
+and at most 4 build workers. These are set in the Railway dashboard, not in code:
+
+- Keep **one replica**, with the app and Postgres in the **same region**.
+- Set **resource limits** on the service, with headroom above normal use (check the Metrics tab).
+- Turn off or auto-delete **PR environments**; delete unused services and projects.
+- Set a **usage alert** just above a normal month. Avoid a low hard limit: it stops every service.
+- Leave **sleep mode off** (`railway.json` sets this); crawlers would keep waking the site.
+- Optional: put **Cloudflare** in front to cache `/_next/static/*`, `/_next/image*` and `/images/*`
+  at the edge. Never cache `/admin`, `/api` or `/preview`. Handle `www` redirects there, and turn
+  on bot protection if traffic is far above real visitors.
+
+After each change, watch the service's memory chart for a day or two. A flat line is normal; a
+line that keeps climbing and then drops means a leak.
 
 ## Managing content
 
