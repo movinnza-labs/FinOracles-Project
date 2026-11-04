@@ -30,7 +30,7 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
           {data.items.map((item, i) => {
             const audience = item.audience ?? 'client'
             return (
-              <li key={item.id ?? i} className={`${styles.card} reveal`}>
+              <li key={item.id ?? i} className={`${styles.card} lift lift-rule reveal`}>
                 <div className={styles.head}>
                   <span className={styles.icon}>
                     <Icon icon={item.icon} fallback={fallbackIcon[audience] ?? 'lock'} />
@@ -52,7 +52,7 @@ export function Logins({ data, settings }: { data: HomePage['logins']; settings?
           })}
 
           {(phone || wa) && (
-            <li className={`${styles.card} reveal`}>
+            <li className={`${styles.card} lift lift-rule reveal`}>
               <div className={styles.head}>
                 <span className={styles.icon}>
                   <Headset aria-hidden />

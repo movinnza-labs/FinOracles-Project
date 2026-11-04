@@ -13,6 +13,17 @@ export const Users: CollectionConfig = {
     maxLoginAttempts: 5,
     lockTime: 10 * 60 * 1000,
   },
+  hooks: {
+    // The first account (e.g. from the create-first-user screen) must be an admin,
+    // otherwise nobody could create users or change roles afterwards.
+    beforeChange: [
+      async ({ data, operation, req }) => {
+        if (operation !== 'create') return data
+        const { totalDocs } = await req.payload.count({ collection: 'users', req })
+        return totalDocs === 0 ? { ...data, role: 'admin' } : data
+      },
+    ],
+  },
   access: {
     admin: ({ req: { user } }) => Boolean(user),
     read: authenticated,

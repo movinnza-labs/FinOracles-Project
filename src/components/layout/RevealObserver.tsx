@@ -1,19 +1,17 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 /**
  * Progressive scroll-reveal: elements with `.reveal` fade/slide in when they
  * enter the viewport. Content stays visible without JS (class added here), and
  * anything already on screen is revealed immediately rather than waiting for
- * the first IntersectionObserver callback.
+ * the first IntersectionObserver callback. New `.reveal` elements added later
+ * (client navigation, including query-string changes like /blog?page=2) are
+ * picked up by a MutationObserver.
  */
 export function RevealObserver() {
-  const pathname = usePathname()
-
   useEffect(() => {
-    const root = document.documentElement
     if (
       window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
       typeof IntersectionObserver === 'undefined'
@@ -22,8 +20,6 @@ export function RevealObserver() {
     }
 
     const show = (el: Element) => el.classList.add('is-visible')
-    const pending = Array.from(document.querySelectorAll('.reveal:not(.is-visible)'))
-    const fold = window.innerHeight * 0.95
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -37,14 +33,30 @@ export function RevealObserver() {
       { rootMargin: '0px 0px -6% 0px', threshold: 0 },
     )
 
-    for (const el of pending) {
-      if (el.getBoundingClientRect().top < fold) show(el)
-      else observer.observe(el)
+    const scan = () => {
+      const fold = window.innerHeight * 0.95
+      for (const el of document.querySelectorAll('.reveal:not(.is-visible)')) {
+        if (el.getBoundingClientRect().top < fold) show(el)
+        else observer.observe(el)
+      }
     }
-    root.classList.add('js-reveal')
 
-    return () => observer.disconnect()
-  }, [pathname])
+    scan()
+    document.documentElement.classList.add('js-reveal')
+
+    let frame = 0
+    const mutations = new MutationObserver(() => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(scan)
+    })
+    mutations.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      cancelAnimationFrame(frame)
+      mutations.disconnect()
+      observer.disconnect()
+    }
+  }, [])
 
   return null
 }

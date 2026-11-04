@@ -177,19 +177,6 @@ figure {
   white-space: nowrap;
 }
 
-.justify {
-  text-align: justify;
-  text-justify: inter-word;
-  text-align-last: start;
-  hyphens: auto;
-}
-
-@media (max-width: 479px) {
-  .justify {
-    text-align: left;
-  }
-}
-
 /* ---- Scroll reveal (enabled by RevealObserver) ------------------------- */
 .js-reveal .reveal {
   opacity: 0;

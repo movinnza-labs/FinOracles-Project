@@ -42,10 +42,14 @@ const serverURL = getServerURL()
 const plugins: Plugin[] = [
   seoPlugin({
     uploadsCollection: 'media',
-    generateTitle: ({ doc }) => (doc?.title ? `${doc.title} | FinOracles` : 'FinOracles'),
+    // Products use `name` rather than `title`.
+    generateTitle: ({ doc }) => {
+      const title = doc?.title ?? doc?.name
+      return title ? `${title} | FinOracles` : 'FinOracles'
+    },
     generateURL: ({ doc, collectionSlug }) => {
-      const base = collectionSlug === 'posts' ? '/blog/' : collectionSlug === 'services' ? '/services/' : '/'
-      return `${serverURL}${base}${doc?.slug ?? ''}`
+      const bases: Record<string, string> = { posts: '/blog/', services: '/services/', products: '/products/' }
+      return `${serverURL}${bases[collectionSlug ?? ''] ?? '/'}${doc?.slug ?? ''}`
     },
   }),
 ]

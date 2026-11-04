@@ -14,7 +14,7 @@ export function About({ data }: { data: HomePage['about'] }) {
       <div className="container two-col two-col--center">
         {image && (
           <figure className={`${styles.figure} reveal`}>
-            <Image src={image.src} alt={image.alt} width={image.width} height={image.height} sizes="(max-width: 1023px) 90vw, 460px" />
+            <Image src={image.src} alt={image.alt} width={image.width} height={image.height} sizes="(max-width: 1023px) 90vw, 50vw" />
             {data.badgeValue && (
               <figcaption className={styles.badge}>
                 <strong>{data.badgeValue}</strong>
@@ -29,9 +29,9 @@ export function About({ data }: { data: HomePage['about'] }) {
             {data.headingStart} {data.headingAccent && <span className="accent-text">{data.headingAccent}</span>}{' '}
             {data.headingEnd}
           </h2>
-          {data.intro && <p className="justify lead-dark">{noBreakHyphens(data.intro)}</p>}
+          {data.intro && <p className="lead-dark">{noBreakHyphens(data.intro)}</p>}
           {toParagraphs(data.body).map((p, i) => (
-            <p key={i} className="justify">
+            <p key={i} className={styles.body}>
               {noBreakHyphens(p)}
             </p>
           ))}

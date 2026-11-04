@@ -34,7 +34,7 @@ export function Paragraphs({ text, className }: ParagraphsProps) {
 
 export const formatDate = (value?: string | null) =>
   value
-    ? new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(value))
+    ? new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata' }).format(new Date(value))
     : ''
 
 export const telHref = (number?: string | null) => `tel:${(number ?? '').replace(/[^\d+]/g, '')}`

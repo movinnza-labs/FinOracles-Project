@@ -19,8 +19,17 @@ const recent = new Map<string, number[]>()
 const WINDOW_MS = 10 * 60 * 1000
 const MAX_PER_WINDOW = 5
 
+const MAX_KEYS = 5000
+
 const throttled = (key: string) => {
   const now = Date.now()
+  // Drop expired entries so the map can't grow without bound.
+  if (recent.size > MAX_KEYS) {
+    for (const [k, times] of recent) {
+      if (now - times[times.length - 1] >= WINDOW_MS) recent.delete(k)
+    }
+    if (recent.size > MAX_KEYS) recent.clear()
+  }
   const hits = (recent.get(key) ?? []).filter((t) => now - t < WINDOW_MS)
   hits.push(now)
   recent.set(key, hits)
@@ -58,7 +67,8 @@ export async function submitEnquiry(_prev: EnquiryState, formData: FormData): Pr
   }
 
   const h = await headers()
-  const ip = h.get('x-forwarded-for')?.split(',')[0]?.trim() || h.get('x-real-ip') || 'unknown'
+  // The proxy (Railway) appends the real client IP last; earlier entries can be set by the client.
+  const ip = h.get('x-forwarded-for')?.split(',').at(-1)?.trim() || h.get('x-real-ip') || 'unknown'
   if (throttled(ip)) {
     return { status: 'error', message: 'Too many requests. Please try again in a few minutes, or call us.', values }
   }

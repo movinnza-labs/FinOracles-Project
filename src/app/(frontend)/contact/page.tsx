@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     path: '/contact',
     settings,
-    title: 'Contact Us',
+    title: 'Contact Us: Free Financial Consultation in Satara',
     description: `Call, WhatsApp or visit ${settings.legalName} in Satara. Book a free consultation with our financial planning team.`,
   })
 }

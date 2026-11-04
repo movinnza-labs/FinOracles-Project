@@ -10,8 +10,13 @@ import { getPayloadClient } from '@/lib/queries'
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const rawPath = url.searchParams.get('path') || '/'
-  // Only allow same-site relative paths.
-  const path = rawPath.startsWith('/') && !rawPath.startsWith('//') ? rawPath : '/'
+  // Only allow same-site relative paths. Browsers treat "\" like "/", so "/\evil.com"
+  // would otherwise leave the site; resolve against our origin and compare.
+  const target = new URL(rawPath, url.origin)
+  const path =
+    rawPath.startsWith('/') && !rawPath.includes('\\') && target.origin === url.origin
+      ? `${target.pathname}${target.search}${target.hash}`
+      : '/'
   const draft = await draftMode()
 
   if (url.searchParams.get('disable')) {

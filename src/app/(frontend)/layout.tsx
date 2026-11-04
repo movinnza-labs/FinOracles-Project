@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { RevealObserver } from '@/components/layout/RevealObserver'
-import { CtaBand, Disclaimer, MobileActionBar, TopBar, WhatsAppButton } from '@/components/layout/SiteExtras'
+import { CtaBand, MobileActionBar, TopBar, WhatsAppButton } from '@/components/layout/SiteExtras'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { getImage } from '@/lib/media'
 import { productCategories } from '@/lib/compliance'
@@ -92,7 +92,6 @@ export default async function FrontendLayout({ children }: { children: ReactNode
           {children}
         </main>
         <CtaBand band={footer.ctaBand} />
-        <Disclaimer text={settings.disclaimer} />
         <Footer footer={footer} settings={settings} />
         <WhatsAppButton
           number={settings.whatsapp?.number}

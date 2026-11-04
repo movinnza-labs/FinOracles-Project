@@ -28,4 +28,7 @@ export const slugField = (fallbackField = 'title'): TextField => ({
     description: `Used in the page URL. Leave empty to generate from the ${fallbackField}.`,
   },
   hooks: { beforeValidate: [formatSlug(fallbackField)] },
+  // A title written only in Devanagari slugifies to '' (empty URL, duplicate-key errors).
+  validate: (value: string | null | undefined) =>
+    value ? true : 'Please enter a URL slug using English letters or numbers (e.g. my-page).',
 })

@@ -150,7 +150,14 @@ export function EnquiryForm({
       </div>
 
       <div className={styles.consent}>
-        <input id="enquiry-consent" name="consent" type="checkbox" required {...errorProps('consent')} />
+        <input
+          id="enquiry-consent"
+          name="consent"
+          type="checkbox"
+          required
+          defaultChecked={failed && !state.errors?.consent}
+          {...errorProps('consent')}
+        />
         <label htmlFor="enquiry-consent">
           I agree to be contacted by FinOracles by phone, WhatsApp or email about my enquiry, and accept the{' '}
           <Link href="/privacy-policy">Privacy Policy</Link>.

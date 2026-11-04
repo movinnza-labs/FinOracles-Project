@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { BadgeCheck, Mail, Phone } from 'lucide-react'
+import { BadgeCheck, Info, Mail, Phone } from 'lucide-react'
 import type { Footer as FooterData, SiteSetting } from '@/payload-types'
 import { CmsLink } from '@/components/ui/CmsLink'
 import { getImage } from '@/lib/media'
@@ -96,6 +96,15 @@ export function Footer({ footer, settings }: FooterProps) {
               )}
             </dl>
           </div>
+        </div>
+      )}
+
+      {settings.disclaimer && (
+        <div className="container">
+          <p className={styles.disclaimer}>
+            <Info aria-hidden />
+            {settings.disclaimer}
+          </p>
         </div>
       )}
 

@@ -224,7 +224,8 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
 
   const footer = {
     ctaBand: {
-      enabled: true,
+      // Off to match the live finoracles.com, which goes straight from the page into the footer.
+      enabled: false,
       heading: 'Not sure where to start?',
       text: 'Talk to our team for a free, no-obligation consultation. We will understand your goals and suggest the right next step.',
       buttonLabel: 'Book a Free Consultation',
@@ -245,8 +246,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           { label: 'NPS', url: '/products/nps' },
           { label: 'Equity & ETFs', url: '/products/equity-etfs' },
           { label: 'PMS', url: '/products/pms' },
-          { label: 'Health Insurance', url: '/products/health-insurance' },
-          { label: 'Life Insurance', url: '/products/life-insurance' },
+          { label: 'Insurance', url: '/products' },
         ].map((n) => ({ ...n, newTab: false })),
       },
     ],
@@ -280,12 +280,12 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           titleAccent: 'Retirement',
           headline: "Retire with Freedom, Not Financial Worry",
           lead: "Build a retirement plan that gives you steady income, lasting security and the freedom to enjoy your golden years.",
-          description: 'Retirement should be about freedom, not financial worry.',
+          description: 'Retirement should be about freedom — not financial worry.',
           more: [
-            'Retirement is not the end of a journey, it is the beginning of a new chapter. A phase where time becomes yours, passions rediscover you, and peace replaces pressure.',
+            'Retirement is not the end of a journey — it is the beginning of a new chapter. A phase where time becomes yours, passions rediscover you, and peace replaces pressure.',
             'But a happy retirement is built long before it arrives. Rising living costs, healthcare needs, and lifestyle aspirations require careful and disciplined financial planning.',
             'At FinOracles Services Pvt. Ltd., we design structured retirement strategies focused on wealth accumulation, income stability, and long-term security. Through strategic asset allocation and risk-managed planning, we help ensure your golden years remain truly golden.',
-            'Because retirement should be about freedom, not financial worry.',
+            'Because retirement should be about freedom — not financial worry.',
           ].join('\n\n'),
         },
         {
@@ -296,10 +296,10 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           lead: "Personalised investment planning and strategic asset allocation to turn your ambitions into lasting wealth.",
           description: 'True wealth is built with clarity, discipline, and a well-defined strategy.',
           more: [
-            'True wealth is not created by chance, it is built with clarity, discipline, and a well-defined strategy. Every financial decision you make today shapes the opportunities you experience tomorrow.',
+            'True wealth is not created by chance — it is built with clarity, discipline, and a well-defined strategy. Every financial decision you make today shapes the opportunities you experience tomorrow.',
             'At FinOracles Services Pvt. Ltd., we transform ambition into structured action. Through personalized investment planning, strategic asset allocation, and proactive risk management, we design financial pathways aligned with your long-term aspirations.',
-            'We believe wealth building is a continuous journey, one that requires foresight, adaptability, and expert guidance. Markets evolve, priorities shift, and life changes, but a strong financial foundation ensures stability through every phase.',
-            'Because wealth building is not just about returns, it is about creating freedom, security, and a legacy that endures for generations.',
+            'We believe wealth building is a continuous journey — one that requires foresight, adaptability, and expert guidance. Markets evolve, priorities shift, and life changes — but a strong financial foundation ensures stability through every phase.',
+            'Because wealth building is not just about returns — it is about creating freedom, security, and a legacy that endures for generations.',
           ].join('\n\n'),
         },
         {
@@ -310,10 +310,10 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           lead: "Goal-based plans for quality education, global opportunities and every milestone ahead.",
           description: "Your child's future is your greatest investment in hope, opportunity, and legacy.",
           more: [
-            'Every parent dreams of giving their child the best, quality education, global exposure, meaningful opportunities, and the freedom to choose their own path. But meaningful dreams require thoughtful planning.',
+            'Every parent dreams of giving their child the best — quality education, global exposure, meaningful opportunities, and the freedom to choose their own path. But meaningful dreams require thoughtful planning.',
             "The financial decisions you make today become the stepping stones for their tomorrow. Rising education costs, international aspirations, and life's uncertainties make early and structured planning essential.",
             "At FinOracles Services Pvt. Ltd., we create goal-based investment strategies designed specifically for your child's milestones. Through disciplined savings, strategic asset allocation, and risk protection, we help you build a secure financial foundation that grows alongside them.",
-            "Because your child's future isn't just a responsibility, it is your greatest investment in hope, opportunity, and legacy.",
+            "Because your child's future isn't just a responsibility — it is your greatest investment in hope, opportunity, and legacy.",
           ].join('\n\n'),
         },
         {
@@ -324,10 +324,10 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           lead: "A clear financial roadmap, from goal-based savings to loan planning, for confident homeownership.",
           description: 'A home is a milestone built on smart financial decisions.',
           more: [
-            'A home is more than walls and a roof, it is security, stability, and a place where memories are created. It represents achievement, independence, and long-term financial strength.',
+            'A home is more than walls and a roof — it is security, stability, and a place where memories are created. It represents achievement, independence, and long-term financial strength.',
             'With rising property values and evolving financial commitments, owning a home requires thoughtful planning and disciplined execution.',
-            'At FinOracles Services Pvt. Ltd., we help you structure a clear financial roadmap, from goal-based savings and investment strategies to loan planning and risk management, ensuring your journey to homeownership is confident and well-prepared.',
-            "Because owning a house is not just a purchase, it's a milestone built on smart financial decisions.",
+            'At FinOracles Services Pvt. Ltd., we help you structure a clear financial roadmap — from goal-based savings and investment strategies to loan planning and risk management — ensuring your journey to homeownership is confident and well-prepared.',
+            "Because owning a house is not just a purchase — it's a milestone built on smart financial decisions.",
           ].join('\n\n'),
         },
         {
@@ -338,10 +338,10 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           lead: "Plan your next car the smart way, without straining your long-term financial stability.",
           description: 'Every milestone deserves a plan that drives you forward with confidence.',
           more: [
-            'Owning a car is more than convenience, it represents progress, independence, and the freedom to move forward on your own terms. It marks a milestone of personal and financial growth.',
+            'Owning a car is more than convenience — it represents progress, independence, and the freedom to move forward on your own terms. It marks a milestone of personal and financial growth.',
             'But smart ownership begins with smart planning. From budgeting and saving to managing loans and insurance, every step matters.',
             'At FinOracles Services Pvt. Ltd., we help you create a structured financial approach that makes your goal achievable without straining your long-term stability.',
-            'Because every milestone in life, big or small, deserves a plan that drives you forward with confidence.',
+            'Because every milestone in life — big or small — deserves a plan that drives you forward with confidence.',
           ].join('\n\n'),
         },
       ],
@@ -424,7 +424,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
         'FinOracles Services Pvt. Ltd. is a trusted financial solutions partner committed to designing structured, goal-driven investment strategies.',
       body: [
         'We are a team of experienced financial professionals offering comprehensive, tailor-made solutions that align with your financial aspirations. From investment planning to wealth optimization, we provide a seamless, one-stop approach to managing and growing your finances.',
-        "Customer-centric at our core, we combine expertise, discipline, and strategic insight to deliver efficient solutions that build long-term value. At FinOracles, we don't just manage investments, we design financial confidence.",
+        "Customer-centric at our core, we combine expertise, discipline, and strategic insight to deliver efficient solutions that build long-term value. At FinOracles, we don't just manage investments — we design financial confidence.",
       ].join('\n\n'),
       values: [
         { title: 'Client Centric', text: 'Your goals are our priority.' },
@@ -455,7 +455,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       vision: {
         heading: 'Our Vision',
         text: 'To be a trusted financial partner that not only manages wealth but also spreads financial awareness, empowering individuals and families to secure their financial future.',
-        tagline: "At FinOracles, we don't just manage wealth, we value your investments.",
+        tagline: "At FinOracles, we don't just manage wealth — we value your investments.",
       },
     },
     services: {
@@ -548,49 +548,49 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       category: 'invest',
       icon: 'chart-pie',
       description:
-        'Mutual funds offer professionally managed, diversified investment solutions across equities, debt, and money market instruments. At FinOracles Services Pvt. Ltd., we help you select the right funds aligned with your financial goals and risk appetite, ensuring disciplined growth with balanced risk exposure. Smart diversification. Strategic growth. Managed with expertise.',
+        'Mutual funds offer professionally managed, diversified investment solutions across equities, debt, and money market instruments. At FinOracles Services Pvt. Ltd., we help you select the right funds aligned with your financial goals and risk appetite — ensuring disciplined growth with balanced risk exposure. Smart diversification. Strategic growth. Managed with expertise.',
     },
     {
       name: 'National Pension System (NPS)',
       category: 'invest',
       icon: 'landmark',
       description:
-        'The National Pension System (NPS) is a government-backed retirement savings solution designed to build long-term financial security. At FinOracles Services Pvt. Ltd., we help you structure your NPS investments strategically, balancing equity and debt exposure to create a disciplined retirement corpus with tax efficiency and sustainable growth. Plan today. Retire with confidence.',
+        'The National Pension System (NPS) is a government-backed retirement savings solution designed to build long-term financial security. At FinOracles Services Pvt. Ltd., we help you structure your NPS investments strategically — balancing equity and debt exposure to create a disciplined retirement corpus with tax efficiency and sustainable growth. Plan today. Retire with confidence.',
     },
     {
       name: 'Equity & ETFs',
       category: 'invest',
       icon: 'chart-line',
       description:
-        'Equity investments and Exchange Traded Funds (ETFs) offer direct exposure to market growth and long-term wealth creation. At FinOracles Services Pvt. Ltd., we design disciplined equity and ETF strategies aligned with your risk profile and financial goals, combining research-driven insights with strategic allocation to optimize returns. Focused growth. Smart diversification. Strategic execution.',
+        'Equity investments and Exchange Traded Funds (ETFs) offer direct exposure to market growth and long-term wealth creation. At FinOracles Services Pvt. Ltd., we design disciplined equity and ETF strategies aligned with your risk profile and financial goals — combining research-driven insights with strategic allocation to optimize returns. Focused growth. Smart diversification. Strategic execution.',
     },
     {
       name: 'Portfolio Management Services (PMS)',
       category: 'invest',
       icon: 'briefcase',
       description:
-        'Portfolio Management Services (PMS) offer personalized, professionally managed investment strategies tailored to high-value portfolios. At FinOracles Services Pvt. Ltd., we provide customized portfolio solutions with focused research, active management, and strategic asset allocation, designed to optimize returns while managing risk effectively. Exclusive strategies. Active oversight. Structured wealth creation.',
+        'Portfolio Management Services (PMS) offer personalized, professionally managed investment strategies tailored to high-value portfolios. At FinOracles Services Pvt. Ltd., we provide customized portfolio solutions with focused research, active management, and strategic asset allocation — designed to optimize returns while managing risk effectively. Exclusive strategies. Active oversight. Structured wealth creation.',
     },
     {
       name: 'Loan against Mutual Funds',
       category: 'borrow',
       icon: 'hand-coins',
       description:
-        'Unlock liquidity without disturbing your long-term investments. A Loan against Mutual Funds allows you to access funds by pledging your mutual fund holdings, ensuring immediate financial flexibility while your investments continue to grow. At FinOracles Services Pvt. Ltd., we facilitate a seamless and efficient process with competitive terms and minimal documentation. Liquidity when you need it. Growth that continues.',
+        'Unlock liquidity without disturbing your long-term investments. A Loan against Mutual Funds allows you to access funds by pledging your mutual fund holdings — ensuring immediate financial flexibility while your investments continue to grow. At FinOracles Services Pvt. Ltd., we facilitate a seamless and efficient process with competitive terms and minimal documentation. Liquidity when you need it. Growth that continues.',
     },
     {
       name: 'Health Insurance',
       category: 'protect',
       icon: 'heart-pulse',
       description:
-        "Health insurance is essential for protecting both your finances and your family's well-being against unexpected medical expenses. At FinOracles Services Pvt. Ltd., we help you choose the right health coverage tailored to your needs, ensuring comprehensive protection, cashless benefits, and long-term security. Protect your health. Safeguard your wealth.",
+        "Health insurance is essential for protecting both your finances and your family's well-being against unexpected medical expenses. At FinOracles Services Pvt. Ltd., we help you choose the right health coverage tailored to your needs — ensuring comprehensive protection, cashless benefits, and long-term security. Protect your health. Safeguard your wealth.",
     },
     {
       name: 'Life Insurance',
       category: 'protect',
       icon: 'shield-check',
       description:
-        'Life insurance is the foundation of financial security, ensuring your loved ones remain protected, no matter what the future holds. At FinOracles Services Pvt. Ltd., we help you select the right life insurance solutions aligned with your protection needs, financial goals, and long-term legacy planning. Secure today. Protect tomorrow.',
+        'Life insurance is the foundation of financial security — ensuring your loved ones remain protected, no matter what the future holds. At FinOracles Services Pvt. Ltd., we help you select the right life insurance solutions aligned with your protection needs, financial goals, and long-term legacy planning. Secure today. Protect tomorrow.',
     },
     {
       name: 'Personal Accidental Insurance',
@@ -604,14 +604,14 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       category: 'protect',
       icon: 'car',
       description:
-        'Vehicle insurance protects you against financial loss arising from accidents, theft, or unforeseen damages. At FinOracles Services Pvt. Ltd., we assist you in selecting the right coverage, from third-party liability to comprehensive plans, ensuring complete protection and hassle-free claim support. Drive secure. Stay protected.',
+        'Vehicle insurance protects you against financial loss arising from accidents, theft, or unforeseen damages. At FinOracles Services Pvt. Ltd., we assist you in selecting the right coverage — from third-party liability to comprehensive plans — ensuring complete protection and hassle-free claim support. Drive secure. Stay protected.',
     },
     {
       name: 'Overseas Insurance',
       category: 'protect',
       icon: 'plane',
       description:
-        'Overseas Insurance provides essential financial protection while you travel, study, or work abroad, covering medical emergencies, travel disruptions, and unforeseen risks. At FinOracles Services Pvt. Ltd., we help you choose comprehensive international coverage tailored to your destination and duration, ensuring complete peace of mind beyond borders. Travel smart. Stay protected worldwide.',
+        'Overseas Insurance provides essential financial protection while you travel, study, or work abroad — covering medical emergencies, travel disruptions, and unforeseen risks. At FinOracles Services Pvt. Ltd., we help you choose comprehensive international coverage tailored to your destination and duration, ensuring complete peace of mind beyond borders. Travel smart. Stay protected worldwide.',
     },
   ].map((p, order) => {
     const extra = productDetails[p.name]

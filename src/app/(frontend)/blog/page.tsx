@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { PostCard, PostGrid } from '@/components/blog/PostCard'
 import { PageHero } from '@/components/sections/PageHero'
 import { getCategories, getPostsPage, getSiteSettings } from '@/lib/queries'
@@ -30,8 +31,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function BlogIndex({ searchParams }: Props) {
   const { page: pageParam, category } = await searchParams
-  const page = Math.max(1, Number(pageParam) || 1)
+  const page = Math.max(1, Math.floor(Number(pageParam)) || 1)
   const [posts, categories] = await Promise.all([getPostsPage(page, PER_PAGE, category), getCategories()])
+  // Unknown categories and pages past the end are not real listings.
+  if (category && categories.length && !categories.some((c) => c.slug === category)) notFound()
+  if (page > 1 && page > posts.totalPages) notFound()
 
   return (
     <>

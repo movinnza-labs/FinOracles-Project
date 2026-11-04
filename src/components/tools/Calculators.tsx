@@ -46,6 +46,14 @@ type SliderProps = {
 function Slider({ label, value, onChange, min, max, step, format }: SliderProps) {
   const id = useId()
   const pct = ((value - min) / (max - min)) * 100
+  // Text being typed; clamped only on blur so "2000" can be typed digit by digit.
+  const [draft, setDraft] = useState<string | null>(null)
+  const commit = () => {
+    if (draft === null) return
+    const v = Number(draft)
+    onChange(draft.trim() === '' || Number.isNaN(v) ? value : Math.min(max, Math.max(min, v)))
+    setDraft(null)
+  }
   return (
     <div className={styles.slider}>
       <div className={styles.sliderHead}>
@@ -53,13 +61,18 @@ function Slider({ label, value, onChange, min, max, step, format }: SliderProps)
         <input
           type="number"
           aria-label={`${label} value`}
-          value={value}
+          value={draft ?? value}
           min={min}
           max={max}
           step={step}
           onChange={(e) => {
+            setDraft(e.target.value)
             const v = Number(e.target.value)
-            if (!Number.isNaN(v)) onChange(Math.min(max, Math.max(min, v)))
+            if (e.target.value !== '' && v >= min && v <= max) onChange(v)
+          }}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') commit()
           }}
           className={styles.number}
         />
@@ -71,7 +84,10 @@ function Slider({ label, value, onChange, min, max, step, format }: SliderProps)
         max={max}
         step={step}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => {
+          setDraft(null)
+          onChange(Number(e.target.value))
+        }}
         style={{ '--fill': `${pct}%` } as React.CSSProperties}
         aria-valuetext={format(value)}
       />

@@ -6,8 +6,6 @@
 }
 
 .leader {
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-6));
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
@@ -101,7 +99,6 @@
   }
 
   .leader {
-    position: static;
     display: grid;
     grid-template-columns: 200px 1fr;
     align-items: end;

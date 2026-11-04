@@ -24,8 +24,9 @@ export const Posts: CollectionConfig = {
     afterChange: [revalidateCollection],
     afterDelete: [revalidateCollectionDelete],
     beforeChange: [
-      ({ data }) => {
-        if (data._status === 'published' && !data.publishedAt) {
+      ({ data, originalDoc }) => {
+        // Keep the first publish date on later partial updates (e.g. only `_status` sent).
+        if (data._status === 'published' && !data.publishedAt && !originalDoc?.publishedAt) {
           data.publishedAt = new Date().toISOString()
         }
         return data

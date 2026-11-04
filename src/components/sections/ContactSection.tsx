@@ -137,6 +137,7 @@ export async function ContactSection({
             interestOptions={interestOptions}
             defaultInterest={defaultInterest}
             defaultMessage={defaultMessage}
+            submitLabel="Send Message"
           />
         </div>
       </div>

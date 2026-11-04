@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     path: '/about',
     settings,
-    title: 'About Us',
+    title: 'About FinOracles Services Pvt. Ltd., Satara',
     description: home.about?.intro || settings.defaultDescription,
   })
 }

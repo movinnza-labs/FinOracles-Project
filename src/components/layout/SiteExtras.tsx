@@ -1,22 +1,10 @@
 import Link from 'next/link'
-import { ArrowRight, BadgeCheck, Info, Lock, Mail, MessageSquareText, Phone } from 'lucide-react'
+import { ArrowRight, BadgeCheck, Lock, Mail, MessageSquareText, Phone } from 'lucide-react'
 import type { Footer, SiteSetting } from '@/payload-types'
 import { SocialIcon } from '@/components/ui/SocialIcon'
 import { telHref } from '@/lib/text'
 import { HideOnPaths } from './HideOnPaths'
 import styles from './SiteExtras.module.css'
-
-export function Disclaimer({ text }: { text?: string | null }) {
-  if (!text) return null
-  return (
-    <p className={styles.disclaimer}>
-      <span className="container">
-        <Info aria-hidden />
-        {text}
-      </span>
-    </p>
-  )
-}
 
 const waLink = (number: string, message?: string | null) =>
   `https://wa.me/${number.replace(/\D/g, '')}${message ? `?text=${encodeURIComponent(message)}` : ''}`
@@ -95,7 +83,7 @@ export function CtaBand({ band }: { band: Footer['ctaBand'] }) {
             {band.text && <p className={styles.ctaText}>{band.text}</p>}
           </div>
           {band.buttonUrl && (
-            <Link href={band.buttonUrl} className="btn btn--primary">
+            <Link href={band.buttonUrl} className={`btn btn--primary ${styles.ctaButton}`}>
               {band.buttonLabel || 'Book a Free Consultation'} <ArrowRight aria-hidden />
             </Link>
           )}
