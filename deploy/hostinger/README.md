@@ -170,8 +170,13 @@ Nightly backups (as the `finoracles` user, `crontab -e`):
 5. Move content with `transfer-data.sh` (step 6) from any machine that can reach both databases,
    and upload the `media/` files to the bucket keeping the same file names.
 
-The build does not need the database (every page renders on request), so it is safe for the
-build to run before migrations.
+The build needs neither the database nor `PAYLOAD_SECRET` (every page renders on request), so
+it succeeds even before the variables are set, and before migrations. The running site needs
+`PAYLOAD_SECRET` (without it every page returns 500) and `DATABASE_URL` (without it the site
+shows its built-in default content, `/healthz` returns 503 and the admin cannot log in).
+
+**Do not upload the whole project folder.** `node_modules`, `.next`, `.pgdata`, `media` and
+`.env` must stay out of the upload; Hostinger installs and builds from the source itself.
 
 ## Checks after go-live
 

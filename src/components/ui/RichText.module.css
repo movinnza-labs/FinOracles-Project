@@ -12,6 +12,15 @@
   margin: 0;
 }
 
+/* Blog posts and policy pages: justified from tablet width (wide column). See base.css. */
+@media (min-width: 768px) {
+  .prose p {
+    text-align: justify;
+    text-align-last: start;
+    text-wrap: wrap;
+  }
+}
+
 .prose h2 {
   margin: var(--space-10) 0 0;
   font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.85rem);

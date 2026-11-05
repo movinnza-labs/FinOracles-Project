@@ -29,9 +29,9 @@ export function About({ data }: { data: HomePage['about'] }) {
             {data.headingStart} {data.headingAccent && <span className="accent-text">{data.headingAccent}</span>}{' '}
             {data.headingEnd}
           </h2>
-          {data.intro && <p className="lead-dark">{noBreakHyphens(data.intro)}</p>}
+          {data.intro && <p className="lead-dark justify-wide">{noBreakHyphens(data.intro)}</p>}
           {toParagraphs(data.body).map((p, i) => (
-            <p key={i} className={styles.body}>
+            <p key={i} className={`${styles.body} justify-wide`}>
               {noBreakHyphens(p)}
             </p>
           ))}

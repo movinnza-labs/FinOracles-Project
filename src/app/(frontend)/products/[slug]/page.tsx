@@ -101,7 +101,7 @@ export default async function ProductPage({ params }: Props) {
           <div className={styles.main}>
             <div className="reveal">
               <h2 className="h3">Overview</h2>
-              <p className={styles.description}>{product.description}</p>
+              <p className={`${styles.description} justify-wide`}>{product.description}</p>
               {product.idealFor && (
                 <p className={styles.ideal}>
                   <Users aria-hidden />
