@@ -1,6 +1,6 @@
 import { getPayloadClient } from '@/lib/queries'
 
-/** Railway health check: confirms the app is up and the database is reachable. */
+/** Health check (deploy.sh, uptime monitors): confirms the app is up and the database is reachable. */
 export async function GET() {
   try {
     const payload = await getPayloadClient()

@@ -27,7 +27,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 if (!process.env.PAYLOAD_SECRET && process.env.NODE_ENV === 'production') {
-  throw new Error('PAYLOAD_SECRET is not set. Add it to your Railway service variables.')
+  throw new Error('PAYLOAD_SECRET is not set. Add it to the production .env (see deploy/hostinger/env.production.example).')
 }
 
 if (!process.env.DATABASE_URL) {
@@ -54,7 +54,7 @@ const plugins: Plugin[] = [
   }),
 ]
 
-// Railway Buckets / AWS S3 / R2. Without S3_BUCKET, uploads are written to MEDIA_DIR (use a Railway Volume).
+// S3-compatible storage (R2 / AWS S3). Without S3_BUCKET, uploads are written to MEDIA_DIR on disk.
 if (process.env.S3_BUCKET) {
   plugins.push(
     s3Storage({
@@ -114,7 +114,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
       max: Number(process.env.DATABASE_POOL_MAX || 10),
     },
-    // Production schema changes are applied by `npm run migrate` (run on every Railway deploy);
+    // Production schema changes are applied by `npm run migrate` (run by deploy/hostinger/deploy.sh);
     // in development Payload pushes the schema automatically.
     push: process.env.NODE_ENV !== 'production',
     migrationDir: path.resolve(dirname, 'migrations'),

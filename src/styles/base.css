@@ -79,6 +79,30 @@ p {
   text-wrap: pretty;
 }
 
+/* From tablet width, body text is justified (straight left and right edges; the last line
+   stays left). Normal wrapping there, not `pretty`: pretty shortens lines, which justification
+   turns into wide word gaps. Phones, the narrow cards (.lift) and the footer columns stay left-aligned, because
+   justifying a narrow column leaves large gaps between words. */
+@media (min-width: 768px) {
+  p {
+    text-align: justify;
+    text-align-last: start;
+    text-wrap: wrap;
+  }
+
+  .lift p,
+  footer p {
+    text-align: start;
+    text-wrap: pretty;
+  }
+
+  /* Centred blocks keep their paragraphs centred. */
+  .section-head--center p {
+    text-align: center;
+    text-align-last: center;
+  }
+}
+
 p:last-child {
   margin-bottom: 0;
 }

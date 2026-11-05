@@ -2,7 +2,7 @@
   "name": "finoracles-web",
   "version": "1.0.0",
   "private": true,
-  "description": "FinOracles Services Pvt. Ltd. website — Next.js + Payload CMS + PostgreSQL, deployed on Railway",
+  "description": "FinOracles Services Pvt. Ltd. website — Next.js + Payload CMS + PostgreSQL, deployed on Hostinger",
   "type": "module",
   "engines": {
     "node": "^22.23.4 || >=24.22.1"
@@ -14,9 +14,9 @@
     "db:status": "node scripts/local-db.mjs status",
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=4096\" next build",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "start:railway": "npm run migrate && npm run start",
+    "start:production": "npm run migrate && npm run start",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "migrate": "cross-env NODE_OPTIONS=--no-deprecation PAYLOAD_MIGRATING=true payload migrate",
     "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",

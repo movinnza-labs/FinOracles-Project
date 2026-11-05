@@ -1,10 +1,10 @@
 # FinOracles Website
 
-Next.js 16 frontend + Payload CMS 3 + PostgreSQL, deployed on Railway.
+Next.js 16 frontend + Payload CMS 3 + PostgreSQL, deployed on Hostinger.
 
 ```
-Next.js (App Router) ──Local API──▶ Payload CMS ──▶ PostgreSQL
-        └──────────── one Railway service ────────────┘   └ Railway Postgres
+Nginx (HTTPS) ──▶ Next.js (App Router) ──Local API──▶ Payload CMS ──▶ PostgreSQL
+                  └────────────── one Node.js app (PM2) ──────────────┘
 ```
 
 Payload runs inside the same Next.js app, so the site reads content through Payload's
@@ -18,7 +18,7 @@ Local API with no HTTP hop. The admin panel is at **`/admin`**.
 | Styling  | Plain CSS: global tokens/primitives in `src/styles`, CSS Modules per component |
 | CMS      | Payload 3 (Lexical rich text, SEO plugin, drafts + preview)              |
 | Database | PostgreSQL via `@payloadcms/db-postgres`, versioned migrations           |
-| Hosting  | Railway (`railway.json`)                                                 |
+| Hosting  | Hostinger VPS: Nginx + PM2 (`deploy/hostinger/`)                         |
 
 ## Project structure
 
@@ -86,30 +86,22 @@ npm run migrate:create -- my-change
 Commit the new file in `src/migrations/`. Production applies it on the next deploy.
 If you add custom admin components, also run `npm run generate:importmap`.
 
-## Deploying to Railway
+## Deploying to Hostinger
 
-1. Push this project to a GitHub repository.
-2. In Railway, create a project and add a **PostgreSQL** database.
-3. Add a service from the GitHub repo. `railway.json` sets the build command (`npm run build`),
-   the start command (`npm run start:railway`, which runs migrations and then starts Next.js) and a
-   health check on `/healthz`.
-4. Set the service **Variables**:
+Full step-by-step guide: **[deploy/hostinger/README.md](deploy/hostinger/README.md)**
+(server setup, PostgreSQL, moving existing content, domain + HTTPS, updates and backups).
 
-   | Variable                 | Value                                                       |
-   | ------------------------ | ----------------------------------------------------------- |
-   | `DATABASE_URL`           | `${{Postgres.DATABASE_URL}}`                                |
-   | `PAYLOAD_SECRET`         | a long random string                                        |
-   | `NEXT_PUBLIC_SERVER_URL` | `https://${{RAILWAY_PUBLIC_DOMAIN}}` or your custom domain  |
-   | `MEDIA_DIR`              | `/data/media` (see step 5)                                  |
-   | `SEED_ON_INIT`           | `true` for the first deploy only, then remove it            |
-   | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | optional first admin login                |
+In short, on a Hostinger VPS:
 
-5. **Media storage:** Railway's filesystem is wiped on every deploy. Choose one:
-   - attach a **Volume** to the service mounted at `/data` and set `MEDIA_DIR=/data/media`, or
-   - use a **Railway Bucket** (or any S3-compatible storage) and set `S3_BUCKET`, `S3_ENDPOINT`,
-     `S3_REGION`, `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY`. `MEDIA_DIR` is then ignored.
-6. Generate a domain (Settings → Networking) and deploy. Open `/admin` and log in, or create the
-   first user if you didn't set the `SEED_ADMIN_*` variables. Then remove `SEED_ON_INIT`.
+```bash
+npm ci
+npm run migrate        # applies src/migrations (non-destructive)
+npm run build
+pm2 start deploy/hostinger/ecosystem.config.cjs
+```
+
+Later updates: `bash deploy/hostinger/deploy.sh` (backup → pull → install → migrate → build →
+PM2 reload → `/healthz` check). Production settings: `deploy/hostinger/env.production.example`.
 
 Optional: set `SMTP_*` and `ENQUIRY_NOTIFY_TO` to get an email for each contact-form enquiry.
 Enquiries are always saved under **Admin → Enquiries**.

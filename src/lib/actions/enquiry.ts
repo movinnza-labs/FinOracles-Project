@@ -67,7 +67,7 @@ export async function submitEnquiry(_prev: EnquiryState, formData: FormData): Pr
   }
 
   const h = await headers()
-  // The proxy (Railway) appends the real client IP last; earlier entries can be set by the client.
+  // The proxy (Nginx) appends the real client IP last; earlier entries can be set by the client.
   const ip = h.get('x-forwarded-for')?.split(',').at(-1)?.trim() || h.get('x-real-ip') || 'unknown'
   if (throttled(ip)) {
     return { status: 'error', message: 'Too many requests. Please try again in a few minutes, or call us.', values }

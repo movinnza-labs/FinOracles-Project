@@ -7,7 +7,7 @@ const remotePatterns: NonNullable<NextConfig['images']>['remotePatterns'] = [
   new URL(`${serverURL}/**`),
 ]
 
-// Allow media served straight from an S3-compatible bucket (e.g. Railway Buckets).
+// Allow media served straight from an S3-compatible bucket (e.g. Cloudflare R2).
 if (process.env.S3_PUBLIC_URL) remotePatterns.push(new URL(`${process.env.S3_PUBLIC_URL.replace(/\/$/, '')}/**`))
 
 const nextConfig: NextConfig = {

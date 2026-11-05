@@ -1,9 +1,6 @@
 /** Public origin of the site, without a trailing slash. */
 export const getServerURL = (): string => {
-  const url =
-    process.env.NEXT_PUBLIC_SERVER_URL ||
-    (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : '') ||
-    'http://localhost:3000'
+  const url = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
   return url.replace(/\/$/, '')
 }
 

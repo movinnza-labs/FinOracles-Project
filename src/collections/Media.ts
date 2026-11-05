@@ -15,7 +15,7 @@ export const Media: CollectionConfig = {
     delete: authenticated,
   },
   upload: {
-    // On Railway, point MEDIA_DIR at a mounted Volume (e.g. /data/media) so uploads survive deploys.
+    // In production point MEDIA_DIR outside the code checkout (e.g. /var/www/finoracles/shared/media) so uploads survive deploys.
     // Ignored when the S3 storage adapter is enabled in payload.config.ts.
     staticDir: path.resolve(/*turbopackIgnore: true*/ process.cwd(), process.env.MEDIA_DIR || 'media'),
     mimeTypes: ['image/*'],
