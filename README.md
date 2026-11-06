@@ -61,10 +61,42 @@ FAQs and highlights), team, services, blog posts and the Privacy Policy / Discla
 
 ## Deploying to Hostinger
 
+Two ways; pick one.
+
+### Option A — Node.js Web App from GitHub (hPanel → Websites → Add website → Node.js app)
+
+| Setting | Value |
+| --- | --- |
+| Repository / branch | this repo, the branch with this code (`static-hostinger` until merged into `main`) |
+| Framework preset | Next.js (or Other) |
+| Node version | 22 (or 20 / 24) |
+| Root directory | `/` (leave empty) |
+| Build command | `npm run build` |
+| Start command / entry | `npm start` (runs `server.mjs`) |
+| Output directory | leave empty |
+
+`server.mjs` serves the built site from `out/` on the port Hostinger gives (`PORT`) and handles
+the contact form itself (PHP doesn't run in a Node.js app).
+
+Environment variables for contact-form email (create the mailbox in hPanel → Emails first):
+
+```
+SMTP_HOST=smtp.hostinger.com
+SMTP_PORT=465
+SMTP_USER=no-reply@finoracles.com
+SMTP_PASS=<mailbox password>
+ENQUIRY_NOTIFY_TO=connect@finoracles.com
+```
+
+Without them the form still works and saves leads to `../finoracles-enquiries/enquiries.csv`,
+but that file may be lost on redeploy — set up SMTP.
+
+### Option B — upload static files to public_html
+
 Works on any Hostinger **web hosting** plan (Premium, Business, Cloud). No Node.js app,
 database or VPS is needed.
 
-### 1. Build the upload file (on your computer)
+#### 1. Build the upload file (on your computer)
 
 ```bash
 npm install
@@ -75,7 +107,7 @@ This builds the site into `out/` and creates **`finoracles-site.zip`**.
 Canonical URLs and the sitemap use `https://finoracles.com` (set in `.env.production`;
 change it there if the domain is different, then rebuild).
 
-### 2. Upload
+#### 2. Upload
 
 1. hPanel → **Websites → Manage → File Manager** → open **`public_html`**.
 2. First time only: delete or move away old files there (e.g. the default `default.php`,
@@ -88,12 +120,12 @@ change it there if the domain is different, then rebuild).
 Updating later: repeat steps 1 and 3. Delete the old `_next` folder before extracting so old
 build files don't pile up (the CSV of enquiries is outside `public_html`, so it is safe).
 
-### 3. Domain and HTTPS
+### Domain and HTTPS
 
 - hPanel → **Security → SSL** → install the free SSL for the domain.
 - `.htaccess` redirects `http://` → `https://` and `www.` → the bare domain.
 
-### 4. Contact form email
+### Contact form email (Option B)
 
 1. hPanel → **Emails** → create the mailbox **`no-reply@finoracles.com`** (the sender address).
    Mail sent "from" an address that is not on your domain is often rejected.
