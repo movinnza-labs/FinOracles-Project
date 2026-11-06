@@ -51,7 +51,7 @@
 }
 
 .title {
-  max-width: 22ch;
+  max-width: 48ch;
   margin: 0 0 var(--space-4);
   font-size: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
   font-weight: 800;
