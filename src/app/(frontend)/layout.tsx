@@ -24,6 +24,10 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 })
 
+// Content is served from the CMS on each request (cached per tag, see lib/queries.ts),
+// so builds never need database access and edits go live immediately.
+export const dynamic = 'force-dynamic'
+
 export const viewport: Viewport = {
   themeColor: '#0f2a47',
   width: 'device-width',

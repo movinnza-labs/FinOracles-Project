@@ -127,7 +127,7 @@ export function ProductExplorer({ products, label, contactAnchor = '#contact', w
 
           <h3 className="h3">{product.name}</h3>
           {product.tagline && <p className={styles.tagline}>{product.tagline}</p>}
-          <p className={`${styles.description} justify-wide`}>{product.description}</p>
+          <p className={styles.description}>{product.description}</p>
 
           {product.highlights.length > 0 && (
             <div className={styles.highlights}>

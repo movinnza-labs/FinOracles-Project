@@ -18,12 +18,6 @@ import styles from './product.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
 
-export const dynamicParams = false
-
-export async function generateStaticParams() {
-  return (await getProducts()).filter((p) => p.slug).map((p) => ({ slug: p.slug as string }))
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const [product, settings] = await Promise.all([getProductBySlug(slug), getSiteSettings()])
@@ -107,7 +101,7 @@ export default async function ProductPage({ params }: Props) {
           <div className={styles.main}>
             <div className="reveal">
               <h2 className="h3">Overview</h2>
-              <p className={`${styles.description} justify-wide`}>{product.description}</p>
+              <p className={styles.description}>{product.description}</p>
               {product.idealFor && (
                 <p className={styles.ideal}>
                   <Users aria-hidden />

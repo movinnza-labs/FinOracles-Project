@@ -1,0 +1,7 @@
+# FinOracles health watchdog: restarts the app if Docker reports it unhealthy for 2 checks in a row.
+# Install: sudo install -m 644 -o root -g root deploy/cron/finoracles-healthcheck /etc/cron.d/
+# Output (only when something happens) goes to the journal: journalctl -t finoracles-health
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+* * * * * root /bin/bash /srv/finoracles/app/deploy/scripts/healthcheck.sh 2>&1 | logger -t finoracles-health

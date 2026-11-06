@@ -1,5 +1,5 @@
 import { ArrowUpRight, Headset, Phone } from 'lucide-react'
-import type { HomePage, SiteSetting } from '@/types/content'
+import type { HomePage, SiteSetting } from '@/payload-types'
 import { CmsLink } from '@/components/ui/CmsLink'
 import { Icon } from '@/components/ui/Icon'
 import { SectionHead } from '@/components/ui/SectionHead'

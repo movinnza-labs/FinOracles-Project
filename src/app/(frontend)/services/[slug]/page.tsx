@@ -15,12 +15,6 @@ import styles from './service.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
 
-export const dynamicParams = false
-
-export async function generateStaticParams() {
-  return (await getServices()).filter((s) => s.slug).map((s) => ({ slug: s.slug as string }))
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const [service, settings] = await Promise.all([getServiceBySlug(slug), getSiteSettings()])

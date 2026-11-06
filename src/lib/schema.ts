@@ -1,4 +1,4 @@
-import type { Post, Service, SiteSetting } from '@/types/content'
+import type { Post, Service, SiteSetting } from '@/payload-types'
 import { getImage } from './media'
 import { absoluteURL } from './url'
 

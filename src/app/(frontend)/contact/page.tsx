@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { PageHero } from '@/components/sections/PageHero'
 import { ContactSection } from '@/components/sections/ContactSection'
-import { getHomePage, getSiteSettings } from '@/lib/queries'
+import { getHomePage, getProducts, getSiteSettings } from '@/lib/queries'
 import { buildMetadata } from '@/lib/seo'
+
+type Props = { searchParams: Promise<{ interest?: string; goal?: string }> }
 
 /** Goals linked from the homepage "financial needs" cards, pre-filled into the message. */
 const goals: Record<string, string> = {
@@ -22,8 +24,10 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-export default async function ContactPage() {
-  const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()])
+export default async function ContactPage({ searchParams }: Props) {
+  const { interest, goal } = await searchParams
+  const [home, settings, products] = await Promise.all([getHomePage(), getSiteSettings(), getProducts()])
+  const names = products.map((p) => p.enquiryLabel || p.name)
 
   return (
     <>
@@ -39,7 +43,8 @@ export default async function ContactPage() {
         lead="Share a few details and our team will call you back at your preferred time."
         formHeading="Request a Call Back"
         showMap
-        goalMessages={goals}
+        defaultInterest={interest && names.includes(interest) ? interest : undefined}
+        defaultMessage={goal ? goals[goal] : undefined}
       />
     </>
   )

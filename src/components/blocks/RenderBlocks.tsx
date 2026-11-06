@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { ChevronDown } from 'lucide-react'
-import type { Page, SiteSetting } from '@/types/content'
+import type { Page, SiteSetting } from '@/payload-types'
 import { PostCard, PostGrid } from '@/components/blog/PostCard'
 import { ContactSection } from '@/components/sections/ContactSection'
 import { ServiceCards } from '@/components/sections/ServiceCards'
@@ -11,7 +11,7 @@ import { JsonLd } from '@/components/ui/JsonLd'
 import { RichText } from '@/components/ui/RichText'
 import { SectionHead } from '@/components/ui/SectionHead'
 import { getImage } from '@/lib/media'
-import { getLatestPosts, getServices } from '@/lib/queries'
+import { getPostsPage, getServices } from '@/lib/queries'
 import { faqSchema } from '@/lib/schema'
 import styles from './Blocks.module.css'
 
@@ -123,7 +123,7 @@ async function BlockView({ block, settings }: { block: Block; settings: SiteSett
       )
 
     case 'latestPosts': {
-      const docs = await getLatestPosts(block.limit ?? 3)
+      const { docs } = await getPostsPage(1, block.limit ?? 3)
       if (!docs.length) return null
       return (
         <section className={sectionClass(block.background)}>

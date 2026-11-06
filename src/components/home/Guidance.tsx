@@ -1,4 +1,4 @@
-import type { HomePage } from '@/types/content'
+import type { HomePage } from '@/payload-types'
 import { Icon } from '@/components/ui/Icon'
 import { noBreakHyphens } from '@/lib/text'
 import styles from './Guidance.module.css'
