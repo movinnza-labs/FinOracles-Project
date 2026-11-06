@@ -16,7 +16,7 @@ export type EnquiryState = {
 
 const initial: EnquiryState = { status: 'idle' }
 
-/** PHP mail handler served next to the static site (public/contact.php). */
+/** Form handler: src/app/contact.php/route.node.ts (Node app) or hosting/contact.php (static upload). */
 const ENDPOINT = '/contact.php'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const FALLBACK_ERROR = 'Sorry, something went wrong. Please call or WhatsApp us instead.'

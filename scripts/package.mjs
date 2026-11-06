@@ -1,14 +1,23 @@
-// Zips the static export (out/) into finoracles-site.zip for upload to Hostinger.
+// Builds the static version of the site for upload to Hostinger public_html and zips it.
+//   out/  = plain HTML/CSS/JS + hosting/.htaccess + hosting/contact.php
 // Uses the `tar` that ships with Windows 10+ and macOS (bsdtar), which writes
 // forward-slash paths that Hostinger's File Manager extracts correctly.
-import { execFileSync } from 'node:child_process'
-import { existsSync, rmSync } from 'node:fs'
+import { execSync, execFileSync } from 'node:child_process'
+import { copyFileSync, existsSync, rmSync } from 'node:fs'
 
-const zip = 'finoracles-site.zip'
+rmSync('out', { recursive: true, force: true })
+execSync('npx next build', {
+  stdio: 'inherit',
+  env: { ...process.env, STATIC_EXPORT: '1', NODE_OPTIONS: '--no-deprecation' },
+})
 if (!existsSync('out/index.html')) {
-  console.error('out/ not found. Run `npm run build` first.')
+  console.error('Static export failed: out/index.html not found.')
   process.exit(1)
 }
+copyFileSync('hosting/.htaccess', 'out/.htaccess')
+copyFileSync('hosting/contact.php', 'out/contact.php')
+
+const zip = 'finoracles-site.zip'
 rmSync(zip, { force: true })
 try {
   execFileSync('tar', ['-a', '-c', '-f', zip, '-C', 'out', '.'], { stdio: 'inherit' })

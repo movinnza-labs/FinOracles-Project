@@ -1,24 +1,26 @@
 # FinOracles Website
 
-Next.js 16 site exported as **plain static files** and hosted on **Hostinger** web hosting.
-There is no admin panel, no database and no Node.js server in production.
+Next.js 16 website for **Hostinger**. No admin panel and no database: all content is in the
+code and every page is prerendered to static HTML. Two ways to host the same code:
 
 ```
-npm run build  ──▶  out/  (HTML, CSS, JS, images, .htaccess, contact.php)  ──▶  Hostinger public_html
+A. Hostinger Node.js Web App (GitHub):  npm run build → .next   npm start → next start
+B. Plain web hosting (public_html):     npm run package → finoracles-site.zip (static files + PHP form)
 ```
 
-The contact / call-back forms post to `contact.php` (PHP, which every Hostinger web
-hosting plan runs). It emails each enquiry and also saves it to a CSV file.
+The contact / call-back forms post to `/contact.php`: a Next.js route in option A
+(`src/app/contact.php/route.node.ts`, emails via SMTP) or a PHP file in option B
+(`hosting/contact.php`, PHP `mail()`). Both also save every enquiry to a CSV file.
 
 ## Tech stack
 
 | Layer    | Choice                                                                    |
 | -------- | ------------------------------------------------------------------------- |
-| Frontend | Next.js 16 (App Router, React 19), `output: 'export'`, `next/font`        |
+| Frontend | Next.js 16 (App Router, React 19), prerendered pages, `next/font`         |
 | Styling  | Plain CSS: tokens/primitives in `src/styles`, CSS Modules per component   |
 | Content  | Typed data in `src/content/content.ts` (no CMS)                           |
-| Forms    | `public/contact.php` (PHP `mail()` + CSV backup)                          |
-| Hosting  | Hostinger web hosting (Premium / Business / Cloud) — Apache/LiteSpeed     |
+| Forms    | `/contact.php`: Next.js route (Node) or `hosting/contact.php` (PHP)        |
+| Hosting  | Hostinger Node.js Web App, or any Hostinger web hosting plan (static)     |
 
 ## Project structure
 
@@ -27,14 +29,15 @@ src/
 ├─ app/(frontend)/     Pages: home, about, products, services, tools, blog, contact, login, [slug]
 ├─ app/sitemap.ts      sitemap.xml (generated at build)
 ├─ app/robots.ts       robots.txt
+├─ app/contact.php/    Contact form handler for the Node.js app
 ├─ content/            ALL website text, products, team, blog posts, pages  ← edit here
 ├─ components/         Layout, homepage sections, forms, UI
 ├─ lib/                Data access (queries.ts), SEO, JSON-LD, helpers
 ├─ styles/             Design system CSS
 └─ types/content.ts    Types for the content
-public/
-├─ images/             Site images (WebP)
-├─ contact.php         Enquiry form handler
+public/images/         Site images (WebP)
+hosting/               Added to the static upload only (npm run package):
+├─ contact.php         PHP enquiry form handler
 └─ .htaccess           HTTPS redirect, security + cache headers, 404 page
 ```
 
@@ -67,16 +70,15 @@ Two ways; pick one.
 
 | Setting | Value |
 | --- | --- |
-| Repository / branch | this repo, the branch with this code (`static-hostinger` until merged into `main`) |
-| Framework preset | Next.js (or Other) |
+| Repository / branch | this repo, `main` |
+| Framework / application type | Next.js |
 | Node version | 22 (or 20 / 24) |
 | Root directory | `/` (leave empty) |
 | Build command | `npm run build` |
-| Start command / entry | `npm start` (runs `server.mjs`) |
-| Output directory | leave empty |
+| Start command | `npm start` (`next start`) |
+| Output directory | `.next` (Hostinger's default for Next.js) |
 
-`server.mjs` serves the built site from `out/` on the port Hostinger gives (`PORT`) and handles
-the contact form itself (PHP doesn't run in a Node.js app).
+These are Hostinger's defaults for a Next.js app, so usually nothing needs changing.
 
 Environment variables for contact-form email (create the mailbox in hPanel → Emails first):
 
@@ -103,7 +105,7 @@ npm install
 npm run package
 ```
 
-This builds the site into `out/` and creates **`finoracles-site.zip`**.
+This builds the static site into `out/`, adds `hosting/.htaccess` and `hosting/contact.php`, and creates **`finoracles-site.zip`**.
 Canonical URLs and the sitemap use `https://finoracles.com` (set in `.env.production`;
 change it there if the domain is different, then rebuild).
 
@@ -130,7 +132,7 @@ build files don't pile up (the CSV of enquiries is outside `public_html`, so it 
 1. hPanel → **Emails** → create the mailbox **`no-reply@finoracles.com`** (the sender address).
    Mail sent "from" an address that is not on your domain is often rejected.
 2. Enquiries are sent to **`connect@finoracles.com`**. To change either address, edit the
-   constants at the top of `public/contact.php` and rebuild/upload (or edit the file
+   constants at the top of `hosting/contact.php` and rebuild/upload (or edit the file
    directly in File Manager).
 3. Every enquiry is also saved to `finoracles-enquiries/enquiries.csv` **one level above
    `public_html`** (not reachable from the web). Download it from File Manager and open it

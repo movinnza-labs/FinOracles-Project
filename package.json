@@ -10,8 +10,8 @@
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "start": "node server.mjs",
-    "package": "npm run build && node scripts/package.mjs",
+    "start": "next start",
+    "package": "node scripts/package.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
