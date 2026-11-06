@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, CircleCheck } from 'lucide-react'
-import type { Service } from '@/payload-types'
+import type { Service } from '@/types/content'
 import { IconTile } from '@/components/ui/Icon'
 import { getImage } from '@/lib/media'
 import styles from './ServiceCards.module.css'

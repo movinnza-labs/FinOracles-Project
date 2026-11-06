@@ -1,48 +1,21 @@
 import type { NextConfig } from 'next'
-import { withPayload } from '@payloadcms/next/withPayload'
 
-const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
-
-const remotePatterns: NonNullable<NextConfig['images']>['remotePatterns'] = [
-  new URL(`${serverURL}/**`),
-]
-
-// Allow media served straight from an S3-compatible bucket (e.g. Cloudflare R2).
-if (process.env.S3_PUBLIC_URL) remotePatterns.push(new URL(`${process.env.S3_PUBLIC_URL.replace(/\/$/, '')}/**`))
-
+/**
+ * The site is exported as plain static files (`npm run build` → `out/`), which are
+ * uploaded to Hostinger's public_html. No Node.js server or database is needed.
+ * Security and cache headers live in public/.htaccess (Next's headers() does not
+ * apply to static exports).
+ */
 const nextConfig: NextConfig = {
+  output: 'export',
+  // /about → out/about/index.html, which Apache serves without rewrite rules.
+  trailingSlash: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  // Caps build workers (and the database connections they would open).
-  experimental: { cpus: 4 },
   images: {
-    // AVIF costs much more CPU and memory to generate than WebP.
-    formats: ['image/webp'],
-    qualities: [75, 85],
-    // Generate each image size once; uploads get unique filenames, so stale copies are not a risk.
-    minimumCacheTTL: 60 * 60 * 24 * 365,
-    // Defaults minus 2048 and 3840, which no layout here needs.
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    localPatterns: [{ pathname: '/images/**' }, { pathname: '/api/media/file/**' }],
-    remotePatterns,
-  },
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-        ],
-      },
-      {
-        source: '/images/:path*',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
-      },
-    ]
+    // There is no image server on static hosting; the images in /public are already WebP.
+    unoptimized: true,
   },
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+export default nextConfig

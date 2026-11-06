@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { CircleCheck } from 'lucide-react'
-import type { HomePage } from '@/payload-types'
+import type { HomePage } from '@/types/content'
 import { getImage } from '@/lib/media'
 import { noBreakHyphens, toParagraphs } from '@/lib/text'
 import styles from './About.module.css'

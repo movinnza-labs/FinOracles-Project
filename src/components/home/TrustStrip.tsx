@@ -1,4 +1,4 @@
-import type { SiteSetting } from '@/payload-types'
+import type { SiteSetting } from '@/types/content'
 import styles from './TrustStrip.module.css'
 
 export function TrustStrip({ settings }: { settings: SiteSetting }) {

@@ -2,10 +2,16 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { RenderBlocks } from '@/components/blocks/RenderBlocks'
 import { PageHero } from '@/components/sections/PageHero'
-import { getPageBySlug, getSiteSettings } from '@/lib/queries'
+import { getPageBySlug, getPages, getSiteSettings } from '@/lib/queries'
 import { buildMetadata } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
+
+export const dynamicParams = false
+
+export async function generateStaticParams() {
+  return (await getPages()).filter((p) => p.slug).map((p) => ({ slug: p.slug as string }))
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params

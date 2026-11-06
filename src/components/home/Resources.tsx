@@ -1,4 +1,4 @@
-import type { HomePage } from '@/payload-types'
+import type { HomePage } from '@/types/content'
 import { CmsLink } from '@/components/ui/CmsLink'
 import { IconTile } from '@/components/ui/Icon'
 import { SectionHead } from '@/components/ui/SectionHead'

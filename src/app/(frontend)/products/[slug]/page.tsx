@@ -18,6 +18,12 @@ import styles from './product.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
 
+export const dynamicParams = false
+
+export async function generateStaticParams() {
+  return (await getProducts()).filter((p) => p.slug).map((p) => ({ slug: p.slug as string }))
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const [product, settings] = await Promise.all([getProductBySlug(slug), getSiteSettings()])

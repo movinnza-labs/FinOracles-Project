@@ -2,13 +2,13 @@ node_modules
 .next
 out
 build
-/media
 .env
 .env*.local
-.env.production
-deploy/hostinger/.env.production
 *.tsbuildinfo
 next-env.d.ts
 npm-debug.log*
 .DS_Store
+finoracles-site.zip
+/media
 /.pgdata
+deploy/

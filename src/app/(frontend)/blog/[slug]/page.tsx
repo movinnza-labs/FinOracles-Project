@@ -3,19 +3,25 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import type { Category } from '@/payload-types'
+import type { Category } from '@/types/content'
 import { PostCard, PostGrid } from '@/components/blog/PostCard'
 import { PageHero } from '@/components/sections/PageHero'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { RichText } from '@/components/ui/RichText'
 import { getImage } from '@/lib/media'
-import { getPostBySlug, getPostsPage, getSiteSettings } from '@/lib/queries'
+import { getLatestPosts, getPostBySlug, getPosts, getSiteSettings } from '@/lib/queries'
 import { articleSchema } from '@/lib/schema'
 import { buildMetadata } from '@/lib/seo'
 import { formatDate } from '@/lib/text'
 import styles from './post.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
+
+export const dynamicParams = false
+
+export async function generateStaticParams() {
+  return (await getPosts()).filter((p) => p.slug).map((p) => ({ slug: p.slug as string }))
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
@@ -36,12 +42,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params
-  const [post, recent] = await Promise.all([getPostBySlug(slug), getPostsPage(1, 4)])
+  const [post, recent] = await Promise.all([getPostBySlug(slug), getLatestPosts(4)])
   if (!post) notFound()
 
   const cover = getImage(post.coverImage)
   const categories = (post.categories ?? []).filter((c): c is Category => typeof c === 'object')
-  const related = recent.docs.filter((p) => p.slug !== post.slug).slice(0, 3)
+  const related = recent.filter((p) => p.slug !== post.slug).slice(0, 3)
 
   return (
     <>

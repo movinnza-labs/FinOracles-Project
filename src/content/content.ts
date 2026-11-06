@@ -150,8 +150,8 @@ const productDetails: Record<
 
 /**
  * All default website content, taken from the approved FinOracles design.
- * `img` resolves an image key to whatever the caller needs: a Media ID when
- * seeding the database, or a static Media-like object for the pre-seed fallback.
+ * `img` resolves an image key to
+ * a static Media-like object pointing at /public/images (see lib/content.ts).
  */
 export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
   const phone = { display: '+91 920 930 9822', number: '+919209309822' }
@@ -510,13 +510,12 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
     logins: {
       enabled: true,
       heading: 'Access Your Account',
-      lead: 'Secure login for clients, partners, and employees.',
+      lead: 'Secure login for clients and partners.',
       items: [
         {"label":"Client Login","icon":"wallet","url":"https://ewa.njindiaonline.com/ewa/login","newTab":true,"audience":"client","description":"Your E-Wealth Account: view your portfolio, invest online and download statements.","features":[{"text":"View your complete portfolio and holdings"},{"text":"Invest, redeem and start SIPs online"},{"text":"Download statements and capital gains reports"}]},
         {"label":"NJ Partner Login","icon":"briefcase","url":"https://www.njindiaonline.com/pdesk/login.fin?cmdAction=login","newTab":true,"audience":"partner","description":"Partner desk for NJ Wealth partners."},
         {"label":"Star Atom Login","icon":"heart-pulse","url":"https://atompro.starhealth.in/sso/login","newTab":true,"audience":"partner","description":"Star Health portal for insurance advisors."},
         {"label":"ABSLI Login","icon":"shield-check","url":"https://lifeinsurancepartners.adityabirlacapital.com","newTab":true,"audience":"partner","description":"Aditya Birla Sun Life Insurance partner portal."},
-        {"label":"Employee Login","icon":"lock","url":"/admin","newTab":false,"audience":"employee","description":"FinOracles team access to the website CMS."},
       ],
     },
     contact: {

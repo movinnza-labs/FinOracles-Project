@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { BadgeCheck, Info, Mail, Phone } from 'lucide-react'
-import type { Footer as FooterData, SiteSetting } from '@/payload-types'
+import type { Footer as FooterData, SiteSetting } from '@/types/content'
 import { CmsLink } from '@/components/ui/CmsLink'
 import { getImage } from '@/lib/media'
 import { telHref } from '@/lib/text'

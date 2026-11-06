@@ -1,4 +1,4 @@
-import type { HomePage } from '@/payload-types'
+import type { HomePage } from '@/types/content'
 import { ButtonLink } from '@/components/ui/CmsLink'
 import { IconTile } from '@/components/ui/Icon'
 import styles from './Tools.module.css'

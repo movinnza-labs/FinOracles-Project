@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import type { HomePage } from '@/payload-types'
+import type { HomePage } from '@/types/content'
 import { Icon } from '@/components/ui/Icon'
 import { getImage } from '@/lib/media'
 import { Paragraphs } from '@/lib/text'

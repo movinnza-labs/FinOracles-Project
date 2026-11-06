@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getSitemapEntries } from '@/lib/queries'
 import { absoluteURL } from '@/lib/url'
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-static'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { pages, posts, services, products } = await getSitemapEntries()

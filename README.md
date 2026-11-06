@@ -1,148 +1,123 @@
 # FinOracles Website
 
-Next.js 16 frontend + Payload CMS 3 + PostgreSQL, deployed on Hostinger.
+Next.js 16 site exported as **plain static files** and hosted on **Hostinger** web hosting.
+There is no admin panel, no database and no Node.js server in production.
 
 ```
-Nginx (HTTPS) ──▶ Next.js (App Router) ──Local API──▶ Payload CMS ──▶ PostgreSQL
-                  └────────────── one Node.js app (PM2) ──────────────┘
+npm run build  ──▶  out/  (HTML, CSS, JS, images, .htaccess, contact.php)  ──▶  Hostinger public_html
 ```
 
-Payload runs inside the same Next.js app, so the site reads content through Payload's
-Local API with no HTTP hop. The admin panel is at **`/admin`**.
+The contact / call-back forms post to `contact.php` (PHP, which every Hostinger web
+hosting plan runs). It emails each enquiry and also saves it to a CSV file.
 
 ## Tech stack
 
-| Layer    | Choice                                                                   |
-| -------- | ------------------------------------------------------------------------ |
-| Frontend | Next.js 16 (App Router, React 19, Turbopack), `next/image`, `next/font`  |
-| Styling  | Plain CSS: global tokens/primitives in `src/styles`, CSS Modules per component |
-| CMS      | Payload 3 (Lexical rich text, SEO plugin, drafts + preview)              |
-| Database | PostgreSQL via `@payloadcms/db-postgres`, versioned migrations           |
-| Hosting  | Hostinger VPS: Nginx + PM2 (`deploy/hostinger/`)                         |
+| Layer    | Choice                                                                    |
+| -------- | ------------------------------------------------------------------------- |
+| Frontend | Next.js 16 (App Router, React 19), `output: 'export'`, `next/font`        |
+| Styling  | Plain CSS: tokens/primitives in `src/styles`, CSS Modules per component   |
+| Content  | Typed data in `src/content/content.ts` (no CMS)                           |
+| Forms    | `public/contact.php` (PHP `mail()` + CSV backup)                          |
+| Hosting  | Hostinger web hosting (Premium / Business / Cloud) — Apache/LiteSpeed     |
 
 ## Project structure
 
 ```
 src/
-├─ app/
-│  ├─ (frontend)/          Public site: home, [slug] pages, services, blog, preview, healthz
-│  ├─ (payload)/           Payload admin + REST API (/admin, /api)
-│  ├─ sitemap.ts           Dynamic XML sitemap (pages, posts, services; respects noindex)
-│  └─ robots.ts
-├─ collections/            Pages, Posts, Categories, Services, Products, TeamMembers, Media, Enquiries, Users
-├─ globals/                HomePage, Header, Footer, SiteSettings
-├─ blocks/                 Page-builder blocks for the Pages collection
-├─ fields/                 Reusable field configs (slug, link, icon, SEO tab)
-├─ hooks/revalidate.ts     Expires cached content when editors save
-├─ components/
-│  ├─ layout/              Header, Footer, disclaimer, WhatsApp button, scroll reveal
-│  ├─ home/                Homepage sections (hero, products explorer, team…)
-│  ├─ sections/            Shared sections (services grid, contact, stats, page hero)
-│  ├─ blocks/              Renders CMS page blocks
-│  ├─ blog/  forms/  ui/
-├─ lib/                    Data layer (queries.ts), SEO metadata, JSON-LD schema, helpers
-├─ styles/                 tokens.css · base.css · ui.css (design system)
-├─ seed/                   Default content + seed script
-└─ migrations/             Database migrations (committed)
+├─ app/(frontend)/     Pages: home, about, products, services, tools, blog, contact, login, [slug]
+├─ app/sitemap.ts      sitemap.xml (generated at build)
+├─ app/robots.ts       robots.txt
+├─ content/            ALL website text, products, team, blog posts, pages  ← edit here
+├─ components/         Layout, homepage sections, forms, UI
+├─ lib/                Data access (queries.ts), SEO, JSON-LD, helpers
+├─ styles/             Design system CSS
+└─ types/content.ts    Types for the content
+public/
+├─ images/             Site images (WebP)
+├─ contact.php         Enquiry form handler
+└─ .htaccess           HTTPS redirect, security + cache headers, 404 page
 ```
 
 ## Local development
 
-Requires Node `^22.23.4 || >=24.22.1` and a PostgreSQL database.
+Requires Node.js 20.9 or newer.
 
 ```bash
-cp .env.example .env          # set DATABASE_URL and PAYLOAD_SECRET
 npm install
-npm run dev                   # http://localhost:3000; admin at /admin
-npm run seed                  # loads the FinOracles content and images into the CMS
+npm run dev          # http://localhost:3000
 ```
 
-In development Payload syncs the schema automatically. Before the site is seeded it
-renders the bundled default content (`src/seed/content.ts`), so it never appears empty.
+## Changing content
 
-### Project-local database (optional)
+All text lives in **`src/content/content.ts`**: site settings (phones, emails, address,
+ARN, socials, disclaimer), header menu, footer, every homepage section, products (with
+FAQs and highlights), team, services, blog posts and the Privacy Policy / Disclaimer pages.
 
-Instead of a system-wide PostgreSQL login, you can keep a database cluster inside the
-project (`./.pgdata`, ignored by git) on port 5433, using the installed PostgreSQL binaries:
+- Images: put a WebP file in `public/images/finoracles/` and register it in `src/content/images.ts`.
+- Blog posts and pages use simple blocks — see `src/content/lexical.ts` (`'paragraph'`, `{ h2 }`, `{ h3 }`, `{ ul: [...] }`, `{ quote }`).
+- After any change: build and upload again (below).
 
-```bash
-initdb -D .pgdata -U postgres -W -A scram-sha-256 -E UTF8   # once; choose a password
-npm run db:start                                            # after every reboot
-createdb -h localhost -p 5433 -U postgres finoracles        # once
-# .env: DATABASE_URL=postgresql://postgres:<password>@localhost:5433/finoracles
-```
-
-`npm run db:stop` and `npm run db:status` stop it and report whether it is running.
-
-### Changing the schema
-
-After editing a collection, global or block:
-
-```bash
-npm run generate:types        # refresh src/payload-types.ts
-npm run migrate:create -- my-change
-```
-
-Commit the new file in `src/migrations/`. Production applies it on the next deploy.
-If you add custom admin components, also run `npm run generate:importmap`.
+> The three blog posts and the Privacy Policy are sample text. Have them reviewed before launch.
 
 ## Deploying to Hostinger
 
-Full step-by-step guide: **[deploy/hostinger/README.md](deploy/hostinger/README.md)**
-(server setup, PostgreSQL, moving existing content, domain + HTTPS, updates and backups).
+Works on any Hostinger **web hosting** plan (Premium, Business, Cloud). No Node.js app,
+database or VPS is needed.
 
-In short, on a Hostinger VPS:
+### 1. Build the upload file (on your computer)
 
 ```bash
-npm ci
-npm run migrate        # applies src/migrations (non-destructive)
-npm run build
-pm2 start deploy/hostinger/ecosystem.config.cjs
+npm install
+npm run package
 ```
 
-Later updates: `bash deploy/hostinger/deploy.sh` (backup → pull → install → migrate → build →
-PM2 reload → `/healthz` check). Production settings: `deploy/hostinger/env.production.example`.
+This builds the site into `out/` and creates **`finoracles-site.zip`**.
+Canonical URLs and the sitemap use `https://finoracles.com` (set in `.env.production`;
+change it there if the domain is different, then rebuild).
 
-Optional: set `SMTP_*` and `ENQUIRY_NOTIFY_TO` to get an email for each contact-form enquiry.
-Enquiries are always saved under **Admin → Enquiries**.
+### 2. Upload
 
-All secrets are environment variables. None are hard-coded (see `.env.example`).
+1. hPanel → **Websites → Manage → File Manager** → open **`public_html`**.
+2. First time only: delete or move away old files there (e.g. the default `default.php`,
+   or an old WordPress install — take a backup first).
+3. **Upload** `finoracles-site.zip` into `public_html`, right-click it → **Extract** → extract
+   into `public_html` itself (not a sub-folder). Then delete the zip.
+4. Check that `public_html` now directly contains `index.html`, `.htaccess`, `contact.php`,
+   `_next/`, `images/`, `about/` … (enable *Show hidden files* to see `.htaccess`).
 
-## Managing content
+Updating later: repeat steps 1 and 3. Delete the old `_next` folder before extracting so old
+build files don't pile up (the CSV of enquiries is outside `public_html`, so it is safe).
 
-| What                                         | Where in `/admin`                 |
-| -------------------------------------------- | --------------------------------- |
-| Every homepage section (hero carousel, stats, logins…) | Globals → Homepage, one tab per section |
-| Logo, phones, emails, address, socials, ARN, regulators, disclaimer, default SEO | Globals → Site Settings |
-| Navigation menu and header button            | Globals → Header & Navigation     |
-| Footer text and link columns                 | Globals → Footer                  |
-| Products: homepage explorer + landing pages at /products/[slug] (highlights, FAQs, SEO) | Content → Products |
-| Menu, top bar (phone, email, ARN, Client Login), Free Consultation button | Globals → Header & Navigation |
-| Consultation banner above the footer, legal links | Globals → Footer |
-| Leads from the website (name, phone, product, callback time, status, notes) | Admin → Enquiries |
-| Team                                         | Content → Team (tick *Featured leader* for the large card) |
-| Services (homepage grid + `/services/[slug]`) | Content → Services               |
-| Blog                                         | Blog → Posts / Categories         |
-| Standalone pages (`/privacy-policy`, `/disclaimer`, etc.) | Content → Pages (block builder) |
+### 3. Domain and HTTPS
 
-Pages, posts, services and the homepage each have an **SEO** tab for the meta title,
-description, social image, canonical URL and noindex. Pages and posts support drafts.
-Use **Preview** to view a draft on the live site while logged in.
+- hPanel → **Security → SSL** → install the free SSL for the domain.
+- `.htaccess` redirects `http://` → `https://` and `www.` → the bare domain.
 
-Site pages: `/`, `/about`, `/products`, `/products/[slug]`, `/services`, `/services/[slug]`, `/tools` (SIP, lumpsum and goal calculators), `/blog`, `/contact`, `/login`, plus CMS pages such as `/privacy-policy`.
+### 4. Contact form email
 
-The three seeded blog posts and the Privacy Policy are drafts. Have them reviewed before launch.
+1. hPanel → **Emails** → create the mailbox **`no-reply@finoracles.com`** (the sender address).
+   Mail sent "from" an address that is not on your domain is often rejected.
+2. Enquiries are sent to **`connect@finoracles.com`**. To change either address, edit the
+   constants at the top of `public/contact.php` and rebuild/upload (or edit the file
+   directly in File Manager).
+3. Every enquiry is also saved to `finoracles-enquiries/enquiries.csv` **one level above
+   `public_html`** (not reachable from the web). Download it from File Manager and open it
+   in Excel / Google Sheets.
+4. Test: submit the form on `/contact/` and check the inbox (and the spam folder).
+
+### Troubleshooting
+
+| Problem | Fix |
+| --- | --- |
+| Pages show 403 / directory listing | Files were extracted into a sub-folder; move them directly into `public_html`. |
+| Old site still shows | Clear the cache in hPanel (**Performance → Cache Manager**) and the browser. |
+| Form says "something went wrong" | Check PHP is ≥ 7.4 (hPanel → **Advanced → PHP Configuration**) and that `contact.php` is in `public_html`. |
+| Emails not arriving | Create the `no-reply@` mailbox, check spam; the lead is still in `enquiries.csv`. |
 
 ## SEO and performance
 
-- Per-page `<title>`, meta description, canonical URL, Open Graph and Twitter tags, built
-  from CMS fields with site-wide fallbacks (`src/lib/seo.ts`)
+- Per-page title, description, canonical URL, Open Graph and Twitter tags (`src/lib/seo.ts`)
 - JSON-LD: FinancialService/LocalBusiness, WebSite, BreadcrumbList, BlogPosting, Service, FAQPage
-- `/sitemap.xml` and `/robots.txt` generated from live content
-- Semantic landmarks, one `h1` per page, a skip link, accessible tabs and forms
-- `next/image` with AVIF/WebP, responsive `sizes`, lazy loading below the fold, and
-  `priority` on the hero
-- Self-hosted Plus Jakarta Sans via `next/font` (no layout shift)
-- Content is cached by tag and expired when an editor saves, so pages are fast and edits
-  go live immediately
-- Animations respect `prefers-reduced-motion`
+- `/sitemap.xml` and `/robots.txt` generated at build time
+- Fully static HTML: fast, cacheable, nothing to crash or run out of memory
+- Self-hosted Plus Jakarta Sans via `next/font`; animations respect `prefers-reduced-motion`

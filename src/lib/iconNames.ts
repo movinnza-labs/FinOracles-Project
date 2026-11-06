@@ -1,6 +1,6 @@
 /**
  * Icon keys available to editors in the CMS. Kept free of React imports so the
- * Payload config can load it; the matching components live in components/ui/Icon.tsx.
+ * content types can use it; the matching components live in components/ui/Icon.tsx.
  */
 export const iconNames = [
   'award',
