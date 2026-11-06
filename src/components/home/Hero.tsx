@@ -1,5 +1,5 @@
 import { BadgeCheck, Phone } from 'lucide-react'
-import type { HomePage } from '@/types/content'
+import type { HomePage } from '@/payload-types'
 import { ButtonLink } from '@/components/ui/CmsLink'
 import { getImage } from '@/lib/media'
 import { toParagraphs } from '@/lib/text'

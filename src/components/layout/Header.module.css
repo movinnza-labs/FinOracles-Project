@@ -48,6 +48,7 @@
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--text);
+  white-space: nowrap;
   transition: color var(--duration-fast);
 }
 
@@ -290,6 +291,31 @@
 
   .phone {
     display: none;
+  }
+}
+
+/* Small laptops: eight menu items plus the button need a slightly tighter menu to fit one line. */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .bar {
+    gap: var(--space-4);
+  }
+
+  .nav ul {
+    gap: 0;
+  }
+
+  .nav a {
+    padding-inline: 0.4rem;
+    font-size: 0.82rem;
+  }
+
+  .nav a::after {
+    left: 0.4rem;
+    right: 0.4rem;
+  }
+
+  .bar .cta {
+    padding-inline: var(--space-4);
   }
 }
 

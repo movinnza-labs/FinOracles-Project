@@ -2,36 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useActionState } from 'react'
 import { CircleAlert, CircleCheck, Send } from 'lucide-react'
+import { submitEnquiry, type EnquiryState } from '@/lib/actions/enquiry'
 import styles from './EnquiryForm.module.css'
 
-type Field = 'name' | 'phone' | 'email' | 'interest' | 'callbackTime' | 'message' | 'consent'
-
-export type EnquiryState = {
-  status: 'idle' | 'success' | 'error'
-  message?: string
-  errors?: Partial<Record<Field, string>>
-}
-
 const initial: EnquiryState = { status: 'idle' }
-
-/** Form handler: src/app/contact.php/route.node.ts (Node app) or hosting/contact.php (static upload). */
-const ENDPOINT = '/contact.php'
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-const FALLBACK_ERROR = 'Sorry, something went wrong. Please call or WhatsApp us instead.'
-
-/** Same rules as contact.php, so most mistakes are shown without a round trip. */
-const validate = (form: FormData): EnquiryState['errors'] => {
-  const v = (name: string) => String(form.get(name) ?? '').trim()
-  const errors: EnquiryState['errors'] = {}
-  if (v('name').length < 2) errors.name = 'Please enter your name.'
-  const digits = v('phone').replace(/\D/g, '')
-  if (digits.length < 10 || digits.length > 13) errors.phone = 'Please enter a valid mobile number.'
-  if (v('email') && !EMAIL_RE.test(v('email'))) errors.email = 'Please enter a valid email address.'
-  if (form.get('consent') !== 'on') errors.consent = 'Please agree so we can contact you.'
-  return errors
-}
 
 export const GENERAL_INTEREST = 'General enquiry'
 const callbackTimes = ['Any time', 'Morning (9 AM – 12 PM)', 'Afternoon (12 PM – 4 PM)', 'Evening (4 PM – 7 PM)']
@@ -43,11 +19,6 @@ type EnquiryFormProps = {
   defaultInterest?: string
   defaultMessage?: string
   submitLabel?: string
-  /**
-   * Pre-fill from the page URL: ?interest=<product name> selects the product and
-   * ?goal=<key> puts goalMessages[key] in the message box (used on /contact).
-   */
-  goalMessages?: Record<string, string>
 }
 
 type ErrorKey = keyof NonNullable<EnquiryState['errors']>
@@ -58,53 +29,11 @@ export function EnquiryForm({
   defaultInterest,
   defaultMessage,
   submitLabel = 'Request a Call Back',
-  goalMessages,
 }: EnquiryFormProps) {
-  const [state, setState] = useState<EnquiryState>(initial)
-  const [pending, setPending] = useState(false)
-  const interestRef = useRef<HTMLSelectElement>(null)
-  const messageRef = useRef<HTMLTextAreaElement>(null)
-
-  // Static pages can't read the query string at build time, so apply it in the browser.
-  useEffect(() => {
-    if (!goalMessages) return
-    const params = new URLSearchParams(window.location.search)
-    const interest = params.get('interest')
-    const goal = params.get('goal')
-    const select = interestRef.current
-    if (interest && select && [...select.options].some((o) => o.value === interest)) select.value = interest
-    if (goal && goalMessages[goal] && messageRef.current && !messageRef.current.value) {
-      messageRef.current.value = goalMessages[goal]
-    }
-  }, [goalMessages])
-
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    const data = new FormData(form)
-    const errors = validate(data)
-    if (errors && Object.keys(errors).length) {
-      setState({ status: 'error', message: 'Please correct the highlighted fields.', errors })
-      return
-    }
-    setPending(true)
-    try {
-      const res = await fetch(ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
-      const json = (await res.json().catch(() => null)) as EnquiryState | null
-      if (res.ok && json?.status === 'success') {
-        form.reset()
-        setState({ status: 'success', message: json.message })
-      } else {
-        setState({ status: 'error', message: json?.message || FALLBACK_ERROR, errors: json?.errors })
-      }
-    } catch {
-      setState({ status: 'error', message: FALLBACK_ERROR })
-    } finally {
-      setPending(false)
-    }
-  }
-
+  // React resets action forms after submit; failed submissions restore values via defaultValue.
+  const [state, action, pending] = useActionState(submitEnquiry, initial)
   const pathname = usePathname()
+  const failed = state.status === 'error'
   const options = [GENERAL_INTEREST, ...interestOptions.filter((o) => o !== GENERAL_INTEREST)]
 
   const errorProps = (name: ErrorKey) =>
@@ -118,7 +47,7 @@ export function EnquiryForm({
     ) : null
 
   return (
-    <form onSubmit={onSubmit} className={styles.form} noValidate>
+    <form action={action} className={styles.form} noValidate>
       {heading && <h3 className={styles.heading}>{heading}</h3>}
 
       <div className={styles.row}>
@@ -132,6 +61,7 @@ export function EnquiryForm({
             type="text"
             required
             autoComplete="name"
+            defaultValue={failed ? state.values?.name : undefined}
             className={styles.input}
             {...errorProps('name')}
           />
@@ -149,6 +79,7 @@ export function EnquiryForm({
             required
             autoComplete="tel"
             placeholder="+91"
+            defaultValue={failed ? state.values?.phone : undefined}
             className={styles.input}
             {...errorProps('phone')}
           />
@@ -165,6 +96,7 @@ export function EnquiryForm({
           name="email"
           type="email"
           autoComplete="email"
+          defaultValue={failed ? state.values?.email : undefined}
           className={styles.input}
           {...errorProps('email')}
         />
@@ -176,9 +108,8 @@ export function EnquiryForm({
           <label htmlFor="enquiry-interest">Interested in</label>
           <select
             id="enquiry-interest"
-            ref={interestRef}
             name="interest"
-            defaultValue={defaultInterest ?? GENERAL_INTEREST}
+            defaultValue={(failed ? state.values?.interest : undefined) ?? defaultInterest ?? GENERAL_INTEREST}
             className={styles.input}
           >
             {options.map((o) => (
@@ -193,7 +124,7 @@ export function EnquiryForm({
           <select
             id="enquiry-callbackTime"
             name="callbackTime"
-            defaultValue={callbackTimes[0]}
+            defaultValue={(failed ? state.values?.callbackTime : undefined) ?? callbackTimes[0]}
             className={styles.input}
           >
             {callbackTimes.map((t) => (
@@ -211,10 +142,9 @@ export function EnquiryForm({
         </label>
         <textarea
           id="enquiry-message"
-          ref={messageRef}
           name="message"
           rows={3}
-          defaultValue={defaultMessage}
+          defaultValue={(failed ? state.values?.message : undefined) ?? defaultMessage}
           className={styles.input}
         />
       </div>
@@ -225,6 +155,7 @@ export function EnquiryForm({
           name="consent"
           type="checkbox"
           required
+          defaultChecked={failed && !state.errors?.consent}
           {...errorProps('consent')}
         />
         <label htmlFor="enquiry-consent">

@@ -1,0 +1,100 @@
+# FinOracles production stack for a VPS (Hostinger): the app (existing Dockerfile) + PostgreSQL.
+# Nginx runs on the host and proxies to 127.0.0.1:3000. See docs/DEPLOY-VPS.md.
+#
+# All values come from ./.env (copy .env.production.example). Compose reads that file both for
+# ${...} substitution below (including build args) and as the app's runtime environment.
+
+name: finoracles
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '5'
+
+services:
+  db:
+    # PostgreSQL 17. postgres:18+ images store data under /var/lib/postgresql instead; change the volume
+    # target below if you pick 18 or later.
+    image: ${POSTGRES_IMAGE:-postgres:17-bookworm}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+    # Modest settings for a small site on a shared VPS.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - effective_cache_size=1GB
+      - -c
+      - work_mem=8MB
+      - -c
+      - max_connections=30
+    shm_size: 256mb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # No published ports: the database is reachable only by the app on the internal network.
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # The entrypoint starts as root only to switch to the `postgres` user; no privilege gain after.
+    security_opt:
+      - no-new-privileges:true
+    # Time for a clean shutdown (checkpoint) on `docker compose down` / VPS reboot.
+    stop_grace_period: 60s
+    logging: *logging
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # NEXT_PUBLIC_* values are compiled into the build (see Dockerfile / next.config.ts).
+      args:
+        NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL:?Set NEXT_PUBLIC_SERVER_URL in .env}
+        S3_PUBLIC_URL: ${S3_PUBLIC_URL:-}
+    image: finoracles-web:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      # Built from the POSTGRES_* values so the app always matches the db service.
+      # Use a password without URL-special characters (e.g. hex), see .env.production.example.
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    # Loopback only. Docker bypasses UFW, so never publish this as plain "3000:3000".
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      # Uploaded media (Payload `media` collection). MEDIA_DIR=media resolves to /app/media.
+      # Host directory must be owned by uid/gid 1001 (the image's `nextjs` user).
+      - ${MEDIA_HOST_DIR:-/srv/finoracles/media}:/app/media
+    # The image has no curl; use Node's fetch. /healthz also checks the database, and the first
+    # request applies pending Payload migrations, hence the generous start period.
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    mem_limit: ${APP_MEM_LIMIT:-1536m}
+    stop_grace_period: 30s
+    # Runs as the image's non-root `nextjs` user (uid 1001) on an unprivileged port; it needs no
+    # Linux capabilities and may never gain privileges.
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging: *logging
+
+volumes:
+  pgdata:

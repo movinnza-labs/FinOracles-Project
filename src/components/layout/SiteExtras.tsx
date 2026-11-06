@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, BadgeCheck, Lock, Mail, MessageSquareText, Phone } from 'lucide-react'
-import type { Footer, SiteSetting } from '@/types/content'
+import type { Footer, SiteSetting } from '@/payload-types'
 import { SocialIcon } from '@/components/ui/SocialIcon'
 import { telHref } from '@/lib/text'
 import { HideOnPaths } from './HideOnPaths'

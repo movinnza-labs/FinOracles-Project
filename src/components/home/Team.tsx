@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import type { HomePage, TeamMember } from '@/types/content'
+import type { HomePage, TeamMember } from '@/payload-types'
 import { SectionHead } from '@/components/ui/SectionHead'
 import { getImage } from '@/lib/media'
 import styles from './Team.module.css'

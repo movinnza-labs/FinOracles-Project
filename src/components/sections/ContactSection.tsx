@@ -1,5 +1,5 @@
 import { Clock, Mail, MapPin, Phone } from 'lucide-react'
-import type { SiteSetting } from '@/types/content'
+import type { SiteSetting } from '@/payload-types'
 import { EnquiryForm } from '@/components/forms/EnquiryForm'
 import { SectionHead } from '@/components/ui/SectionHead'
 import { SocialIcon, socialLabels } from '@/components/ui/SocialIcon'
@@ -17,8 +17,6 @@ type ContactSectionProps = {
   showMap?: boolean
   defaultInterest?: string
   defaultMessage?: string
-  /** See EnquiryForm: pre-fill interest/message from ?interest= and ?goal=. */
-  goalMessages?: Record<string, string>
   id?: string
   /** Use h1 when this section is the main content of the page (e.g. /contact). */
   headingLevel?: 'h1' | 'h2'
@@ -33,7 +31,6 @@ export async function ContactSection({
   showMap = false,
   defaultInterest,
   defaultMessage,
-  goalMessages,
   id = 'contact',
   headingLevel = 'h2',
 }: ContactSectionProps) {
@@ -140,7 +137,6 @@ export async function ContactSection({
             interestOptions={interestOptions}
             defaultInterest={defaultInterest}
             defaultMessage={defaultMessage}
-            goalMessages={goalMessages}
             submitLabel="Send Message"
           />
         </div>

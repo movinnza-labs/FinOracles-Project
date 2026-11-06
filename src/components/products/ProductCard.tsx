@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import type { Product } from '@/types/content'
+import type { Product } from '@/payload-types'
 import { IconTile } from '@/components/ui/Icon'
 import styles from './ProductCard.module.css'
 

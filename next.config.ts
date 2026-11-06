@@ -1,54 +1,50 @@
 import type { NextConfig } from 'next'
+import { withPayload } from '@payloadcms/next/withPayload'
 
-/**
- * Two ways to host on Hostinger, from the same code:
- *
- * 1. Node.js Web App (deploy from GitHub): `npm run build` + `npm start` (next start).
- *    Every page is still prerendered to static HTML; the only server code is the
- *    contact form at /contact.php (src/app/contact.php/route.node.ts).
- *
- * 2. Static upload to public_html: `npm run package` sets STATIC_EXPORT=1, exports
- *    plain files to out/, adds hosting/.htaccess and hosting/contact.php (PHP form
- *    handler) and zips it. The Node route is left out of that build.
- */
-const isStaticExport = process.env.STATIC_EXPORT === '1'
+const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
-const securityHeaders = [
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+const remotePatterns: NonNullable<NextConfig['images']>['remotePatterns'] = [
+  new URL(`${serverURL}/**`),
 ]
 
+// Allow media served straight from an S3-compatible bucket (e.g. AWS S3, Cloudflare R2).
+if (process.env.S3_PUBLIC_URL) remotePatterns.push(new URL(`${process.env.S3_PUBLIC_URL.replace(/\/$/, '')}/**`))
+
 const nextConfig: NextConfig = {
-  ...(isStaticExport ? { output: 'export' as const } : {}),
-  // Files named *.node.ts(x) only exist in the Node.js build.
-  pageExtensions: isStaticExport ? ['tsx', 'ts'] : ['tsx', 'ts', 'node.ts'],
-  // /about → /about/ (out/about/index.html in the static export).
-  trailingSlash: true,
+  // Self-contained server in .next/standalone; the Dockerfile copies only that into the final image.
+  output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
+  // Caps build workers (and the database connections they would open).
+  experimental: { cpus: 4 },
   images: {
-    // Images in /public are already sized WebP; no image server needed (and none on static hosting).
-    unoptimized: true,
+    // AVIF costs much more CPU and memory to generate than WebP.
+    formats: ['image/webp'],
+    qualities: [75, 85],
+    // Generate each image size once; uploads get unique filenames, so stale copies are not a risk.
+    minimumCacheTTL: 60 * 60 * 24 * 365,
+    // Defaults minus 2048 and 3840, which no layout here needs.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    localPatterns: [{ pathname: '/images/**' }, { pathname: '/api/media/file/**' }],
+    remotePatterns,
   },
-  // Static export ignores headers(); hosting/.htaccess sets them there.
-  ...(isStaticExport
-    ? {}
-    : {
-        async headers() {
-          return [
-            { source: '/:path*', headers: securityHeaders },
-            { source: '/images/:path*', headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }] },
-          ]
-        },
-        async redirects() {
-          return [
-            { source: '/admin/:path*', destination: '/', permanent: true },
-            { source: '/admin', destination: '/', permanent: true },
-          ]
-        },
-      }),
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+      {
+        source: '/images/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+    ]
+  },
 }
 
-export default nextConfig
+export default withPayload(nextConfig, { devBundleServerPackages: false })

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import type { SiteSetting } from '@/types/content'
+import type { SiteSetting } from '@/payload-types'
 import { getImage } from './media'
 import { absoluteURL } from './url'
 
