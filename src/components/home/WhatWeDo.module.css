@@ -40,3 +40,17 @@
     border-top: 1px solid var(--line);
   }
 }
+
+/* Card title linking to the matching page (e.g. Financial Planning → /services). */
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--duration-base);
+}
+
+.link:hover,
+.link:focus-visible {
+  text-decoration-color: currentColor;
+}

@@ -6,3 +6,7 @@
 .group :global(.h2) {
   font-size: clamp(1.4rem, 1.2rem + 0.9vw, 1.9rem);
 }
+
+.groupLink {
+  margin: var(--space-6) 0 0;
+}

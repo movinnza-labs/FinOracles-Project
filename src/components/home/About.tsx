@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { CircleCheck } from 'lucide-react'
 import type { HomePage } from '@/payload-types'
 import { getImage } from '@/lib/media'
-import { noBreakHyphens, toParagraphs } from '@/lib/text'
+import { noBreakHyphens, toParagraphs, withLinks } from '@/lib/text'
 import styles from './About.module.css'
 
 export function About({ data }: { data: HomePage['about'] }) {
@@ -32,7 +32,7 @@ export function About({ data }: { data: HomePage['about'] }) {
           {data.intro && <p className="lead-dark">{noBreakHyphens(data.intro)}</p>}
           {toParagraphs(data.body).map((p, i) => (
             <p key={i} className={styles.body}>
-              {noBreakHyphens(p)}
+              {withLinks(p)}
             </p>
           ))}
           {!!data.values?.length && (

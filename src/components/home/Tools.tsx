@@ -1,9 +1,17 @@
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import type { HomePage } from '@/payload-types'
 import { ButtonLink } from '@/components/ui/CmsLink'
 import { IconTile } from '@/components/ui/Icon'
 import styles from './Tools.module.css'
 
-export function Tools({ data }: { data: HomePage['tools'] }) {
+type ToolsProps = {
+  data: HomePage['tools']
+  /** Our own calculators page, offered before the external partner site (homepage only). */
+  ownTools?: { label: string; url: string } | null
+}
+
+export function Tools({ data, ownTools }: ToolsProps) {
   if (!data?.enabled) return null
   const card = data.card
   return (
@@ -21,7 +29,15 @@ export function Tools({ data }: { data: HomePage['tools'] }) {
               <IconTile name={card.icon} fallback="calculator" />
               <h3 className="h4">{card.title}</h3>
               {card.text && <p>{card.text}</p>}
-              {card.url && <ButtonLink link={card} variant="primary" arrow />}
+              <div className={styles.actions}>
+                {ownTools && (
+                  <Link href={ownTools.url} className="btn btn--primary">
+                    {ownTools.label}
+                    <ArrowRight aria-hidden />
+                  </Link>
+                )}
+                {card.url && <ButtonLink link={card} variant={ownTools ? 'outline' : 'primary'} arrow />}
+              </div>
             </div>
           )}
         </div>

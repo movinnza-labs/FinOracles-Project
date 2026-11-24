@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { PageHero } from '@/components/sections/PageHero'
 import { ContactSection } from '@/components/sections/ContactSection'
 import { getHomePage, getProducts, getSiteSettings } from '@/lib/queries'
+import { JsonLd } from '@/components/ui/JsonLd'
+import { contactPageSchema } from '@/lib/schema'
 import { buildMetadata } from '@/lib/seo'
 
 type Props = { searchParams: Promise<{ interest?: string; goal?: string }> }
@@ -19,8 +21,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     path: '/contact',
     settings,
-    title: 'Contact Us: Free Financial Consultation in Satara',
-    description: `Call, WhatsApp or visit ${settings.legalName} in Satara. Book a free consultation with our financial planning team.`,
+    title: 'Contact FinOracles | Free Financial Consultation in Satara',
+    // Phone and office from Site Settings, so the description always matches the contact details.
+    description: `Call ${settings.phones?.[0]?.display ?? '+91 920 930 9822'}, WhatsApp or visit our office at ZP Chowk, Satara. Book a free consultation with the FinOracles financial planning team.`,
   })
 }
 
@@ -31,9 +34,10 @@ export default async function ContactPage({ searchParams }: Props) {
 
   return (
     <>
+      <JsonLd data={contactPageSchema()} />
       <PageHero
         eyebrow="Contact Us"
-        title="Book a Free Consultation"
+        title="Book a Free Financial Consultation in Satara"
         lead={home.contact?.lead || 'Get in touch with our team for any queries or support.'}
         breadcrumbs={[{ name: 'Contact', path: '/contact' }]}
       />
@@ -44,7 +48,7 @@ export default async function ContactPage({ searchParams }: Props) {
         formHeading="Request a Call Back"
         showMap
         defaultInterest={interest && names.includes(interest) ? interest : undefined}
-        defaultMessage={goal ? goals[goal] : undefined}
+        defaultMessage={goal && Object.hasOwn(goals, goal) ? goals[goal] : undefined}
       />
     </>
   )

@@ -91,6 +91,18 @@ export const seed = async (payload: Payload, { onlyIfEmpty = true }: SeedOptions
     })
   }
 
+  // Drafts: visible only in the admin until an editor publishes them.
+  for (const { category, ...post } of content.draftPosts) {
+    const { totalDocs } = await payload.count({ collection: 'posts', where: { slug: { equals: post.slug } } })
+    if (totalDocs > 0) continue
+    await payload.create({
+      collection: 'posts',
+      data: { ...post, categories: [categoryIds[category]], _status: 'draft' } as never,
+      draft: true,
+      context,
+    })
+  }
+
   for (const page of content.pages) {
     await payload.create({ collection: 'pages', data: { ...page, _status: 'published' } as never, context })
   }

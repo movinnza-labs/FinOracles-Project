@@ -50,7 +50,11 @@ export const HomePage: GlobalConfig = {
             {
               name: 'titlePrefix',
               type: 'text',
-              admin: { description: 'Read by screen readers and search engines before the headline (visually hidden).' },
+              label: 'Page heading (H1)',
+              admin: {
+                description:
+                  'The homepage’s main heading for search engines, shown in small type above the rotating headline. Keep it to the main keyword, e.g. "Financial Advisor & Mutual Fund Distributor in Satara".',
+              },
             },
             { name: 'title', type: 'text', required: true, defaultValue: 'Wings for a Wealthy Future' },
             { name: 'lead', type: 'textarea' },
@@ -111,7 +115,12 @@ export const HomePage: GlobalConfig = {
               name: 'items',
               type: 'array',
               maxRows: 3,
-              fields: [iconField(), { name: 'title', type: 'text', required: true }, { name: 'text', type: 'textarea' }],
+              fields: [
+                iconField(),
+                { name: 'title', type: 'text', required: true },
+                { name: 'text', type: 'textarea' },
+                { name: 'url', type: 'text', admin: { description: 'Optional link for the card title, e.g. /services' } },
+              ],
             },
           ],
         },
@@ -193,7 +202,7 @@ export const HomePage: GlobalConfig = {
               ],
             },
             { name: 'intro', type: 'textarea', admin: { description: 'First paragraph, set in darker text.' } },
-            paragraphs('body'),
+            paragraphs('body', 'Separate paragraphs with a blank line. Link a phrase with [phrase](/url), e.g. [investment planning](/products/mutual-funds).'),
             {
               name: 'values',
               type: 'array',
@@ -226,7 +235,11 @@ export const HomePage: GlobalConfig = {
             {
               name: 'items',
               type: 'array',
-              fields: [iconField(), { name: 'label', type: 'text', required: true }],
+              fields: [
+                iconField(),
+                { name: 'label', type: 'text', required: true },
+                { name: 'url', type: 'text', admin: { description: 'Optional link, e.g. /products/life-insurance' } },
+              ],
             },
             paragraphs('body'),
             { name: 'image', type: 'upload', relationTo: 'media' },

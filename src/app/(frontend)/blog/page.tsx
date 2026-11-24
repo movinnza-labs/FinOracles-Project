@@ -10,8 +10,12 @@ import styles from './blog.module.css'
 type Props = { searchParams: Promise<{ page?: string; category?: string }> }
 
 const PER_PAGE = 9
-const TITLE = 'Financial Blogs'
+/** Meta title (the " | FinOracles" suffix is added because it fits in 60 characters). */
+const TITLE = 'Personal Finance Blog: Investing Tips'
+const HEADING = 'Personal Finance & Investment Blog'
 const LEAD = 'Expert insights on market trends, investment strategies, and financial planning tips.'
+const DESCRIPTION =
+  'Practical guides on SIPs, mutual funds, retirement planning and insurance from the FinOracles team in Satara. Read our latest articles.'
 
 const buildQuery = (page: number, category?: string) => {
   const q = new URLSearchParams()
@@ -24,7 +28,7 @@ const buildQuery = (page: number, category?: string) => {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { page, category } = await searchParams
   const settings = await getSiteSettings()
-  const meta = buildMetadata({ path: buildQuery(Number(page) || 1, category), settings, title: TITLE, description: LEAD })
+  const meta = buildMetadata({ path: buildQuery(Number(page) || 1, category), settings, title: TITLE, description: DESCRIPTION })
   // Filtered listings are useful to visitors but shouldn't compete with /blog in search.
   return category ? { ...meta, robots: { index: false, follow: true } } : meta
 }
@@ -39,7 +43,7 @@ export default async function BlogIndex({ searchParams }: Props) {
 
   return (
     <>
-      <PageHero eyebrow="Resources" title={TITLE} lead={LEAD} breadcrumbs={[{ name: 'Blog', path: '/blog' }]} />
+      <PageHero eyebrow="Resources" title={HEADING} lead={LEAD} breadcrumbs={[{ name: 'Blog', path: '/blog' }]} />
       <section className="section">
         <div className="container">
           {categories.length > 0 && (

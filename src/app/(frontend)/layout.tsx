@@ -8,7 +8,7 @@ import { CtaBand, MobileActionBar, TopBar, WhatsAppButton } from '@/components/l
 import { JsonLd } from '@/components/ui/JsonLd'
 import { getImage } from '@/lib/media'
 import { productCategories } from '@/lib/compliance'
-import { getFooter, getHeader, getProducts, getSiteSettings } from '@/lib/queries'
+import { getFooter, getHeader, getProducts, getSiteSettings, getTeam } from '@/lib/queries'
 import { organizationSchema, websiteSchema } from '@/lib/schema'
 import { buildMetadata } from '@/lib/seo'
 import { telHref } from '@/lib/text'
@@ -45,11 +45,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FrontendLayout({ children }: { children: ReactNode }) {
-  const [settings, header, footer, products] = await Promise.all([
+  const [settings, header, footer, products, team] = await Promise.all([
     getSiteSettings(),
     getHeader(),
     getFooter(),
     getProducts(),
+    getTeam(),
   ])
   const phone = settings.phones?.[0]
   const productMenu = productCategories
@@ -67,7 +68,7 @@ export default async function FrontendLayout({ children }: { children: ReactNode
     // suppressHydrationWarning only ignores these two elements' own attributes, not their children.
     <html lang="en-IN" className={jakarta.variable} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <JsonLd data={[organizationSchema(settings), websiteSchema(settings)]} />
+        <JsonLd data={[organizationSchema(settings, team.find((m) => m.isLeader)), websiteSchema(settings)]} />
         <a className="skip-link" href="#main">
           Skip to content
         </a>

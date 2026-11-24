@@ -703,6 +703,19 @@ export interface Service {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Links to related pages on this site, shown under the main content, e.g. "Try the SIP calculator" → /tools.
+   */
+  relatedLinks?:
+    | {
+        label: string;
+        /**
+         * A path on this site, e.g. /blog/why-sip-builds-wealth
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -803,6 +816,14 @@ export interface Product {
    */
   idealFor?: string | null;
   /**
+   * A section on the product page. Separate paragraphs with a blank line.
+   */
+  whoShouldConsider?: string | null;
+  /**
+   * A section on the product page, above the "How we help you" steps. Separate paragraphs with a blank line.
+   */
+  howItWorks?: string | null;
+  /**
    * Short name used on enquiry buttons and the form, e.g. "Mutual Funds". Defaults to the name.
    */
   enquiryLabel?: string | null;
@@ -817,6 +838,19 @@ export interface Product {
     | {
         question: string;
         answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Links to related pages on this site, shown under the main content, e.g. "Try the SIP calculator" → /tools.
+   */
+  relatedLinks?:
+    | {
+        label: string;
+        /**
+         * A path on this site, e.g. /blog/why-sip-builds-wealth
+         */
+        url: string;
         id?: string | null;
       }[]
     | null;
@@ -1266,6 +1300,13 @@ export interface ServicesSelect<T extends boolean = true> {
       };
   image?: T;
   content?: T;
+  relatedLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
   meta?:
     | T
     | {
@@ -1298,6 +1339,8 @@ export interface ProductsSelect<T extends boolean = true> {
         id?: T;
       };
   idealFor?: T;
+  whoShouldConsider?: T;
+  howItWorks?: T;
   enquiryLabel?: T;
   image?: T;
   faqs?:
@@ -1305,6 +1348,13 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         question?: T;
         answer?: T;
+        id?: T;
+      };
+  relatedLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
         id?: T;
       };
   meta?:
@@ -1483,7 +1533,7 @@ export interface HomePage {
     badgeText?: string | null;
     badgeHighlight?: string | null;
     /**
-     * Read by screen readers and search engines before the headline (visually hidden).
+     * The homepage’s main heading for search engines, shown in small type above the rotating headline. Keep it to the main keyword, e.g. "Financial Advisor & Mutual Fund Distributor in Satara".
      */
     titlePrefix?: string | null;
     title: string;
@@ -1588,6 +1638,10 @@ export interface HomePage {
             | null;
           title: string;
           text?: string | null;
+          /**
+           * Optional link for the card title, e.g. /services
+           */
+          url?: string | null;
           id?: string | null;
         }[]
       | null;
@@ -1749,7 +1803,7 @@ export interface HomePage {
      */
     intro?: string | null;
     /**
-     * Separate paragraphs with a blank line.
+     * Separate paragraphs with a blank line. Link a phrase with [phrase](/url), e.g. [investment planning](/products/mutual-funds).
      */
     body?: string | null;
     values?:
@@ -1827,6 +1881,10 @@ export interface HomePage {
               )
             | null;
           label: string;
+          /**
+           * Optional link, e.g. /products/life-insurance
+           */
+          url?: string | null;
           id?: string | null;
         }[]
       | null;
@@ -2303,6 +2361,14 @@ export interface SiteSetting {
     postalCode?: string | null;
     country?: string | null;
     mapUrl?: string | null;
+    /**
+     * Office location for Google (schema.org geo), e.g. 17.6868. Copy from Google Maps.
+     */
+    latitude?: number | null;
+    /**
+     * e.g. 74.0183
+     */
+    longitude?: number | null;
   };
   businessHours?: string | null;
   /**
@@ -2393,6 +2459,7 @@ export interface HomePageSelect<T extends boolean = true> {
               icon?: T;
               title?: T;
               text?: T;
+              url?: T;
               id?: T;
             };
       };
@@ -2476,6 +2543,7 @@ export interface HomePageSelect<T extends boolean = true> {
           | {
               icon?: T;
               label?: T;
+              url?: T;
               id?: T;
             };
         body?: T;
@@ -2707,6 +2775,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         postalCode?: T;
         country?: T;
         mapUrl?: T;
+        latitude?: T;
+        longitude?: T;
       };
   businessHours?: T;
   openingHours?: T;

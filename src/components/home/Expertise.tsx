@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { Quote } from 'lucide-react'
 import type { HomePage } from '@/payload-types'
 import { Icon } from '@/components/ui/Icon'
@@ -24,7 +25,13 @@ export function Expertise({ data }: { data: HomePage['expertise'] }) {
               {data.items.map((item) => (
                 <li key={item.id ?? item.label}>
                   <Icon icon={item.icon} />
-                  {item.label}
+                  {item.url ? (
+                    <Link href={item.url} className={styles.link}>
+                      {item.label}
+                    </Link>
+                  ) : (
+                    item.label
+                  )}
                 </li>
               ))}
             </ul>

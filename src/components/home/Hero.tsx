@@ -69,10 +69,18 @@ export function Hero({ hero, phone }: HeroProps) {
         ) : (
           <div>
             {badge}
-            <h1 id="hero-title" className={styles.title}>
-              {hero.titlePrefix && <span className="sr-only">{hero.titlePrefix} </span>}
-              {hero.title}
-            </h1>
+            {hero.titlePrefix ? (
+              <>
+                <h1 id="hero-title" className={styles.heading}>
+                  {hero.titlePrefix}
+                </h1>
+                <p className={styles.title}>{hero.title}</p>
+              </>
+            ) : (
+              <h1 id="hero-title" className={styles.title}>
+                {hero.title}
+              </h1>
+            )}
             {hero.lead && <p className={styles.lead}>{hero.lead}</p>}
             {actions}
             {figures}

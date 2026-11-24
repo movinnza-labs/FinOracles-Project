@@ -11,7 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
       path: '/login',
       settings,
       title: 'Client & Partner Login',
-      description: 'Secure login links for FinOracles clients, partners and employees.',
+      description:
+        'Secure login links for FinOracles clients, partners and employees to view portfolios, invest online and access partner portals.',
     }),
     // Utility page: keep it out of search results.
     robots: { index: false, follow: true },

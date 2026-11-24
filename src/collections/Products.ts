@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { anyone, authenticated } from '../access'
 import { iconField } from '../fields/icon'
+import { relatedLinksField } from '../fields/relatedLinks'
 import { seoTab } from '../fields/seo'
 import { slugField } from '../fields/slug'
 import { revalidateCollection, revalidateCollectionDelete } from '../hooks/revalidate'
@@ -65,6 +66,18 @@ export const Products: CollectionConfig = {
               admin: { description: 'Who this product suits, e.g. "Long-term investors building wealth for goals".' },
             },
             {
+              name: 'whoShouldConsider',
+              type: 'textarea',
+              label: 'Who should consider it',
+              admin: { description: 'A section on the product page. Separate paragraphs with a blank line.' },
+            },
+            {
+              name: 'howItWorks',
+              type: 'textarea',
+              label: 'How it works with FinOracles',
+              admin: { description: 'A section on the product page, above the "How we help you" steps. Separate paragraphs with a blank line.' },
+            },
+            {
               name: 'enquiryLabel',
               type: 'text',
               admin: {
@@ -87,6 +100,7 @@ export const Products: CollectionConfig = {
                 { name: 'answer', type: 'textarea', required: true },
               ],
             },
+            relatedLinksField(),
           ],
         },
         seoTab,

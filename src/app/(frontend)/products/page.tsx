@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import { ProductCard, ProductGrid } from '@/components/products/ProductCard'
 import { PageHero } from '@/components/sections/PageHero'
 import { productCategories } from '@/lib/compliance'
@@ -7,15 +9,20 @@ import { buildMetadata } from '@/lib/seo'
 import styles from './products.module.css'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()])
+  const settings = await getSiteSettings()
   return buildMetadata({
     path: '/products',
     settings,
-    title: 'Financial Products: Mutual Funds, NPS, PMS & Insurance',
+    title: 'Mutual Funds, NPS, PMS & Insurance in Satara | FinOracles',
     description:
-      home.products?.lead ||
-      'Mutual funds, NPS, equity, PMS, loans against mutual funds and insurance from FinOracles, an AMFI-registered distributor in Satara.',
+      'Compare mutual funds, NPS, equity and ETFs, PMS, loans against mutual funds and insurance. FinOracles helps you pick the right product for every goal.',
   })
+}
+
+/** A related page offered under each product group. */
+const groupLinks: Record<string, { label: string; url: string }> = {
+  invest: { label: 'Try the SIP calculator', url: '/tools' },
+  protect: { label: 'Read: how health insurance protects your savings', url: '/blog/health-insurance-protect-savings' },
 }
 
 export default async function ProductsPage() {
@@ -25,7 +32,7 @@ export default async function ProductsPage() {
     <>
       <PageHero
         eyebrow="Our Products"
-        title="The right financial product for every goal"
+        title="Investment & Insurance Products for Every Goal"
         lead={home.products?.lead}
         breadcrumbs={[{ name: 'Products', path: '/products' }]}
       />
@@ -50,6 +57,14 @@ export default async function ProductsPage() {
                   <ProductCard key={p.id} product={p} />
                 ))}
               </ProductGrid>
+              {groupLinks[category.value] && (
+                <p className={styles.groupLink}>
+                  <Link href={groupLinks[category.value].url} className="text-button">
+                    {groupLinks[category.value].label}
+                    <ArrowRight aria-hidden />
+                  </Link>
+                </p>
+              )}
             </div>
           </section>
         )
