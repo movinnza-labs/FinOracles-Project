@@ -28,6 +28,19 @@ const nextConfig: NextConfig = {
     localPatterns: [{ pathname: '/images/**' }, { pathname: '/api/media/file/**' }],
     remotePatterns,
   },
+  // Pages from the previous finoracles.com that Google still lists. 301 (not Next's default 308)
+  // as recommended in the SEO audit. Trailing-slash variants are listed so the old URL redirects in
+  // one hop instead of first being stripped of its slash.
+  async redirects() {
+    const legacy: [string, string][] = [
+      ['/financial-planing', '/services'],
+      ['/money-management', '/services'],
+      ['/loan', '/products/loan-against-mutual-funds'],
+    ]
+    return legacy.flatMap(([source, destination]) =>
+      [source, `${source}/`].map((s) => ({ source: s, destination, statusCode: 301 as const })),
+    )
+  },
   async headers() {
     return [
       {

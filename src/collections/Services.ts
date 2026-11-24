@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { anyone, authenticated } from '../access'
 import { iconField } from '../fields/icon'
+import { relatedLinksField } from '../fields/relatedLinks'
 import { seoTab } from '../fields/seo'
 import { slugField } from '../fields/slug'
 import { revalidateCollection, revalidateCollectionDelete } from '../hooks/revalidate'
@@ -46,6 +47,7 @@ export const Services: CollectionConfig = {
               type: 'richText',
               admin: { description: 'Full description for the service detail page.' },
             },
+            relatedLinksField(),
           ],
         },
         seoTab,

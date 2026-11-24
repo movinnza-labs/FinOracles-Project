@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { PostCard, PostGrid } from '@/components/blog/PostCard'
 import { About } from '@/components/home/About'
 import { Expertise } from '@/components/home/Expertise'
 import { Guidance } from '@/components/home/Guidance'
@@ -17,7 +18,7 @@ import { ContactSection } from '@/components/sections/ContactSection'
 import { ServiceCards } from '@/components/sections/ServiceCards'
 import { StatsStrip } from '@/components/sections/StatsStrip'
 import { SectionHead } from '@/components/ui/SectionHead'
-import { getHomePage, getHomeServices, getProducts, getSiteSettings, getTeam } from '@/lib/queries'
+import { getHomePage, getHomeServices, getPostsPage, getProducts, getSiteSettings, getTeam } from '@/lib/queries'
 import { buildMetadata } from '@/lib/seo'
 import { telHref } from '@/lib/text'
 
@@ -27,12 +28,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [home, settings, products, team, services] = await Promise.all([
+  const [home, settings, products, team, services, latest] = await Promise.all([
     getHomePage(),
     getSiteSettings(),
     getProducts(),
     getTeam(),
     getHomeServices(),
+    getPostsPage(1, 3),
   ])
   const phone = settings.phones?.[0]
 
@@ -89,7 +91,27 @@ export default async function HomePage() {
       )}
 
       <Resources data={home.resources} />
-      <Tools data={home.tools} />
+
+      {latest.docs.length > 0 && (
+        <section className="section" aria-labelledby="latest-articles">
+          <div className="container">
+            <div className="section-head-row">
+              <SectionHead id="latest-articles" heading="Latest articles" />
+              <Link href="/blog" className="btn btn--outline reveal">
+                All articles
+                <ArrowRight aria-hidden />
+              </Link>
+            </div>
+            <PostGrid>
+              {latest.docs.map((post) => (
+                <PostCard key={post.id} post={post} headingLevel="h3" />
+              ))}
+            </PostGrid>
+          </div>
+        </section>
+      )}
+
+      <Tools data={home.tools} ownTools={{ label: 'Try Our SIP Calculators', url: '/tools' }} />
       <Logins data={home.logins} settings={settings} />
 
       {home.contact?.enabled && (

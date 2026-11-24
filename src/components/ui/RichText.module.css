@@ -12,6 +12,12 @@
   margin: 0;
 }
 
+/* `.prose p` above outweighs `.prose > * + *`, so restore the gap between consecutive blocks and a
+   paragraph (headings set their own, smaller gap below). */
+.prose > * + p {
+  margin-top: var(--space-5);
+}
+
 .prose h2 {
   margin: var(--space-10) 0 0;
   font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.85rem);

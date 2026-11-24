@@ -1,19 +1,21 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowRight, ChevronDown, CircleCheck, Info, Phone, Users } from 'lucide-react'
 import { EnquiryForm } from '@/components/forms/EnquiryForm'
 import { ProductCard, ProductGrid } from '@/components/products/ProductCard'
 import { PageHero } from '@/components/sections/PageHero'
+import { RelatedLinks } from '@/components/sections/RelatedLinks'
 import { Icon } from '@/components/ui/Icon'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { SocialIcon } from '@/components/ui/SocialIcon'
 import { complianceNotes, productCategories } from '@/lib/compliance'
 import { getHomePage, getProductBySlug, getProducts, getSiteSettings } from '@/lib/queries'
-import { faqSchema } from '@/lib/schema'
+import { getImage } from '@/lib/media'
+import { faqSchema, productServiceSchema } from '@/lib/schema'
 import { buildMetadata } from '@/lib/seo'
-import { telHref } from '@/lib/text'
-import { absoluteURL } from '@/lib/url'
+import { Paragraphs, telHref } from '@/lib/text'
 import styles from './product.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -52,21 +54,11 @@ export default async function ProductPage({ params }: Props) {
     : null
   const steps = home.guidance?.steps ?? []
   const faqs = product.faqs ?? []
+  const image = getImage(product.image, 'card')
 
   return (
     <>
-      <JsonLd
-        data={{
-          '@context': 'https://schema.org',
-          '@type': 'Service',
-          name: product.name,
-          serviceType: category?.label,
-          description: product.description,
-          provider: { '@id': absoluteURL('/#organization') },
-          areaServed: 'IN',
-          url: absoluteURL(`/products/${product.slug}`),
-        }}
-      />
+      <JsonLd data={productServiceSchema(product, category?.label)} />
       {faqs.length > 0 && <JsonLd data={faqSchema(faqs)} />}
 
       <PageHero
@@ -99,6 +91,11 @@ export default async function ProductPage({ params }: Props) {
       <section className="section">
         <div className={`container ${styles.layout}`}>
           <div className={styles.main}>
+            {image && (
+              <figure className={`${styles.image} reveal`}>
+                <Image src={image.src} alt={image.alt} width={image.width} height={image.height} sizes="(max-width: 1023px) 92vw, 720px" />
+              </figure>
+            )}
             <div className="reveal">
               <h2 className="h3">Overview</h2>
               <p className={styles.description}>{product.description}</p>
@@ -126,9 +123,18 @@ export default async function ProductPage({ params }: Props) {
               </div>
             )}
 
-            {steps.length > 0 && (
-              <div className="reveal">
-                <h2 className="h4">How we help you</h2>
+            {product.whoShouldConsider && (
+              <div className={`${styles.prose} reveal`}>
+                <h2 className="h4">Who should consider it</h2>
+                <Paragraphs text={product.whoShouldConsider} />
+              </div>
+            )}
+
+            {(product.howItWorks || steps.length > 0) && (
+              <div className={`${styles.prose} reveal`}>
+                <h2 className="h4">{product.howItWorks ? 'How it works with FinOracles' : 'How we help you'}</h2>
+                <Paragraphs text={product.howItWorks} />
+                {steps.length > 0 && (
                 <ol className={styles.steps}>
                   {steps.map((step, i) => (
                     <li key={step.id ?? step.title}>
@@ -144,6 +150,7 @@ export default async function ProductPage({ params }: Props) {
                     </li>
                   ))}
                 </ol>
+                )}
               </div>
             )}
 
@@ -163,6 +170,8 @@ export default async function ProductPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            <RelatedLinks links={product.relatedLinks} />
 
             {complianceNotes[product.category] && (
               <p className={styles.note}>

@@ -8,24 +8,27 @@ downtime. Server setup and first start are in [DEPLOY-VPS.md](DEPLOY-VPS.md).
 
 | Placeholder | Meaning | Example |
 | --- | --- | --- |
-| `APEX` | the registered domain | `example.com` |
-| `CANONICAL_HOST` | the host visitors should see (see below) | `example.com` or `www.example.com` |
-| `REDIRECT_HOST` | the other variant, redirected to `CANONICAL_HOST` | `www.example.com` or `example.com` |
+| `APEX` | the registered domain | `finoracles.com` |
+| `CANONICAL_HOST` | the host visitors see: **`finoracles.com`** (no www, see below) | `finoracles.com` |
+| `REDIRECT_HOST` | the other variant, 301-redirected to `CANONICAL_HOST` | `www.finoracles.com` |
 | `VPS_IP` | VPS public IPv4 (hPanel → VPS → Manage → Overview) | `203.0.113.10` |
 | `VPS_IPV6` | VPS IPv6, only if you use it | `2001:db8::10` |
 | `YOUR_EMAIL` | Let's Encrypt expiry notices | `it@example.com` |
 
-**Choosing `CANONICAL_HOST`:** decide whether the site lives at `APEX` or `www.APEX`. If the
-domain already has a website and search engines know it, keep the same choice so links and search
-results stay valid; check which one answers directly:
+**Canonical host: `finoracles.com`, without www.** This is decided and already written into
+`deploy/nginx/*.conf`, `.env.production.example` and `deploy/scripts/check-domain.sh`:
 
-```bash
-curl -sI https://APEX/ | grep -i '^location|^HTTP'
-curl -sI https://www.APEX/ | grep -i '^location|^HTTP'
-```
+- `NEXT_PUBLIC_SERVER_URL=https://finoracles.com` in `.env`, so canonical URLs, the sitemap,
+  Open Graph tags and schema all use the non-www host.
+- Every other variant (`http://`, `www.finoracles.com`) is 301-redirected to
+  `https://finoracles.com` in one hop, keeping the path and query string.
+- The old website's URLs, which Google lists on www (`/financial-planing/`, `/money-management/`,
+  `/loan/`), go straight to their new page in one hop from any variant.
 
-The one that answers `200` is `CANONICAL_HOST`; the other is `REDIRECT_HOST`. For a new domain the
-apex is the usual choice. Set `NEXT_PUBLIC_SERVER_URL=https://CANONICAL_HOST` in `.env`.
+The previous site used www, so after the switch add the **Domain** property `finoracles.com` in
+Google Search Console (it covers both variants), submit `https://finoracles.com/sitemap.xml`, and
+watch the "Page with redirect" report as Google moves the www URLs over. Keep the www DNS record and
+certificate: the redirect must keep working for old links.
 
 ## 1. Where the DNS is managed
 
@@ -94,9 +97,7 @@ Install the virtual host:
 ```bash
 cd /srv/finoracles/app
 sudo cp deploy/nginx/finoracles.conf /etc/nginx/sites-available/finoracles.conf
-sudo sed -i -e 's/REDIRECT_HOST/www.example.com/g' -e 's/CANONICAL_HOST/example.com/g' \
-  /etc/nginx/sites-available/finoracles.conf          # use YOUR two hosts
-grep -n 'CANONICAL_HOST\|REDIRECT_HOST' /etc/nginx/sites-available/finoracles.conf   # must print nothing
+# The hosts (finoracles.com, www.finoracles.com) are already in the file; nothing to substitute.
 sudo ln -sf /etc/nginx/sites-available/finoracles.conf /etc/nginx/sites-enabled/finoracles.conf
 sudo rm -f /etc/nginx/sites-enabled/default        # finoracles.conf has its own default_server
 sudo install -D -m 644 deploy/systemd/nginx-restart.conf /etc/systemd/system/nginx.service.d/restart.conf
@@ -124,7 +125,6 @@ certificate exists.
 ```bash
 sudo mkdir -p /var/www/letsencrypt
 sudo cp deploy/nginx/finoracles-bootstrap.conf /etc/nginx/sites-available/finoracles.conf
-sudo sed -i -e 's/REDIRECT_HOST/www.example.com/g' -e 's/CANONICAL_HOST/example.com/g' /etc/nginx/sites-available/finoracles.conf
 sudo ln -sf /etc/nginx/sites-available/finoracles.conf /etc/nginx/sites-enabled/finoracles.conf
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
@@ -215,7 +215,7 @@ On the VPS (or any Linux/macOS/Git Bash machine with curl and openssl):
 
 ```bash
 cd /srv/finoracles/app
-export CANONICAL_HOST=example.com REDIRECT_HOST=www.example.com VPS_IP=203.0.113.10
+export VPS_IP=203.0.113.10        # hosts default to finoracles.com / www.finoracles.com
 bash deploy/scripts/check-domain.sh --pre-dns        # before the DNS switch
 bash deploy/scripts/check-domain.sh                  # after the DNS switch
 ADMIN_EMAIL=you@example.com bash deploy/scripts/check-domain.sh   # also checks the login cookie

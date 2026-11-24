@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import { Tools } from '@/components/home/Tools'
 import { PageHero } from '@/components/sections/PageHero'
 import { Calculators } from '@/components/tools/Calculators'
+import { JsonLd } from '@/components/ui/JsonLd'
 import { getHomePage, getSiteSettings } from '@/lib/queries'
+import { calculatorsSchema } from '@/lib/schema'
 import { buildMetadata } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -10,9 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     path: '/tools',
     settings,
-    title: 'SIP, Lumpsum & Goal Calculators',
+    title: 'SIP Calculator, Lumpsum & Goal Calculator | FinOracles',
     description:
-      'Free SIP, lumpsum and goal planning calculators. Estimate how your investments could grow and how much to invest for your goals.',
+      'Free SIP, lumpsum and goal calculators. See how your monthly investment could grow and how much to invest to reach your goal. Try it now.',
   })
 }
 
@@ -20,9 +22,10 @@ export default async function ToolsPage() {
   const home = await getHomePage()
   return (
     <>
+      <JsonLd data={calculatorsSchema()} />
       <PageHero
         eyebrow="Financial Tools"
-        title="Plan your investments with our calculators"
+        title="SIP, Lumpsum & Goal Calculators"
         lead="Estimate how a SIP or lumpsum could grow, or find out how much you need to invest each month to reach a goal."
         breadcrumbs={[{ name: 'Tools', path: '/tools' }]}
       />

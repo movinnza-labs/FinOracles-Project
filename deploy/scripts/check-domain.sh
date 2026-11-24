@@ -2,10 +2,11 @@
 # FinOracles domain / HTTPS / security validation. Read-only: only GET/HEAD/OPTIONS requests, plus an
 # optional single admin login + logout to inspect the auth cookie.
 #
-#   CANONICAL_HOST=example.com REDIRECT_HOST=www.example.com VPS_IP=203.0.113.10 \
-#     bash deploy/scripts/check-domain.sh --pre-dns     # before the DNS switch: talks to VPS_IP directly
-#   CANONICAL_HOST=... REDIRECT_HOST=... VPS_IP=... \
-#     bash deploy/scripts/check-domain.sh               # after the switch: also checks public DNS
+#   VPS_IP=203.0.113.10 bash deploy/scripts/check-domain.sh --pre-dns   # before the DNS switch: talks to VPS_IP directly
+#   VPS_IP=203.0.113.10 bash deploy/scripts/check-domain.sh             # after the switch: also checks public DNS
+#
+# The site is https://finoracles.com (no www). CANONICAL_HOST and REDIRECT_HOST default to
+# finoracles.com and www.finoracles.com; set them only to test another domain.
 #
 # Optional:
 #   ADMIN_EMAIL=you@example.com   also log in once (password prompted, hidden) to check
@@ -13,8 +14,8 @@
 # Needs: curl, openssl; dig (dnsutils) optional. Runs on the VPS, Linux, macOS or Git Bash.
 set -uo pipefail
 
-: "${CANONICAL_HOST:?set CANONICAL_HOST (e.g. example.com)}"
-: "${REDIRECT_HOST:?set REDIRECT_HOST (e.g. www.example.com)}"
+: "${CANONICAL_HOST:=finoracles.com}"
+: "${REDIRECT_HOST:=www.finoracles.com}"
 : "${VPS_IP:?set VPS_IP (the VPS public IPv4)}"
 PRE_DNS=0; [ "${1:-}" = "--pre-dns" ] && PRE_DNS=1
 BASE="https://$CANONICAL_HOST"
@@ -69,6 +70,14 @@ check_redirect "http://$CANONICAL_HOST/about?check=1" "$BASE/about?check=1"
 check_redirect "http://$REDIRECT_HOST/about?check=1"  "$BASE/about?check=1"
 check_redirect "https://$REDIRECT_HOST/about?check=1" "$BASE/about?check=1"
 check_redirect "http://$CANONICAL_HOST/"              "$BASE/"
+
+# Old-website URLs (Google lists them on www) go straight to their new page in one hop.
+for host in "$REDIRECT_HOST" "$CANONICAL_HOST"; do
+  check_redirect "https://$host/financial-planing/" "$BASE/services"
+  check_redirect "https://$host/money-management/"  "$BASE/services"
+  check_redirect "https://$host/loan/"              "$BASE/products/loan-against-mutual-funds"
+done
+check_redirect "http://$REDIRECT_HOST/loan/" "$BASE/products/loan-against-mutual-funds"
 
 # ── Certificate ─────────────────────────────────────────────────────────────
 section "Certificate"

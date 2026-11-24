@@ -71,6 +71,17 @@ export const SiteSettings: GlobalConfig = {
                   ],
                 },
                 { name: 'mapUrl', type: 'text', label: 'Google Maps link' },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'latitude',
+                      type: 'number',
+                      admin: { description: 'Office location for Google (schema.org geo), e.g. 17.6868. Copy from Google Maps.' },
+                    },
+                    { name: 'longitude', type: 'number', admin: { description: 'e.g. 74.0183' } },
+                  ],
+                },
               ],
             },
             { name: 'businessHours', type: 'text', defaultValue: 'Monday - Saturday: 9:00 AM - 7:00 PM' },

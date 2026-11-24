@@ -1,10 +1,22 @@
 import Image from 'next/image'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import type { HomePage, TeamMember } from '@/payload-types'
 import { SectionHead } from '@/components/ui/SectionHead'
 import { getImage } from '@/lib/media'
 import styles from './Team.module.css'
 
-export function Team({ data, members }: { data: HomePage['team']; members: TeamMember[] }) {
+/** "Name, Role, FinOracles": says who the person is, not just their name. */
+const photoAlt = (m: TeamMember) => [m.name, m.role, 'FinOracles'].filter(Boolean).join(', ')
+
+type TeamProps = {
+  data: HomePage['team']
+  members: TeamMember[]
+  /** Optional button under the team (used on /about). */
+  cta?: { label: string; url: string }
+}
+
+export function Team({ data, members, cta }: TeamProps) {
   if (!data?.enabled || !members.length) return null
   const leader = members.find((m) => m.isLeader)
   const others = members.filter((m) => m !== leader)
@@ -18,7 +30,7 @@ export function Team({ data, members }: { data: HomePage['team']; members: TeamM
           {leader && (
             <article className={`${styles.leader} reveal`}>
               {leaderPhoto && (
-                <Image src={leaderPhoto.src} alt={leader.name} width={leaderPhoto.width} height={leaderPhoto.height} sizes="(max-width: 767px) 140px, 300px" />
+                <Image src={leaderPhoto.src} alt={photoAlt(leader)} width={leaderPhoto.width} height={leaderPhoto.height} sizes="(max-width: 767px) 140px, 300px" />
               )}
               <div>
                 <h3 className="h4">{leader.name}</h3>
@@ -31,7 +43,7 @@ export function Team({ data, members }: { data: HomePage['team']; members: TeamM
               const photo = getImage(m.photo, 'card')
               return (
                 <li key={m.id} className="reveal">
-                  {photo && <Image src={photo.src} alt={m.name} width={photo.width} height={photo.height} sizes="(max-width: 767px) 45vw, (max-width: 1279px) 22vw, 180px" />}
+                  {photo && <Image src={photo.src} alt={photoAlt(m)} width={photo.width} height={photo.height} sizes="(max-width: 767px) 45vw, (max-width: 1279px) 22vw, 180px" />}
                   <h3 className="h5">{m.name}</h3>
                   <p>{m.role}</p>
                 </li>
@@ -39,6 +51,14 @@ export function Team({ data, members }: { data: HomePage['team']; members: TeamM
             })}
           </ul>
         </div>
+        {cta && (
+          <p className={`${styles.cta} reveal`}>
+            <Link href={cta.url} className="btn btn--primary">
+              {cta.label}
+              <ArrowRight aria-hidden />
+            </Link>
+          </p>
+        )}
       </div>
     </section>
   )

@@ -10,20 +10,27 @@ const fam = { width: 501, height: 489 }
 const portrait = { width: 480, height: 600 }
 
 export const seedImages = {
-  logo: { file: 'finoracles-logo.webp', alt: 'FinOracles', width: 600, height: 198 },
-  retirement: { file: 'family-retirement.webp', alt: 'A happy retired couple standing together', ...fam },
+  // Default share image (Open Graph / social cards), 1200 x 630.
+  og: {
+    file: 'og-default.png',
+    alt: 'FinOracles Services Pvt. Ltd., Wings for a Wealthy Future. AMFI-registered mutual fund distributor, ARN 300933, Satara',
+    width: 1200,
+    height: 630,
+  },
+  logo: { file: 'finoracles-logo.webp', alt: 'FinOracles Services Pvt. Ltd. logo', width: 600, height: 198 },
+  retirement: { file: 'family-retirement.webp', alt: 'Happy retired couple enjoying financial freedom after planning for retirement', ...fam },
   savings: {
     file: 'family-savings.webp',
-    alt: 'A young couple giving a thumbs-up and holding a piggy bank',
+    alt: 'Young couple with a piggy bank, saving and investing regularly for their goals',
     ...fam,
   },
-  child: { file: 'family-child.webp', alt: 'Two children dressed as a doctor and an engineer', ...fam },
+  child: { file: 'family-child.webp', alt: 'Two children dressed as a doctor and an engineer, dreaming of their future careers', ...fam },
   home: {
     file: 'family-home.webp',
     alt: 'A smiling couple holding the keys and a model of their new home',
     ...fam,
   },
-  about: { file: 'about.webp', alt: 'About FinOracles', width: 457, height: 334 },
+  about: { file: 'about.webp', alt: 'Financial advisor reviewing a client portfolio on a tablet, with a city skyline behind', width: 457, height: 334 },
   earning: {
     file: 'just-started-earning.webp',
     alt: 'A young professional checking a phone at a desk',
@@ -32,13 +39,13 @@ export const seedImages = {
   },
   earlyInvestor: {
     file: 'early-investor.webp',
-    alt: 'A pen pointing at a rising market chart',
+    alt: 'Stock market chart trending upward, for new investors starting with equity and ETFs',
     width: 480,
     height: 480,
   },
   expertise: {
     file: 'expertise-growth.webp',
-    alt: 'Hand pointing a pen at a rising market chart',
+    alt: 'Advisor pointing at a rising market chart during a finance review',
     width: 1400,
     height: 2100,
   },

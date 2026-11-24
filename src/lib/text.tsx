@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Fragment, type ReactNode } from 'react'
 
 /** Keeps hyphenated words (e.g. "long-term") from breaking across lines, as in the design. */
@@ -15,6 +16,41 @@ export const noBreakHyphens = (value: string): ReactNode => {
   )
 }
 
+/**
+ * Inline links in CMS textareas: [phrase](/path) or [phrase](https://…). Only site paths and
+ * http(s) URLs are accepted, so a typo or a pasted javascript: link stays plain text.
+ */
+const INLINE_LINK = /\[([^\]\n]+)\]\((\/(?!\/)[^\s)]*|https?:\/\/[^\s)]+)\)/g
+
+/** Text with [phrase](/url) links rendered as links; the rest keeps noBreakHyphens. */
+export const withLinks = (value: string): ReactNode => {
+  const parts = value.split(INLINE_LINK)
+  if (parts.length === 1) return noBreakHyphens(value)
+  const out: ReactNode[] = []
+  for (let i = 0; i < parts.length; i += 3) {
+    if (parts[i]) out.push(<Fragment key={i}>{noBreakHyphens(parts[i])}</Fragment>)
+    const label = parts[i + 1]
+    const href = parts[i + 2]
+    if (label && href) {
+      out.push(
+        href.startsWith('/') ? (
+          <Link key={`l${i}`} href={href}>
+            {label}
+          </Link>
+        ) : (
+          <a key={`l${i}`} href={href} target="_blank" rel="noopener noreferrer">
+            {label}
+          </a>
+        ),
+      )
+    }
+  }
+  return out
+}
+
+/** The same text with [phrase](/url) reduced to "phrase", for meta tags and other plain-text uses. */
+export const stripLinks = (value?: string | null): string => (value ?? '').replace(INLINE_LINK, '$1')
+
 /** Splits CMS textarea content on blank lines. */
 export const toParagraphs = (value?: string | null): string[] =>
   (value ?? '')
@@ -27,7 +63,7 @@ type ParagraphsProps = { text?: string | null; className?: string }
 export function Paragraphs({ text, className }: ParagraphsProps) {
   return toParagraphs(text).map((p, i) => (
     <p key={i} className={className}>
-      {noBreakHyphens(p)}
+      {withLinks(p)}
     </p>
   ))
 }

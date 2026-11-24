@@ -1,0 +1,30 @@
+.links {
+  margin-top: var(--space-6);
+}
+
+.links ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+.links a svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.links a:hover svg {
+  transform: translateX(3px);
+}

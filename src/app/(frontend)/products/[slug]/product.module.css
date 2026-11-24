@@ -218,3 +218,26 @@
     flex: 1 1 100%;
   }
 }
+
+.image {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+}
+
+.image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* "Who should consider it" / "How it works with FinOracles" text sections. */
+.prose > p {
+  margin: 0 0 var(--space-4);
+  font-size: 1.02rem;
+  line-height: 1.8;
+}
+
+.prose > ol {
+  margin-top: var(--space-6);
+}

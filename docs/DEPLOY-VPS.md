@@ -22,8 +22,8 @@ Placeholders used below and in the config files:
 
 | Placeholder | Replace with |
 | --- | --- |
-| `CANONICAL_HOST` | the host the live site uses today (`example.com` or `www.example.com`), see DOMAIN-SSL.md §0 |
-| `REDIRECT_HOST` | the other variant, redirected to `CANONICAL_HOST` |
+| `CANONICAL_HOST` | `finoracles.com` (the site is served without www), see DOMAIN-SSL.md §0 |
+| `REDIRECT_HOST` | `www.finoracles.com`, 301-redirected to `finoracles.com` |
 | `YOUR_EMAIL` | address for Let's Encrypt expiry notices |
 | `<VPS_IP>` | the VPS public IPv4 from hPanel |
 | `<owner>/<repo>` | the GitHub repository |
@@ -91,7 +91,7 @@ nano .env
 Fill in `.env`:
 - `POSTGRES_PASSWORD` — `openssl rand -hex 32`.
 - `PAYLOAD_SECRET` — `openssl rand -hex 32` (generate once, then never change it).
-- `NEXT_PUBLIC_SERVER_URL` — `https://CANONICAL_HOST` (your domain, see DOMAIN-SSL.md §0).
+- `NEXT_PUBLIC_SERVER_URL` — `https://finoracles.com` (no www, no trailing slash; see DOMAIN-SSL.md §0).
 - `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` — the first admin login (strong password).
 - `SMTP_*`, `EMAIL_FROM_*`, `ENQUIRY_NOTIFY_TO` — your mail provider, if you want enquiry emails.
 - Keep `SEED_ON_INIT=true` for the first start and every `S3_*` empty.
@@ -126,8 +126,7 @@ Follow [DOMAIN-SSL.md](DOMAIN-SSL.md) section 4, **Path A**: it issues the HTTPS
 DNS points at the VPS and installs `deploy/nginx/finoracles.conf`. Then validate:
 
 ```bash
-CANONICAL_HOST=example.com REDIRECT_HOST=www.example.com VPS_IP=<VPS_IP> \
-  bash deploy/scripts/check-domain.sh --pre-dns
+VPS_IP=<VPS_IP> bash deploy/scripts/check-domain.sh --pre-dns
 ```
 
 Then test in a browser over real HTTPS: add `<VPS_IP> CANONICAL_HOST REDIRECT_HOST` to the hosts

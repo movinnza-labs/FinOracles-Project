@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { HomePage } from '@/payload-types'
 import { IconTile } from '@/components/ui/Icon'
 import { SectionHead } from '@/components/ui/SectionHead'
@@ -13,7 +14,15 @@ export function WhatWeDo({ data }: { data: HomePage['whatWeDo'] }) {
           {data.items.map((item) => (
             <li key={item.id ?? item.title} className="reveal icon-host">
               <IconTile name={item.icon} />
-              <h3 className="h4">{item.title}</h3>
+              <h3 className="h4">
+                {item.url ? (
+                  <Link href={item.url} className={styles.link}>
+                    {item.title}
+                  </Link>
+                ) : (
+                  item.title
+                )}
+              </h3>
               {item.text && <p>{item.text}</p>}
             </li>
           ))}

@@ -223,6 +223,10 @@ export function Calculators() {
           <Link href="/contact?interest=Mutual%20Funds" className="btn btn--primary">
             Start Investing with Us <ArrowRight aria-hidden />
           </Link>
+          <p className={styles.moreLinks}>
+            <Link href="/products/mutual-funds">Start a SIP</Link>
+            <Link href="/blog/why-sip-builds-wealth">How SIPs work</Link>
+          </p>
           <p className={styles.note}>
             <Info aria-hidden />
             Illustration only, based on the assumed rate of return you choose. Returns are not guaranteed; mutual fund

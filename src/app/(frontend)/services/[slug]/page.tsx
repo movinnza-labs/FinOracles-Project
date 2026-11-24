@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ContactSection } from '@/components/sections/ContactSection'
 import { PageHero } from '@/components/sections/PageHero'
+import { RelatedLinks } from '@/components/sections/RelatedLinks'
 import { IconTile } from '@/components/ui/Icon'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { RichText } from '@/components/ui/RichText'
@@ -53,6 +54,7 @@ export default async function ServicePage({ params }: Props) {
         <div className={`container ${styles.layout}`}>
           <article className="reveal">
             {service.content ? <RichText data={service.content} /> : <p className="lead">{service.summary}</p>}
+            <RelatedLinks links={service.relatedLinks} />
           </article>
           <aside className={styles.aside}>
             {image && (

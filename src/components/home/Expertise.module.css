@@ -111,3 +111,17 @@
     transform: none;
   }
 }
+
+/* Expertise label linking to the matching product or service page. */
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: #ffffff55;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color var(--duration-base);
+}
+
+.link:hover,
+.link:focus-visible {
+  text-decoration-color: currentColor;
+}

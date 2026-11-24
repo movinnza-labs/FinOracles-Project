@@ -1,4 +1,5 @@
 import type { SeedImageKey } from './images'
+import { draftPosts as draftPostSource, productSections, serviceSections } from './expansion'
 import { richText } from './lexical'
 
 /**
@@ -148,6 +149,154 @@ const productDetails: Record<
   },
 }
 
+type Seo = { title: string; description: string }
+type RelatedLink = { label: string; url: string }
+
+const seoMeta = ({ title, description }: Seo) => ({ title, description })
+
+/** Meta title/description (used exactly as written) and "Learn more" links per product page. */
+const productSeo: Record<string, Seo & { relatedLinks: RelatedLink[] }> = {
+  'mutual-funds': {
+    title: 'Mutual Fund Distributor in Satara | Start a SIP | FinOracles',
+    description:
+      'Invest in mutual funds through SIP or lumpsum with an AMFI-registered distributor in Satara. Funds matched to your goals, with regular reviews.',
+    relatedLinks: [
+      { label: 'Try the SIP calculator', url: '/tools' },
+      { label: 'Why a SIP builds wealth steadily', url: '/blog/why-sip-builds-wealth' },
+      { label: 'Our recommended mutual fund portfolio', url: '/services/recommended-mf-portfolio' },
+      { label: 'Need funds? Take a loan against your mutual funds', url: '/products/loan-against-mutual-funds' },
+    ],
+  },
+  nps: {
+    title: 'NPS Account Opening in Satara | National Pension System',
+    description:
+      'Open and manage your National Pension System (NPS) account in Satara. Plan a disciplined retirement corpus with tax benefits. Talk to FinOracles.',
+    relatedLinks: [
+      { label: 'Retirement planning: start earlier than you think', url: '/blog/retirement-planning-start-early' },
+      { label: 'Grow your retirement savings with mutual funds', url: '/products/mutual-funds' },
+    ],
+  },
+  'equity-etfs': {
+    title: 'Invest in Equity & ETFs in Satara | FinOracles',
+    description:
+      'Build long-term wealth with direct equity and low-cost index ETFs. FinOracles in Satara helps with demat opening, allocation and periodic reviews.',
+    relatedLinks: [
+      { label: 'ETF or mutual fund? Explore our mutual fund services', url: '/products/mutual-funds' },
+      { label: 'Portfolio Management Services (PMS)', url: '/products/pms' },
+    ],
+  },
+  pms: {
+    title: 'Portfolio Management Services (PMS) in Satara | FinOracles',
+    description:
+      'SEBI-regulated portfolio management services for investors with ₹50 lakh or more. Personalised, professionally managed portfolios via FinOracles, Satara.',
+    relatedLinks: [
+      { label: 'PMS or mutual fund? Explore our mutual fund services', url: '/products/mutual-funds' },
+      { label: 'Client Desk: your consolidated family wealth report', url: '/services/client-desk' },
+    ],
+  },
+  'loan-against-mutual-funds': {
+    title: 'Loan Against Mutual Funds in Satara | FinOracles',
+    description:
+      'Need cash without selling your investments? Pledge your mutual fund units for a loan with minimal paperwork. Your funds stay invested. Enquire today.',
+    relatedLinks: [
+      { label: 'Mutual fund services', url: '/products/mutual-funds' },
+      { label: 'Track your investments in your E-Wealth account', url: '/services/e-wealth-account' },
+    ],
+  },
+  'health-insurance': {
+    title: 'Health Insurance in Satara | Family Floater Plans',
+    description:
+      'Compare family floater and individual health insurance plans with cashless hospital networks. Get help choosing cover and with claims from FinOracles, Satara.',
+    relatedLinks: [
+      { label: 'How to choose health insurance for your family', url: '/blog/health-insurance-protect-savings' },
+      { label: 'Add personal accident cover', url: '/products/personal-accident-insurance' },
+    ],
+  },
+  'life-insurance': {
+    title: 'Life & Term Insurance in Satara | FinOracles',
+    description:
+      'Protect your family with a term plan or life insurance policy. FinOracles in Satara helps you work out the right cover and compare plans. Free consultation.',
+    relatedLinks: [
+      { label: 'Health insurance for your family', url: '/products/health-insurance' },
+      { label: 'Retirement planning: start earlier than you think', url: '/blog/retirement-planning-start-early' },
+    ],
+  },
+  'personal-accident-insurance': {
+    title: 'Personal Accident Insurance Policy | FinOracles Satara',
+    description:
+      'Cover for accidental death, disability and loss of income at an affordable premium. Get the right personal accident policy with FinOracles, Satara.',
+    relatedLinks: [
+      { label: 'How it differs from health insurance', url: '/products/health-insurance' },
+      { label: 'Life & term insurance', url: '/products/life-insurance' },
+    ],
+  },
+  'vehicle-insurance': {
+    title: 'Car & Bike Insurance in Satara | Vehicle Insurance Renewal',
+    description:
+      'Buy or renew car and two-wheeler insurance in Satara. Third-party and comprehensive plans, zero depreciation add-ons and claim support from FinOracles.',
+    relatedLinks: [{ label: 'Personal accident insurance for riders and drivers', url: '/products/personal-accident-insurance' }],
+  },
+  'overseas-insurance': {
+    title: 'Overseas Travel Insurance for Abroad | FinOracles',
+    description:
+      'Overseas travel insurance for holidays, students and business trips. Cover for medical emergencies, delays and baggage loss abroad. Get a plan today.',
+    relatedLinks: [{ label: 'Health insurance for when you are back home', url: '/products/health-insurance' }],
+  },
+}
+
+/** Meta title/description and "Learn more" links per service page. */
+const serviceSeo: Record<string, Seo & { relatedLinks: RelatedLink[] }> = {
+  'client-desk': {
+    title: 'Client Desk: Consolidated Family Wealth Report | FinOracles',
+    description:
+      "See your family's mutual funds, insurance and other holdings in one consolidated report, with a dedicated relationship manager for reviews.",
+    relatedLinks: [
+      { label: 'Mutual fund services', url: '/products/mutual-funds' },
+      { label: 'Health insurance', url: '/products/health-insurance' },
+      { label: 'Book a free consultation', url: '/contact' },
+    ],
+  },
+  'e-wealth-account': {
+    title: 'E-Wealth Account: Invest & Track Online | FinOracles',
+    description:
+      'Open an E-Wealth account to view your whole portfolio, invest online, start SIPs and download statements anytime, with expert recommendations.',
+    relatedLinks: [
+      { label: 'Already a client? Log in to E-Wealth', url: '/login' },
+      { label: 'Mutual fund services', url: '/products/mutual-funds' },
+      { label: 'SIP, lumpsum & goal calculators', url: '/tools' },
+    ],
+  },
+  'recommended-mf-portfolio': {
+    title: 'Recommended Mutual Fund Portfolio | FinOracles',
+    description:
+      'A diversified mutual fund portfolio matched to your goals and risk profile, curated by research experts and rebalanced on time. Get your portfolio.',
+    relatedLinks: [
+      { label: 'Mutual fund services', url: '/products/mutual-funds' },
+      { label: 'Why a SIP builds wealth steadily', url: '/blog/why-sip-builds-wealth' },
+      { label: 'Try the SIP calculator', url: '/tools' },
+    ],
+  },
+}
+
+/** Meta title/description per blog post. */
+const postSeo: Record<string, Seo> = {
+  'why-sip-builds-wealth': {
+    title: 'Benefits of SIP: How a SIP Builds Wealth Steadily',
+    description:
+      'How does a SIP work? Learn how rupee cost averaging and disciplined monthly investing help you build wealth through market ups and downs.',
+  },
+  'retirement-planning-start-early': {
+    title: 'Retirement Planning in India: Start Earlier Than You Think',
+    description:
+      'Estimate your retirement needs, choose the right mix of mutual funds, NPS and health cover, and review your plan every year. A step-by-step guide.',
+  },
+  'health-insurance-protect-savings': {
+    title: 'How to Choose Health Insurance for Your Family',
+    description:
+      'An unexpected hospital bill can undo years of saving. What to check before buying health insurance: sum insured, cashless network and waiting periods.',
+  },
+}
+
 /**
  * All default website content, taken from the approved FinOracles design.
  * `img` resolves an image key to whatever the caller needs: a Media ID when
@@ -163,7 +312,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
     logo: img('logo'),
     defaultDescription:
       'FinOracles Services Pvt. Ltd. is an AMFI-registered mutual fund distributor in Satara offering financial planning, mutual funds, NPS, PMS and insurance with expert guidance.',
-    defaultOgImage: img('retirement'),
+    defaultOgImage: img('og'),
     twitterHandle: '',
     phones: [phone, { display: '+91 932 590 0406', number: '+919325900406' }],
     emails: [{ email: 'connect@finoracles.com' }, { email: 'finoracles@gmail.com' }],
@@ -259,7 +408,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           { label: 'NPS', url: '/products/nps' },
           { label: 'Equity & ETFs', url: '/products/equity-etfs' },
           { label: 'PMS', url: '/products/pms' },
-          { label: 'Insurance', url: '/products' },
+          { label: 'Insurance', url: '/products/health-insurance' },
         ].map((n) => ({ ...n, newTab: false })),
       },
     ],
@@ -276,7 +425,8 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
     hero: {
       badgeText: 'AMFI- Registered Mutual Fund Distributor',
       badgeHighlight: 'ARN 300933',
-      titlePrefix: 'FinOracles Services Pvt. Ltd.: Wings for a Wealthy Future.',
+      // The page h1 (main keyword for local search); the rotating headlines below are not headings.
+      titlePrefix: 'Financial Advisor & Mutual Fund Distributor in Satara',
       title: 'Wings for a Wealthy Future',
       lead: 'Your trusted partner in financial planning and wealth management. We help you achieve your financial goals with expert guidance.',
       primaryCta: { label: 'Contact Us', url: '#contact', newTab: false },
@@ -366,16 +516,19 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
         {
           icon: 'clipboard-list',
           title: 'Financial Planning',
+          url: '/services',
           text: 'Get customized guidance across investments, expenses, insurance, loans, estate planning, and taxes.',
         },
         {
           icon: 'trending-up',
           title: 'Investment Advisory',
+          url: '/products/mutual-funds',
           text: 'Implement your customized guidance by buying all the recommended financial products on one single platform.',
         },
         {
           icon: 'shield-check',
           title: 'Risk Management',
+          url: '/products/health-insurance',
           text: 'Track your journey and review/rebalance your investments to make sure they are aligned with your needs.',
         },
       ],
@@ -385,11 +538,11 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       heading: 'WHAT ARE YOUR FINANCIAL NEEDS?',
       lead: 'Everyone has various financial needs which is to be achieved for leading a beautiful and stress-free life.\n\nBut before reaching these needs certain bridge of multiple realities has to be crossed.',
       items: [
-        { title: "I'M THINKING OF MY CHILD'S FUTURE", image: img('child'), icon: 'graduation-cap', url: '/contact?goal=child-future' },
+        { title: "I'M THINKING OF MY CHILD'S FUTURE", image: img('child'), icon: 'graduation-cap', url: '/products/mutual-funds' },
         { title: 'I WANT TO FULFILL MY DREAMS', image: img('savings'), icon: 'piggy-bank', url: '/products/mutual-funds' },
         { title: "I'M PREPARING TO RETIRE", image: img('retirement'), icon: 'umbrella', url: '/products/nps' },
         { title: 'I HAVE JUST STARTED EARNING', image: img('earning'), icon: 'wallet', url: '/products/mutual-funds' },
-        { title: 'I WANT TO OWN A HOME', image: img('home'), icon: 'house', url: '/contact?goal=own-home' },
+        { title: 'I WANT TO OWN A HOME', image: img('home'), icon: 'house', url: '/products/mutual-funds' },
         { title: "I'M AN EARLY INVESTOR", image: img('earlyInvestor'), icon: 'sprout', url: '/products/equity-etfs' },
       ],
     },
@@ -436,7 +589,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       intro:
         'FinOracles Services Pvt. Ltd. is a trusted financial solutions partner committed to designing structured, goal-driven investment strategies.',
       body: [
-        'We are a team of experienced financial professionals offering comprehensive, tailor-made solutions that align with your financial aspirations. From investment planning to wealth optimization, we provide a seamless, one-stop approach to managing and growing your finances.',
+        'We are a team of experienced financial professionals offering comprehensive, tailor-made solutions that align with your financial aspirations. From [investment planning](/products/mutual-funds) to [wealth optimization](/services), we provide a seamless, one-stop approach to managing and growing your finances.',
         "Customer-centric at our core, we combine expertise, discipline, and strategic insight to deliver efficient solutions that build long-term value. At FinOracles, we don't just manage investments — we design financial confidence.",
       ].join('\n\n'),
       values: [
@@ -456,9 +609,9 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       items: [
         { icon: 'compass', label: 'Financial Planning' },
         { icon: 'trending-up', label: 'Investment Advisory' },
-        { icon: 'wallet', label: 'Money Management' },
+        { icon: 'wallet', label: 'Money Management', url: '/services/client-desk' },
         { icon: 'shield-check', label: 'Risk Management' },
-        { icon: 'umbrella', label: 'Insurance Solutions' },
+        { icon: 'umbrella', label: 'Insurance Solutions', url: '/products/life-insurance' },
       ],
       body: [
         'With a client-first approach and deep industry insight, we create customized strategies that align perfectly with your financial objectives.',
@@ -498,12 +651,6 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           title: 'Image Library',
           text: 'Visual guides, infographics, and charts to help you understand financial concepts better.',
           url: 'https://www.instagram.com/finoracles',
-        },
-        {
-          icon: 'mail',
-          title: 'Newsletters',
-          text: 'Stay updated with our weekly financial newsletters, market insights, and expert opinions.',
-          url: '',
         },
       ],
     },
@@ -548,10 +695,10 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       ],
     },
     meta: {
-      title: 'FinOracles Services Pvt. Ltd. | Wings for a Wealthy Future',
+      title: 'Financial Advisor in Satara | FinOracles Services Pvt. Ltd.',
       description:
-        'AMFI-registered mutual fund distributor in Satara. Financial planning, mutual funds, NPS, PMS and insurance with expert, goal-based guidance from FinOracles.',
-      image: img('retirement'),
+        'AMFI-registered mutual fund distributor (ARN 300933) in Satara. Goal-based financial planning, SIPs, NPS, PMS and insurance. Book a free consultation.',
+      image: img('og'),
     },
   }
 
@@ -635,9 +782,13 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       tagline: extra?.tagline,
       highlights: extra?.highlights.map((text) => ({ text })) ?? [],
       idealFor: extra?.idealFor,
+      whoShouldConsider: extra ? productSections[extra.slug]?.whoShouldConsider : undefined,
+      howItWorks: extra ? productSections[extra.slug]?.howItWorks : undefined,
       enquiryLabel: extra?.enquiryLabel,
       slug: extra?.slug,
       faqs: extra?.faqs ?? [],
+      relatedLinks: (extra && productSeo[extra.slug]?.relatedLinks) ?? [],
+      meta: extra && productSeo[extra.slug] ? seoMeta(productSeo[extra.slug]) : undefined,
       order,
     }
   })
@@ -660,7 +811,8 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       slug: 'client-desk',
       features: [{"text":"A consolidated view of your family’s entire wealth"},{"text":"Clear reports across mutual funds, insurance and other holdings"},{"text":"A dedicated relationship manager for reviews and support"}],
       icon: 'layout-dashboard',
-      image: img('home'),
+      // A market-chart image; the new-home photo did not match the service.
+      image: img('earlyInvestor'),
       summary:
         'The Client Desk is a premium offering for our clients which consolidates entire wealth, providing a comprehensive view of all your investments and financial assets in one place.',
       content: richText([
@@ -673,6 +825,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
             'A dedicated relationship manager for reviews and support',
           ],
         },
+        ...serviceSections['client-desk'],
         'Talk to our team to get your Client Desk set up.',
       ]),
     },
@@ -688,10 +841,11 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
         'As a client of our E-Wealth A/c service you can enjoy some big, tangible benefits including consolidated portfolio view, easy transactions, and expert recommendations across all your investments.',
         { h2: 'Benefits' },
         { ul: ['Consolidated portfolio view', 'Easy online transactions', 'Expert recommendations across all your investments'] },
+        ...serviceSections['e-wealth-account'],
       ]),
     },
     {
-      title: 'Recommended MF Portfolio',
+      title: 'Recommended Mutual Fund Portfolio',
       slug: 'recommended-mf-portfolio',
       features: [{"text":"Portfolios matched to your goals and risk profile"},{"text":"Curated by research experts using market analysis"},{"text":"Timely reviews and rebalancing"}],
       icon: 'target',
@@ -708,9 +862,16 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
             'We review and rebalance it on a timely basis',
           ],
         },
+        ...serviceSections['recommended-mf-portfolio'],
       ]),
     },
-  ].map((s, order) => ({ ...s, order, showOnHome: true }))
+  ].map((s, order) => ({
+    ...s,
+    order,
+    showOnHome: true,
+    relatedLinks: serviceSeo[s.slug]?.relatedLinks ?? [],
+    meta: serviceSeo[s.slug] ? seoMeta(serviceSeo[s.slug]) : undefined,
+  }))
 
   const categories = [
     { title: 'Financial Planning', slug: 'financial-planning' },
@@ -727,7 +888,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       coverImage: img('savings'),
       category: 'mutual-funds',
       content: richText([
-        'A Systematic Investment Plan (SIP) lets you invest a fixed amount in a mutual fund at regular intervals, usually monthly. Instead of trying to time the market, you build your investment gradually and consistently.',
+        'A Systematic Investment Plan (SIP) lets you invest a fixed amount in a [mutual fund](/products/mutual-funds) at regular intervals, usually monthly. Instead of trying to time the market, you build your investment gradually and consistently.',
         { h2: 'Discipline over timing' },
         'Because the amount and date are fixed, a SIP removes the temptation to wait for the “right” moment. Investing becomes a habit, just like any other monthly commitment.',
         { h2: 'Rupee cost averaging' },
@@ -735,7 +896,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
         { h2: 'Start small, step up later' },
         {
           ul: [
-            'Begin with an amount that fits your budget comfortably',
+            '[Begin with an amount that fits your budget](/tools) comfortably',
             'Increase your SIP as your income grows',
             'Link each SIP to a clear goal such as retirement or a child’s education',
           ],
@@ -757,13 +918,13 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
         { h2: 'Use the right mix of products' },
         {
           ul: [
-            'Mutual funds for long-term growth',
-            'The National Pension System (NPS) for disciplined, tax-efficient saving',
-            'Health insurance to protect your savings from medical expenses',
+            '[Mutual funds](/products/mutual-funds) for long-term growth',
+            '[The National Pension System (NPS)](/products/nps) for disciplined, tax-efficient saving',
+            '[Health insurance](/products/health-insurance) to protect your savings from medical expenses',
           ],
         },
         { h2: 'Review regularly' },
-        'Your plan should change as your life does. Review and rebalance your portfolio at least once a year with your advisor.',
+        'Your plan should change as your life does. Review and rebalance your portfolio at least once a year with [your advisor](/contact).',
       ]),
     },
     {
@@ -774,7 +935,7 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       coverImage: img('child'),
       category: 'insurance',
       content: richText([
-        'Health insurance protects both your family’s well-being and your long-term financial plan from unexpected medical expenses.',
+        '[Health insurance](/products/health-insurance) protects both your family’s well-being and your long-term financial plan from unexpected medical expenses.',
         { h2: 'What to look for' },
         {
           ul: [
@@ -784,10 +945,10 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           ],
         },
         { h2: 'Get expert help' },
-        'Our team can compare options and help you choose cover that fits your needs and budget.',
+        '[Our team](/contact) can compare options and help you choose cover that fits your needs and budget.',
       ]),
     },
-  ]
+  ].map((p) => ({ ...p, meta: postSeo[p.slug] }))
 
   const pages = [
     {
@@ -833,7 +994,8 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
       ],
       meta: {
         title: 'Privacy Policy | FinOracles',
-        description: 'How FinOracles Services Pvt. Ltd. collects, uses and protects your personal information.',
+        description:
+          'How FinOracles Services Pvt. Ltd. collects, uses and protects the personal information you share through this website and our enquiry forms.',
       },
     },
     {
@@ -859,17 +1021,25 @@ export const buildContent = <T>(img: (key: SeedImageKey) => T) => {
           blockType: 'cta',
           heading: 'Have a question?',
           text: 'Our team is happy to help you understand any product before you invest.',
-          links: [{ label: 'Contact Us', url: '/#contact', newTab: false, style: 'primary' }],
+          links: [{ label: 'Contact Us', url: '/contact', newTab: false, style: 'primary' }],
         },
       ],
       meta: {
-        title: 'Disclaimer | FinOracles',
-        description: 'Regulatory disclaimer and registration details for FinOracles Services Pvt. Ltd.',
+        title: 'Disclaimer & ARN 300933 Registration | FinOracles',
+        description:
+          'Regulatory disclaimer for FinOracles Services Pvt. Ltd., an AMFI-registered mutual fund distributor (ARN 300933). Read before you invest.',
       },
     },
   ]
 
-  return { siteSettings, header, footer, homePage, products, team, services, categories, posts, pages }
+  // Suggested posts from the SEO plan: seeded as drafts for review, never shown before publishing.
+  const draftPosts = draftPostSource.map(({ cover, content, ...post }) => ({
+    ...post,
+    coverImage: img(cover),
+    content: richText(content),
+  }))
+
+  return { siteSettings, header, footer, homePage, products, team, services, categories, posts, draftPosts, pages }
 }
 
 export type SeedContent = ReturnType<typeof buildContent>
